@@ -1,0 +1,59 @@
+---
+name: create-user-stories
+description: >-
+  Generates user stories adhering to INVEST criteria, Concur format (As a/I want/So that),
+  Gherkin Given-When-Then Acceptance Criteria, Fibonacci story points, and Definition of Done across Lean, Standard Agile, and Enterprise modes.
+---
+
+# 📖 User Story Generation Skill
+
+## Overview
+The `create-user-stories` skill breaks down PRDs, features, or epics into well-structured, actionable user stories. Every generated story strictly respects industry best practices to ensure engineering readiness.
+
+---
+
+## ⚙️ Supported Operational Modes
+1. **⚡ Lean Mode (`lean`)**:
+   - Short narrative + simple bullet-point acceptance criteria.
+   - Template: `templates/user-stories/lean.md`
+2. **🎯 Standard Agile Mode (`standard`)** *(Default)*:
+   - Full INVEST criteria check + Gherkin (`Given/When/Then`) Acceptance Criteria + Fibonacci Story Points (1, 2, 3, 5, 8, 13) + Definition of Done.
+   - Template: `templates/user-stories/standard.md`
+3. **🏢 Enterprise Mode (`enterprise`)**:
+   - Gherkin BDD + Security assertions (RBAC/OIDC) + Compliance tags (`[SOC2]`, `[GDPR]`) + Telemetry event payload + Audit log requirements.
+   - Template: `templates/user-stories/enterprise.md`
+
+---
+
+## 📋 Best Practices & Standards Enforced
+
+1. **INVEST Criteria Validation**:
+   - **I**ndependent, **N**egotiable, **V**aluable, **E**stimable, **S**mall, **T**estable.
+2. **Gherkin BDD Syntax**:
+   - Every scenario MUST use `Given... When... Then... And...`.
+3. **Multi-Scenario Coverage**:
+   - Mandatory Happy Path, Validation Error, and Edge Case/System Failure scenarios.
+
+---
+
+## 🛠️ Step-by-Step Execution Workflow
+
+1. **Input Intake**:
+   - Accept epic description, feature specification, or PRD text.
+2. **Epic Breakdown**:
+   - Identify sub-features and group them into logical stories.
+3. **Story Generation**:
+   - For each story, construct the standard Concur statement (`As a... I want to... So that...`).
+   - Write Gherkin BDD acceptance criteria for happy path, validation errors, and system edge cases.
+4. **Output Verification & Flow Handling**:
+   - Ensure all stories pass the INVEST criteria check.
+   - Conclude response with proactive recommendations for the next PM stage.
+
+---
+
+## 🔄 Flow Handling & Suggested Next Skills
+At the end of generating user stories, ALWAYS recommend the logical next steps:
+- **Next Step 1 (Export to Jira via MCP)**: "Would you like to sync these stories directly to your Jira backlog using `sync-jira`?"
+- **Next Step 2 (Story Grooming & Readiness)**: "Would you like me to audit and groom these stories for sprint readiness using `refine-user-stories`?"
+- **Next Step 3 (Technical Documentation)**: "Would you like to generate technical API schemas and sequence diagrams using `create-documentation`?"
+- **Next Step 4 (UI Mockup)**: "Would you like to build an interactive HTML wireframe for these user stories using `create-mockup`?"

@@ -1,0 +1,72 @@
+---
+name: connect-mcp
+description: >-
+  Establishes, tests, and manages Model Context Protocol (MCP) integrations for external PM tools:
+  Atlassian (Jira & Confluence), Figma, and Miro across AGY, Claude Code, and Cursor IDEs.
+---
+
+# 🔌 MCP External Tool Connection Skill
+
+## Overview
+The `connect-mcp` skill guides users through establishing live MCP (Model Context Protocol) integrations with key product management tools: **Atlassian (Jira & Confluence)**, **Figma**, and **Miro**. 
+
+It provides automated credential management, server registration, readiness checks, and tool capability verification.
+
+---
+
+## ⚙️ Supported Tool Integrations
+
+| Integration | Primary MCP Server | Environment Variables Required | Key Capabilities Exposed |
+| :--- | :--- | :--- | :--- |
+| **Atlassian (Jira)** | `@modelcontextprotocol/server-atlassian` | `ATLASSIAN_HOST`, `ATLASSIAN_EMAIL`, `ATLASSIAN_API_TOKEN` | Create issue, update issue, search issues, assign sprint |
+| **Atlassian (Confluence)** | `@modelcontextprotocol/server-atlassian` | `ATLASSIAN_HOST`, `ATLASSIAN_EMAIL`, `ATLASSIAN_API_TOKEN` | Create page, update page, search space, attach specs |
+| **Figma** | `@figma/mcp` | `FIGMA_ACCESS_TOKEN` | Inspect file node tree, read component specs, post comments |
+| **Miro** | `mcp-server-miro` | `MIRO_ACCESS_TOKEN` | Create board, create sticky notes, build visual frames/cards |
+
+---
+
+## 🛠️ Step-by-Step Connection Workflow
+
+### Step 1: Run the Automated Configuration Script
+Execute the connection helper in your terminal:
+```bash
+# Run interactive wizard to input API tokens
+python3 scripts/setup-mcp.py --interactive
+
+# Or export config for all tools across AGY, Claude Code, and Cursor:
+python3 scripts/setup-mcp.py --target all
+```
+
+### Step 2: Verify Connection Readiness
+Run the verification check:
+```bash
+python3 scripts/setup-mcp.py --check
+```
+
+### Step 3: Populate Credentials (`.env`)
+Ensure your credentials are provided in `.env`:
+```env
+ATLASSIAN_HOST=https://your-company.atlassian.net
+ATLASSIAN_EMAIL=pm@company.com
+ATLASSIAN_API_TOKEN=ATATT3xFfGF0...
+FIGMA_ACCESS_TOKEN=figd_...
+MIRO_ACCESS_TOKEN=eyJhbGci...
+```
+
+---
+
+## ⚡ Target IDE Config Locations
+
+The script automatically manages configuration files across platforms:
+- **AGY / Antigravity**: `.agents/mcp.json`
+- **Claude Code**: `.claude/mcp.json`
+- **Cursor IDE**: `.cursor/mcp.json`
+
+---
+
+## 🔄 Flow Handling & Suggested Next Skills
+Once MCP connections are established, prompt the user with active integration skills:
+- **Jira Integration**: "Would you like to export stories to Jira using `sync-jira`?"
+- **Confluence Integration**: "Would you like to publish your PRD to Confluence using `sync-confluence`?"
+- **Figma Integration**: "Would you like to inspect design components using `sync-figma`?"
+- **Miro Integration**: "Would you like to export brainstorm sticky notes to Miro using `sync-miro`?"

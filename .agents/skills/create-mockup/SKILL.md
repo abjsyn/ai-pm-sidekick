@@ -1,0 +1,44 @@
+---
+name: create-mockup
+description: >-
+  Generates clickable, interactive UI mockups and prototypes as self-contained HTML files styled with Tailwind CSS, supporting interactive tabs, modals, forms, and responsive device views.
+---
+
+# 🎨 Clickable Wireframe & Mockup Skill
+
+## Overview
+The `create-mockup` skill generates functional, responsive, and clickable HTML wireframes directly from user stories, PRDs, or feature descriptions. The generated HTML files are self-contained with Tailwind CSS (CDN) and vanilla JavaScript, allowing immediate preview in any web browser, IDE previewer, or AGY workspace.
+
+---
+
+## 🎯 Key Features & UX Best Practices
+
+1. **Self-Contained & Tool-Agnostic**:
+   - Single `.html` file outputs that require no build steps or local server setup.
+2. **Modern Styling**:
+   - Styled with Tailwind CSS CDN (`https://cdn.tailwindcss.com`) and Inter typography.
+3. **Interactive Components**:
+   - Tab switching, modal dialog triggers, step-by-step form wizards, interactive dropdowns, and toast alerts.
+4. **Viewport Switcher Header**:
+   - Embedded top toolbar allowing switching between Desktop (1440px), Tablet (768px), and Mobile (375px) preview modes.
+
+---
+
+## 🛠️ Step-by-Step Execution Workflow
+
+1. **UI Requirements Extraction**:
+   - Read screen descriptions, target components, navigation flows, and user interactions.
+2. **HTML Layout Generation**:
+   - Construct complete HTML boilerplates with Tailwind CSS CDN and viewport toggle toolbar.
+3. **Interactive JS Logic**:
+   - Include modular vanilla JS functions for modal open/close, tab activation, and form validation triggers.
+4. **File Saving & Flow Handling**:
+   - Write output `.html` file to workspace directory (e.g. `mockups/<feature-name>.html`).
+   - Prompt the user with recommended next skills in the product lifecycle.
+
+---
+
+## 🔄 Flow Handling & Suggested Next Skills
+At the end of generating a mockup, ALWAYS recommend the logical next steps:
+- **Next Step 1 (Design Handoff)**: "Would you like to draft a formal UI/UX Design Brief based on this mockup using `create-design-brief`?"
+- **Next Step 2 (User Stories)**: "Would you like to generate user stories for the interactions shown in this mockup using `create-user-stories`?"

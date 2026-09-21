@@ -1,0 +1,56 @@
+---
+description: >-
+globs: "*"
+---
+# 🧪 Idea & Hypothesis Validation Skill
+
+## Overview
+The `validate-idea` skill evaluates raw product ideas, market opportunities, or feature requests. It guides the Product Manager through structured hypothesis testing, identifies high-risk assumptions, calculates market opportunity, and outputs an actionable Go/Pivot/No-Go validation report.
+
+---
+
+## 🎯 When to Use
+Use this skill when:
+- Evaluating a new product concept or startup idea.
+- Deciding whether to invest engineering effort into a proposed feature.
+- Preparing for executive pitch meetings or investment committee reviews.
+- Identifying critical assumptions that need customer validation.
+
+---
+
+## 📋 Best Practices & Frameworks Applied
+1. **Strategyzer 4-Risk Framework**:
+   - **Desirability Risk**: Do customers actually want this?
+   - **Feasibility Risk**: Can we build and scale this technically?
+   - **Viability Risk**: Is the unit economics / financial model sustainable?
+   - **Usability Risk**: Can users intuitively navigate and adopt the solution?
+2. **The Mom Test (Rob Fitzpatrick)**:
+   - Formulating non-leading questions focused on past behaviors rather than hypothetical opinions.
+3. **Pre-Mortem Analysis**:
+   - Projecting 12 months into the future assuming project failure, identifying failure modes early.
+4. **TAM / SAM / SOM Market Estimation**:
+   - Structuring top-down and bottom-up market sizing.
+
+---
+
+## 🛠️ Step-by-Step Execution Workflow
+
+1. **Information Gathering**:
+   - Ask the user for the raw idea, target audience, key problem, and existing workarounds (if known).
+2. **Risk Scoring**:
+   - Grade each risk dimension (1-5 for Severity, 1-5 for Uncertainty).
+   - Flag any assumption with a Risk Score >= 15 as a "Dealbreaker Assumption".
+3. **Experiment Blueprinting**:
+   - Suggest 2-3 fast, low-cost validation experiments (e.g. Smoke test page, Concierge MVP, Wizard of Oz).
+4. **Signal Generation**:
+   - Provide a clear **GO**, **PIVOT**, or **NO-GO** signal with detailed rationale.
+5. **Next Step Prompting (Flow Handling)**:
+   - Conclude response with proactive recommendations for the next PM stage.
+
+---
+
+## 🔄 Flow Handling & Suggested Next Skills
+At the end of generating the validation report, ALWAYS recommend the logical next step:
+- **If GO**: "Would you like to brainstorm solution variations using `brainstorm` or draft a PRD using `create-prd`?"
+- **If PIVOT**: "Would you like to run `brainstorm` to explore alternative angles for this problem?"
+- **If NO-GO**: "Would you like to archive this hypothesis and validate a different concept?"

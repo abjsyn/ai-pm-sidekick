@@ -1,0 +1,57 @@
+# Command: /brainstorm
+
+>-
+
+# 💡 Product & Feature Brainstorming Skill
+
+## Overview
+The `brainstorm` skill helps Product Managers break through creative blocks, discover alternative solution angles, explore edge-case features, and prioritize creative ideas using battle-tested ideation frameworks.
+
+---
+
+## 🎯 When to Use
+Use this skill when:
+- Kicking off a new product feature or product line.
+- Seeking innovative solutions to a persistent user pain point.
+- Running a design sprint or ideation session with engineering/design.
+- Re-imagining an existing stagnant feature.
+
+---
+
+## 📋 Best Practices & Frameworks Applied
+1. **SCAMPER Framework**:
+   - **Substitute**: What materials, steps, or people can we substitute?
+   - **Combine**: Can we merge this feature with another workflow?
+   - **Adapt**: What existing pattern from another industry can we adapt?
+   - **Modify/Magnify**: What happens if we double or remove a core constraint?
+   - **Put to another use**: How else can this data or service be utilized?
+   - **Eliminate**: What is the simplest version if we strip 80% of UI?
+   - **Reverse**: What if we flipped the user journey backwards?
+2. **How Might We (HMW) Statements**:
+   - Framing problems into open-ended opportunity questions.
+3. **Value vs. Effort Matrix**:
+   - Categorizing ideas into Quick Wins, Major Projects, Fill-ins, and Time Sinks.
+
+---
+
+## 🛠️ Step-by-Step Execution Workflow
+
+1. **Context Intake**:
+   - Prompt user for the core problem statement, persona, and technical/business constraints.
+2. **Multi-Angle Generation**:
+   - Apply SCAMPER to generate 8-12 distinct solution concepts.
+   - Formulate 3-5 HMW action cards.
+3. **Prioritization Mapping**:
+   - Map each solution on a 2x2 Value vs. Effort matrix.
+4. **Actionable Summary**:
+   - Present the top 3 recommended concepts with key pros/cons and immediate prototype steps.
+5. **Next Step Prompting (Flow Handling)**:
+   - Conclude response with proactive recommendations for the next PM stage.
+
+---
+
+## 🔄 Flow Handling & Suggested Next Skills
+At the end of generating brainstorming concepts, ALWAYS recommend the logical next step:
+- **Next Step 1 (Export to Miro via MCP)**: "Would you like to export these sticky notes and matrix to Miro using `sync-miro`?"
+- **Next Step 2 (Requirements)**: "Would you like to capture the winning concept into a PRD using `create-prd`?"
+- **Next Step 3 (Visual Wireframe)**: "Would you like to generate an interactive HTML mockup for the top idea using `create-mockup`?"

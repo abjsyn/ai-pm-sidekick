@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-900 text-slate-100">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI PM Sidekick — PM Command Center</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#f0f6ff',
+              100: '#e0edff',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              900: '#1e3a8a',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #0f172a; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #475569; }
+    
+    .device-viewport {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body class="h-full font-sans antialiased flex flex-col overflow-hidden bg-slate-950 text-slate-200">
+
+  <!-- ================= TOP DEVICE VIEWPORT SWITCHER TOOLBAR ================= -->
+  <header class="bg-slate-900 border-b border-slate-800 px-4 py-2 flex items-center justify-between text-xs shrink-0 z-30">
+    <div class="flex items-center space-x-3">
+      <div class="flex items-center space-x-2">
+        <div class="w-3 h-3 rounded-full bg-indigo-500 animate-pulse"></div>
+        <span class="font-bold text-slate-100 tracking-wide">AI PM SIDEKICK</span>
+        <span class="bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 px-2 py-0.5 rounded-full font-mono text-[10px]">v2.4 MCP</span>
+      </div>
+      <span class="text-slate-600">|</span>
+      <span class="text-slate-400 hidden sm:inline">PM Command Center UI</span>
+    </div>
+
+    <!-- Viewport Mode Switcher Buttons -->
+    <div class="flex items-center bg-slate-950 p-1 rounded-lg border border-slate-800 space-x-1">
+      <button onclick="setViewport('desktop')" id="btn-desktop" class="px-2.5 py-1 rounded-md text-slate-100 bg-indigo-600 font-medium flex items-center space-x-1.5 transition">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+        <span>Desktop (1440px)</span>
+      </button>
+      <button onclick="setViewport('tablet')" id="btn-tablet" class="px-2.5 py-1 rounded-md text-slate-400 hover:text-slate-200 font-medium flex items-center space-x-1.5 transition">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+        <span>Tablet (768px)</span>
+      </button>
+      <button onclick="setViewport('mobile')" id="btn-mobile" class="px-2.5 py-1 rounded-md text-slate-400 hover:text-slate-200 font-medium flex items-center space-x-1.5 transition">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+        <span>Mobile (375px)</span>
+      </button>
+    </div>
+
+    <!-- Top Action Badges -->
+    <div class="flex items-center space-x-3">
+      <button onclick="openModal('mcp-modal')" class="flex items-center space-x-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1 rounded-md border border-slate-700 transition">
+        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+        <span class="font-medium">MCP Status</span>
+        <span class="bg-slate-900 text-emerald-400 px-1.5 py-0.5 rounded text-[10px] font-mono">4 Connected</span>
+      </button>
+      <button onclick="toggleTerminal()" class="text-slate-400 hover:text-slate-200 bg-slate-900 p-1.5 rounded-md border border-slate-800">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ================= MAIN APP WRAPPER ================= -->
+  <div class="flex-1 flex overflow-hidden w-full relative">
+
+    <div id="app-viewport" class="device-viewport w-full h-full flex overflow-hidden border-x border-slate-800 shadow-2xl bg-slate-950">
+      
+      <!-- ================= SIDEBAR NAVIGATION ================= -->
+      <aside class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col shrink-0">
+        
+        <!-- Search Command Bar -->
+        <div class="p-3 border-b border-slate-800">
+          <div class="relative">
+            <svg class="w-4 h-4 absolute left-3 top-2.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            <input type="text" placeholder="Search skill or command... (⌘K)" class="w-full bg-slate-950 border border-slate-800 rounded-lg pl-9 pr-3 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500">
+          </div>
+        </div>
+
+        <!-- Navigation Menu Items -->
+        <nav class="flex-1 overflow-y-auto p-3 space-y-6 text-xs">
+
+          <!-- Section 1: Product Strategy -->
+          <div>
+            <div class="text-[10px] font-semibold text-slate-500 uppercase tracking-wider px-2 mb-2">Strategy & Ideation</div>
+            <div class="space-y-1">
+              <button onclick="selectSkill('validate-idea')" class="nav-item w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800/60 transition">
+                <div class="flex items-center space-x-2">
+                  <span>🧪</span>
+                  <span class="font-medium">Idea Validation</span>
+                </div>
+                <span class="font-mono text-[10px] text-slate-500">/validate-idea</span>
+              </button>
+              <button onclick="selectSkill('brainstorm')" class="nav-item w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800/60 transition">
+                <div class="flex items-center space-x-2">
+                  <span>💡</span>
+                  <span class="font-medium">Brainstorming</span>
+                </div>
+                <span class="font-mono text-[10px] text-slate-500">/brainstorm</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Section 2: Requirements & Specs -->
+          <div>
+            <div class="text-[10px] font-semibold text-slate-500 uppercase tracking-wider px-2 mb-2">Requirements & Specs</div>
+            <div class="space-y-1">
+              <button onclick="selectSkill('create-prd')" class="nav-item active-nav w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-slate-100 bg-indigo-600/20 border border-indigo-500/30 font-medium transition">
+                <div class="flex items-center space-x-2">
+                  <span>📝</span>
+                  <span class="font-medium">PRD Generator</span>
+                </div>
+                <span class="font-mono text-[10px] text-indigo-400">/create-prd</span>
+              </button>
+              <button onclick="selectSkill('create-design-brief')" class="nav-item w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800/60 transition">
+                <div class="flex items-center space-x-2">
+                  <span>🎨</span>
+                  <span class="font-medium">Design Brief</span>
+                </div>
+                <span class="font-mono text-[10px] text-slate-500">/create-design-brief</span>
+              </button>
+              <button onclick="selectSkill('create-mockup')" class="nav-item w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800/60 transition">
+                <div class="flex items-center space-x-2">
+                  <span>🖥️</span>
+                  <span class="font-medium">Clickable Mockup</span>
+                </div>
+                <span class="font-mono text-[10px] text-slate-500">/create-mockup</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Section 3: Agile Execution -->
+          <div>
+            <div class="text-[10px] font-semibold text-slate-500 uppercase tracking-wider px-2 mb-2">Agile & Sprint</div>
+            <div class="space-y-1">
+              <button onclick="selectSkill('create-user-stories')" class="nav-item w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800/60 transition">
+                <div class="flex items-center space-x-2">
+                  <span>📖</span>
+                  <span class="font-medium">User Stories</span>
+                </div>
+                <span class="font-mono text-[10px] text-slate-500">/create-user-stories</span>
+              </button>
+              <button onclick="selectSkill('refine-user-stories')" class="nav-item w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800/60 transition">
+                <div class="flex items-center space-x-2">
+                  <span>🔍</span>
+                  <span class="font-medium">Story Grooming</span>
+                </div>
+                <span class="font-mono text-[10px] text-slate-500">/refine-user-stories</span>
+              </button>
+              <button onclick="selectSkill('create-documentation')" class="nav-item w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800/60 transition">
+                <div class="flex items-center space-x-2">
+                  <span>📚</span>
+                  <span class="font-medium">Tech Docs</span>
+                </div>
+                <span class="font-mono text-[10px] text-slate-500">/create-documentation</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Section 4: MCP External Integrations -->
+          <div>
+            <div class="text-[10px] font-semibold text-slate-500 uppercase tracking-wider px-2 mb-2">MCP Integrations</div>
+            <div class="space-y-1">
+              <button onclick="selectSkill('sync-jira')" class="nav-item w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800/60 transition">
+                <div class="flex items-center space-x-2">
+                  <span class="text-blue-400">🎟️</span>
+                  <span class="font-medium">Jira Sync</span>
+                </div>
+                <span class="font-mono text-[10px] text-slate-500">/sync-jira</span>
+              </button>
+              <button onclick="selectSkill('sync-confluence')" class="nav-item w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800/60 transition">
+                <div class="flex items-center space-x-2">
+                  <span class="text-indigo-400">📄</span>
+                  <span class="font-medium">Confluence Sync</span>
+                </div>
+                <span class="font-mono text-[10px] text-slate-500">/sync-confluence</span>
+              </button>
+              <button onclick="selectSkill('sync-figma')" class="nav-item w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800/60 transition">
+                <div class="flex items-center space-x-2">
+                  <span class="text-purple-400">🎨</span>
+                  <span class="font-medium">Figma Sync</span>
+                </div>
+                <span class="font-mono text-[10px] text-slate-500">/sync-figma</span>
+              </button>
+              <button onclick="selectSkill('sync-miro')" class="nav-item w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800/60 transition">
+                <div class="flex items-center space-x-2">
+                  <span class="text-yellow-400">📌</span>
+                  <span class="font-medium">Miro Sync</span>
+                </div>
+                <span class="font-mono text-[10px] text-slate-500">/sync-miro</span>
+              </button>
+            </div>
+          </div>
+
+        </nav>
+
+        <!-- Sidebar Footer: Environment Status -->
+        <div class="p-3 border-t border-slate-800 bg-slate-900/80 flex items-center justify-between text-[11px]">
+          <div class="flex items-center space-x-2 text-slate-400">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span>Local Engine Active</span>
+          </div>
+          <button onclick="openModal('mcp-modal')" class="text-indigo-400 hover:underline">Config</button>
+        </div>
+      </aside>
+
+      <!-- ================= MAIN WORKSPACE AREA (SPLIT PANE) ================= -->
+      <main class="flex-1 flex flex-col min-w-0 bg-slate-950 overflow-hidden relative">
+
+        <!-- Workspace Header Banner -->
+        <header class="bg-slate-900/90 border-b border-slate-800 px-6 py-3 flex items-center justify-between shrink-0">
+          <div class="flex items-center space-x-3">
+            <div class="p-2 bg-indigo-600/20 text-indigo-400 rounded-lg border border-indigo-500/30 text-lg">📝</div>
+            <div>
+              <div class="flex items-center space-x-2">
+                <h1 class="text-base font-semibold text-slate-100">Product Requirements Document (PRD)</h1>
+                <span class="bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 text-[10px] font-mono px-2 py-0.5 rounded">/create-prd</span>
+              </div>
+              <p class="text-xs text-slate-400">Generate structured, multi-mode PRDs with goals, flows, functional reqs, and edge cases.</p>
+            </div>
+          </div>
+
+          <!-- Mode Selector Tabs -->
+          <div class="flex items-center bg-slate-950 p-1 rounded-lg border border-slate-800 text-xs">
+            <button onclick="setMode('lean')" id="mode-lean" class="px-3 py-1 rounded-md text-slate-400 hover:text-slate-200 transition">⚡ Lean Mode</button>
+            <button onclick="setMode('standard')" id="mode-standard" class="px-3 py-1 rounded-md text-slate-100 bg-indigo-600 font-medium transition">🎯 Standard Agile</button>
+            <button onclick="setMode('enterprise')" id="mode-enterprise" class="px-3 py-1 rounded-md text-slate-400 hover:text-slate-200 transition">🏢 Enterprise</button>
+          </div>
+        </header>
+
+        <!-- Split Content Container -->
+        <div class="flex-1 flex overflow-hidden">
+
+          <!-- LEFT PANE: FORM WIZARD & CONTROLS -->
+          <div class="w-1/2 border-r border-slate-800 flex flex-col bg-slate-900/40 overflow-y-auto">
+            <div class="p-6 space-y-5">
+              
+              <div class="border-b border-slate-800/80 pb-4">
+                <h2 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Step 1: Input Feature Context</h2>
+                <p class="text-xs text-slate-500">Provide high-level details below. The sidekick will structure complete specs without placeholders.</p>
+              </div>
+
+              <!-- Feature Name Field -->
+              <div class="space-y-1.5">
+                <label class="block text-xs font-medium text-slate-300">Feature / Product Name <span class="text-rose-400">*</span></label>
+                <input type="text" id="input-feature" value="PM Command Center UI" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
+              </div>
+
+              <!-- Target Persona & Core Objective -->
+              <div class="grid grid-cols-2 gap-4">
+                <div class="space-y-1.5">
+                  <label class="block text-xs font-medium text-slate-300">Primary Persona</label>
+                  <input type="text" id="input-persona" value="Non-technical Product Manager" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
+                </div>
+                <div class="space-y-1.5">
+                  <label class="block text-xs font-medium text-slate-300">Target Release</label>
+                  <input type="text" id="input-release" value="Sprint 1 MVP" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
+                </div>
+              </div>
+
+              <!-- Feature Objective & Problem -->
+              <div class="space-y-1.5">
+                <label class="block text-xs font-medium text-slate-300">Core Problem & Goal</label>
+                <textarea rows="3" id="input-goal" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-xs text-slate-100 focus:outline-none focus:border-indigo-500 leading-relaxed">Provide a clean, visual web interface for AI PM Sidekick so non-technical Product Managers can easily navigate skills, generate PRDs/user stories, and trigger 1-click MCP sync actions to Jira, Confluence, Figma, and Miro.</textarea>
+              </div>
+
+              <!-- Key Capabilities Checklist -->
+              <div class="space-y-2">
+                <label class="block text-xs font-medium text-slate-300">Key Features Included</label>
+                <div class="space-y-2 text-xs bg-slate-950 p-3 rounded-lg border border-slate-800">
+                  <label class="flex items-center space-x-2 text-slate-300">
+                    <input type="checkbox" checked class="rounded bg-slate-900 border-slate-700 text-indigo-600 focus:ring-0">
+                    <span>FR-01: Visual Skill Launcher & Guided Form Wizard</span>
+                  </label>
+                  <label class="flex items-center space-x-2 text-slate-300">
+                    <input type="checkbox" checked class="rounded bg-slate-900 border-slate-700 text-indigo-600 focus:ring-0">
+                    <span>FR-02: Real-time Markdown & Wireframe Dual-Pane Previewer</span>
+                  </label>
+                  <label class="flex items-center space-x-2 text-slate-300">
+                    <input type="checkbox" checked class="rounded bg-slate-900 border-slate-700 text-indigo-600 focus:ring-0">
+                    <span>FR-03: 1-Click MCP Status Dashboard & Credentials Modal</span>
+                  </label>
+                  <label class="flex items-center space-x-2 text-slate-300">
+                    <input type="checkbox" checked class="rounded bg-slate-900 border-slate-700 text-indigo-600 focus:ring-0">
+                    <span>FR-04: 1-Click Sync Triggers (Jira, Confluence, Figma, Miro)</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Primary Execution Button -->
+              <div class="pt-2">
+                <button onclick="runSkill()" id="btn-run" class="w-full bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-slate-100 py-2.5 px-4 rounded-lg font-medium text-xs shadow-lg shadow-indigo-600/20 flex items-center justify-center space-x-2 transition">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                  <span>⚡ Generate PRD Spec</span>
+                </button>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- RIGHT PANE: LIVE DELIVERABLE PREVIEW & MCP ACTION BAR -->
+          <div class="w-1/2 flex flex-col bg-slate-950 overflow-hidden relative">
+
+            <!-- Deliverable Header Toolbar -->
+            <div class="bg-slate-900/60 border-b border-slate-800 px-4 py-2 flex items-center justify-between shrink-0 text-xs">
+              <div class="flex items-center space-x-2">
+                <span class="w-2 h-2 rounded-full bg-indigo-400"></span>
+                <span class="font-medium text-slate-200">Live Preview</span>
+                <span class="text-slate-500">|</span>
+                <span class="font-mono text-[10px] text-slate-400">PM_COMMAND_CENTER_PRD.md</span>
+              </div>
+              
+              <div class="flex items-center space-x-2">
+                <button class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1 rounded text-[11px] border border-slate-700">Copy MD</button>
+                <button class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1 rounded text-[11px] border border-slate-700">Download</button>
+              </div>
+            </div>
+
+            <!-- Rendered Document View -->
+            <div id="preview-container" class="flex-1 overflow-y-auto p-6 text-xs text-slate-300 space-y-5 leading-relaxed font-sans">
+              
+              <!-- Document Title -->
+              <div class="border-b border-slate-800 pb-4">
+                <div class="inline-block bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 text-[10px] font-mono px-2 py-0.5 rounded mb-2">STANDARD AGILE MODE</div>
+                <h1 class="text-lg font-bold text-slate-100">🎯 PM Command Center UI — PRD</h1>
+                <div class="flex items-center space-x-3 text-[11px] text-slate-500 mt-1">
+                  <span>Author: AI PM Sidekick</span>
+                  <span>•</span>
+                  <span>Date: 2026-09-20</span>
+                  <span>•</span>
+                  <span class="text-emerald-400 font-medium">Status: Approved</span>
+                </div>
+              </div>
+
+              <!-- Section 1 -->
+              <div>
+                <h2 class="text-sm font-semibold text-slate-200 mb-2 border-b border-slate-800/60 pb-1">1. Executive Summary</h2>
+                <p>The <strong>PM Command Center UI</strong> is a lightweight, locally hosted web application (<code>http://localhost:3000</code>) wrapping AI PM Sidekick's terminal skills, automation scripts, and live MCP integrations (Atlassian Jira/Confluence, Figma, Miro) into a visual dashboard designed for non-technical Product Managers.</p>
+              </div>
+
+              <!-- Section 2 -->
+              <div>
+                <h2 class="text-sm font-semibold text-slate-200 mb-2 border-b border-slate-800/60 pb-1">2. Target Personas & Value</h2>
+                <ul class="list-disc pl-4 space-y-1 text-slate-400">
+                  <li><strong>Paula (Product Manager)</strong>: Desires visual guided forms and 1-click export to Jira without running CLI commands.</li>
+                  <li><strong>Dave (Engineering Manager)</strong>: Requires clear visual auditing of Gherkin BDD criteria before ticket creation.</li>
+                </ul>
+              </div>
+
+              <!-- Section 3: Reqs Table -->
+              <div>
+                <h2 class="text-sm font-semibold text-slate-200 mb-2 border-b border-slate-800/60 pb-1">3. Functional Requirements Matrix</h2>
+                <div class="overflow-x-auto border border-slate-800 rounded-lg bg-slate-900/50">
+                  <table class="w-full text-left border-collapse text-[11px]">
+                    <thead>
+                      <tr class="border-b border-slate-800 bg-slate-900 text-slate-400">
+                        <th class="p-2 font-medium">ID</th>
+                        <th class="p-2 font-medium">Requirement</th>
+                        <th class="p-2 font-medium">Priority</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800/60 text-slate-300">
+                      <tr>
+                        <td class="p-2 font-mono text-indigo-400">FR-01</td>
+                        <td class="p-2">Visual Skill Launcher & Wizard Forms</td>
+                        <td class="p-2"><span class="bg-rose-500/20 text-rose-400 px-1.5 py-0.5 rounded text-[10px]">Must</span></td>
+                      </tr>
+                      <tr>
+                        <td class="p-2 font-mono text-indigo-400">FR-02</td>
+                        <td class="p-2">Real-time Dual Pane Live Previewer</td>
+                        <td class="p-2"><span class="bg-rose-500/20 text-rose-400 px-1.5 py-0.5 rounded text-[10px]">Must</span></td>
+                      </tr>
+                      <tr>
+                        <td class="p-2 font-mono text-indigo-400">FR-03</td>
+                        <td class="p-2">1-Click MCP Status Dashboard & Modal</td>
+                        <td class="p-2"><span class="bg-rose-500/20 text-rose-400 px-1.5 py-0.5 rounded text-[10px]">Must</span></td>
+                      </tr>
+                      <tr>
+                        <td class="p-2 font-mono text-indigo-400">FR-04</td>
+                        <td class="p-2">1-Click Sync Triggers (Jira, Confluence, Figma, Miro)</td>
+                        <td class="p-2"><span class="bg-rose-500/20 text-rose-400 px-1.5 py-0.5 rounded text-[10px]">Must</span></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- FLOATING 1-CLICK MCP ACTION BAR -->
+            <div class="p-3 bg-slate-900 border-t border-slate-800 flex items-center justify-between shrink-0 z-20">
+              <span class="text-xs text-slate-400 font-medium flex items-center space-x-1.5">
+                <span>🔌 1-Click MCP Sync:</span>
+              </span>
+
+              <div class="flex items-center space-x-2">
+                <button onclick="triggerMcpSync('jira')" class="bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 border border-blue-500/30 px-3 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 transition">
+                  <span>🎟️ Export to Jira</span>
+                </button>
+                <button onclick="triggerMcpSync('confluence')" class="bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 px-3 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 transition">
+                  <span>📄 Publish Confluence</span>
+                </button>
+                <button onclick="triggerMcpSync('figma')" class="bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/30 px-3 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 transition">
+                  <span>🎨 Sync Figma</span>
+                </button>
+                <button onclick="triggerMcpSync('miro')" class="bg-yellow-600/20 hover:bg-yellow-600/30 text-yellow-300 border border-yellow-500/30 px-3 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 transition">
+                  <span>📌 Send to Miro</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- ================= BOTTOM COLLAPSIBLE TERMINAL LOG DRAWER ================= -->
+        <div id="terminal-drawer" class="bg-slate-950 border-t border-slate-800 h-36 flex flex-col shrink-0 transition-all duration-300">
+          
+          <div class="bg-slate-900 px-4 py-1.5 flex items-center justify-between border-b border-slate-800 text-xs">
+            <div class="flex items-center space-x-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+              <span class="font-mono text-slate-300 text-[11px]">Execution Console (Terminal Logs)</span>
+            </div>
+            <button onclick="toggleTerminal()" class="text-slate-500 hover:text-slate-300">✕ Close</button>
+          </div>
+
+          <div class="flex-1 p-3 font-mono text-[11px] text-slate-400 overflow-y-auto space-y-1 bg-slate-950">
+            <div><span class="text-slate-600">[17:20:01]</span> <span class="text-indigo-400">INFO</span> Loaded skill: <code class="text-slate-300">/create-prd</code> (Standard Agile Mode)</div>
+            <div><span class="text-slate-600">[17:20:02]</span> <span class="text-indigo-400">INFO</span> Evaluating template: <code class="text-slate-300">templates/prd/standard.md</code></div>
+            <div><span class="text-slate-600">[17:20:03]</span> <span class="text-emerald-400">SUCCESS</span> Deliverable compiled: <code class="text-slate-200">docs/PM_COMMAND_CENTER_PRD.md</code></div>
+            <div><span class="text-slate-600">[17:20:04]</span> <span class="text-blue-400">MCP</span> Verified Atlassian server connection: <span class="text-slate-300">https://company.atlassian.net</span></div>
+          </div>
+
+        </div>
+
+      </main>
+
+    </div>
+
+  </div>
+
+  <!-- ================= MCP CREDENTIAL SETTINGS MODAL ================= -->
+  <div id="mcp-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-2xl max-w-lg w-full overflow-hidden">
+      
+      <div class="p-4 border-b border-slate-800 flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+          <span class="text-lg">🔌</span>
+          <h3 class="font-semibold text-slate-100 text-sm">MCP Integration Credentials</h3>
+        </div>
+        <button onclick="closeModal('mcp-modal')" class="text-slate-500 hover:text-slate-300">✕</button>
+      </div>
+
+      <div class="p-5 space-y-4 text-xs">
+        <p class="text-slate-400">Provide API tokens below. Settings are safely saved to your local <code>.env</code> file.</p>
+
+        <!-- Atlassian -->
+        <div class="space-y-2 border-b border-slate-800/80 pb-3">
+          <div class="font-medium text-slate-200 flex items-center justify-between">
+            <span>Atlassian (Jira & Confluence)</span>
+            <span class="text-emerald-400 text-[10px]">Connected</span>
+          </div>
+          <input type="text" placeholder="ATLASSIAN_HOST (https://your-domain.atlassian.net)" value="https://acme.atlassian.net" class="w-full bg-slate-950 border border-slate-800 rounded px-2.5 py-1.5 text-slate-200">
+          <input type="password" value="••••••••••••••••••••••••" class="w-full bg-slate-950 border border-slate-800 rounded px-2.5 py-1.5 text-slate-200">
+        </div>
+
+        <!-- Figma -->
+        <div class="space-y-2 border-b border-slate-800/80 pb-3">
+          <div class="font-medium text-slate-200 flex items-center justify-between">
+            <span>Figma Access Token</span>
+            <span class="text-emerald-400 text-[10px]">Connected</span>
+          </div>
+          <input type="password" value="••••••••••••••••••••••••" class="w-full bg-slate-950 border border-slate-800 rounded px-2.5 py-1.5 text-slate-200">
+        </div>
+
+        <!-- Miro -->
+        <div class="space-y-2">
+          <div class="font-medium text-slate-200 flex items-center justify-between">
+            <span>Miro Access Token</span>
+            <span class="text-emerald-400 text-[10px]">Connected</span>
+          </div>
+          <input type="password" value="••••••••••••••••••••••••" class="w-full bg-slate-950 border border-slate-800 rounded px-2.5 py-1.5 text-slate-200">
+        </div>
+      </div>
+
+      <div class="p-4 bg-slate-950 border-t border-slate-800 flex items-center justify-between text-xs">
+        <button onclick="closeModal('mcp-modal')" class="text-slate-400 hover:text-slate-200">Cancel</button>
+        <button onclick="closeModal('mcp-modal')" class="bg-indigo-600 hover:bg-indigo-500 text-slate-100 px-4 py-1.5 rounded font-medium">Save & Test Connections</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= TOAST NOTIFICATION ================= -->
+  <div id="toast" class="fixed bottom-5 right-5 bg-emerald-600 text-white px-4 py-2.5 rounded-lg shadow-xl text-xs font-medium flex items-center space-x-2 transition-all transform translate-y-10 opacity-0 pointer-events-none z-50">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+    <span id="toast-message">Export to Jira completed successfully! (PROJ-142)</span>
+  </div>
+
+  <!-- ================= JAVASCRIPT LOGIC ================= -->
+  <script>
+    function setViewport(mode) {
+      const viewport = document.getElementById('app-viewport');
+      const btnDesktop = document.getElementById('btn-desktop');
+      const btnTablet = document.getElementById('btn-tablet');
+      const btnMobile = document.getElementById('btn-mobile');
+
+      // Reset button styles
+      [btnDesktop, btnTablet, btnMobile].forEach(btn => {
+        btn.className = "px-2.5 py-1 rounded-md text-slate-400 hover:text-slate-200 font-medium flex items-center space-x-1.5 transition";
+      });
+
+      if (mode === 'desktop') {
+        viewport.style.maxWidth = '100%';
+        btnDesktop.className = "px-2.5 py-1 rounded-md text-slate-100 bg-indigo-600 font-medium flex items-center space-x-1.5 transition";
+      } else if (mode === 'tablet') {
+        viewport.style.maxWidth = '768px';
+        btnTablet.className = "px-2.5 py-1 rounded-md text-slate-100 bg-indigo-600 font-medium flex items-center space-x-1.5 transition";
+      } else if (mode === 'mobile') {
+        viewport.style.maxWidth = '375px';
+        btnMobile.className = "px-2.5 py-1 rounded-md text-slate-100 bg-indigo-600 font-medium flex items-center space-x-1.5 transition";
+      }
+    }
+
+    function setMode(mode) {
+      ['lean', 'standard', 'enterprise'].forEach(m => {
+        const btn = document.getElementById(`mode-${m}`);
+        if (m === mode) {
+          btn.className = "px-3 py-1 rounded-md text-slate-100 bg-indigo-600 font-medium transition";
+        } else {
+          btn.className = "px-3 py-1 rounded-md text-slate-400 hover:text-slate-200 transition";
+        }
+      });
+      showToast(`Switched PRD mode to: ${mode.toUpperCase()}`);
+    }
+
+    function runSkill() {
+      const btn = document.getElementById('btn-run');
+      btn.innerHTML = `<svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg> <span>Generating Deliverable...</span>`;
+      
+      setTimeout(() => {
+        btn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg> <span>⚡ Generate PRD Spec</span>`;
+        showToast("PRD successfully generated and saved to workspace!");
+      }, 800);
+    }
+
+    function triggerMcpSync(tool) {
+      const toolNames = { jira: 'Jira Backlog', confluence: 'Confluence Space', figma: 'Figma Components', miro: 'Miro Board' };
+      showToast(`Exporting to ${toolNames[tool]} via MCP...`);
+    }
+
+    function toggleTerminal() {
+      const drawer = document.getElementById('terminal-drawer');
+      if (drawer.classList.contains('h-36')) {
+        drawer.classList.remove('h-36');
+        drawer.classList.add('h-0', 'overflow-hidden');
+      } else {
+        drawer.classList.remove('h-0', 'overflow-hidden');
+        drawer.classList.add('h-36');
+      }
+    }
+
+    function openModal(id) {
+      document.getElementById(id).classList.remove('hidden');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.add('hidden');
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-message').innerText = msg;
+      toast.classList.remove('translate-y-10', 'opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        toast.classList.add('translate-y-10', 'opacity-0', 'pointer-events-none');
+      }, 3000);
+    }
+
+    function selectSkill(skillId) {
+      showToast(`Switched active skill wizard to: /${skillId}`);
+    }
+  </script>
+</body>
+</html>
