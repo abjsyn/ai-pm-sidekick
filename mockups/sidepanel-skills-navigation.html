@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html class="dark h-full" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>AI PM Sidekick — SaaS Left Sidepanel Navigation Wireframe</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
+  <!-- Marked.js -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            surface: "#121316",
+            "surface-container-low": "#18191d",
+            "surface-container": "#1f2025",
+            "surface-container-high": "#26272e",
+            outline-variant: "#2a2b30",
+            primary: "#f59e0b",
+            "primary-container": "#d97706"
+          },
+          fontFamily: {
+            headline: ["Plus Jakarta Sans", "sans-serif"],
+            body: ["Inter", "sans-serif"],
+            mono: ["JetBrains Mono", "monospace"]
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #2a2b30; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #3f424d; }
+    
+    .device-viewport {
+      transition: max-width 0.3s ease, margin 0.3s ease;
+      margin: 0 auto;
+    }
+
+    .sidebar-transition {
+      transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+  </style>
+</head>
+<body class="bg-[#121316] text-[#f4f4f5] font-body antialiased min-h-screen flex flex-col justify-between selection:bg-amber-600 selection:text-white">
+
+  <!-- ================= TOP DEVICE VIEWPORT SWITCHER TOOLBAR ================= -->
+  <div class="bg-[#0d0e11] border-b border-[#2a2b30] px-4 py-1.5 flex items-center justify-between text-xs shrink-0 z-50 font-mono">
+    <div class="flex items-center space-x-3">
+      <div class="flex items-center space-x-2">
+        <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+        <span class="font-bold text-amber-500 tracking-wider uppercase">SaaS Sidepanel Navigation</span>
+        <span class="bg-amber-500/10 text-amber-400 border border-amber-500/20 px-1.5 py-0.2 rounded text-[10px]">v1.2 Interactive Wireframe</span>
+      </div>
+      <span class="text-zinc-600">|</span>
+      <span class="text-zinc-400 hidden sm:inline text-[11px]">Click any skill in left sidepanel to trigger execution</span>
+    </div>
+    
+    <!-- Viewport Switcher Buttons -->
+    <div class="flex items-center bg-[#18191d] border border-[#2a2b30] rounded-lg p-0.5 space-x-1">
+      <button onclick="setViewport('desktop')" id="vp-desktop" class="px-2 py-0.5 rounded bg-amber-600 text-white font-medium text-[11px] flex items-center gap-1 transition-colors">
+        <span class="material-symbols-outlined text-[13px]">desktop_windows</span> Desktop
+      </button>
+      <button onclick="setViewport('tablet')" id="vp-tablet" class="px-2 py-0.5 rounded text-zinc-400 hover:text-zinc-100 font-medium text-[11px] flex items-center gap-1 transition-colors">
+        <span class="material-symbols-outlined text-[13px]">tablet</span> Tablet (768px)
+      </button>
+      <button onclick="setViewport('mobile')" id="vp-mobile" class="px-2 py-0.5 rounded text-zinc-400 hover:text-zinc-100 font-medium text-[11px] flex items-center gap-1 transition-colors">
+        <span class="material-symbols-outlined text-[13px]">smartphone</span> Mobile (375px)
+      </button>
+    </div>
+  </div>
+
+  <div id="viewport-wrapper" class="w-full flex-1 flex flex-col device-viewport min-h-[calc(100vh-2rem)]">
+
+    <!-- ================= TOP APPLICATION HEADER ================= -->
+    <header class="h-14 bg-[#18191d] border-b border-[#2a2b30] px-4 flex items-center justify-between shrink-0 z-40">
+      <div class="flex items-center gap-3">
+        <!-- Sidebar Collapse Toggle Button -->
+        <button onclick="toggleSidebar()" title="Toggle Side Panel" class="p-1.5 rounded-lg bg-[#26272e] hover:bg-[#31323a] text-zinc-300 transition-colors">
+          <span class="material-symbols-outlined text-[20px]" id="sidebar-toggle-icon">menu_open</span>
+        </button>
+
+        <div class="flex items-center gap-2">
+          <div class="h-7 w-7 rounded bg-amber-600/10 border border-amber-600/30 flex items-center justify-center text-amber-500 font-bold">
+            <span class="material-symbols-outlined text-[18px]">view_sidebar</span>
+          </div>
+          <span class="font-headline font-bold text-zinc-100 text-base">PM Command Center</span>
+          <span class="px-1.5 py-0.5 rounded bg-[#26272e] text-zinc-400 font-mono text-[10px] border border-[#2a2b30]">Sidepanel Edition</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <!-- Search bar -->
+        <div class="relative w-64 hidden sm:block">
+          <span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-500 text-[16px]">search</span>
+          <input type="text" id="sidepanel-search" onkeyup="filterSidebarSkills()" placeholder="Search sidepanel skills..." class="w-full py-1.5 pl-8 pr-3 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-xs focus:outline-none focus:border-amber-500"/>
+        </div>
+
+        <div class="flex items-center gap-2 pl-2 border-l border-[#2a2b30]">
+          <div class="w-7 h-7 rounded-full bg-amber-600/20 border border-amber-500/40 flex items-center justify-center text-amber-400 font-bold text-xs">P</div>
+          <span class="text-xs text-zinc-200 font-medium hidden md:inline">Paula</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- ================= MAIN APP LAYOUT (SIDEBAR + WORKSPACE) ================= -->
+    <div class="flex-1 flex overflow-hidden">
+
+      <!-- ================= LEFT SAAS SIDE PANEL ================= -->
+      <aside id="main-sidebar" class="sidebar-transition w-64 bg-[#18191d] border-r border-[#2a2b30] flex flex-col justify-between shrink-0 overflow-y-auto z-30">
+        
+        <div class="p-3 space-y-5">
+
+          <!-- Quick Action Header -->
+          <div class="px-2 pt-1 flex items-center justify-between sidebar-label">
+            <span class="font-mono text-[10px] font-bold text-zinc-400 tracking-wider uppercase">Product Skills (13)</span>
+            <span class="px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 text-[10px] font-mono">Sidepanel</span>
+          </div>
+
+          <!-- SECTION 1: STRATEGY & PRD -->
+          <div class="space-y-1">
+            <div class="px-2 text-[10px] font-mono text-zinc-500 uppercase tracking-wider font-semibold sidebar-label">Strategy & Planning</div>
+            
+            <button onclick="triggerSkillFromSidepanel('create-prd', 'PRD Generator')" class="sidebar-skill-btn w-full p-2 rounded-lg text-left hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center gap-2.5 transition-colors group">
+              <span class="material-symbols-outlined text-[18px] text-amber-500 shrink-0">description</span>
+              <div class="truncate sidebar-label">
+                <span class="text-[13px] font-medium block leading-tight">PRD Generator</span>
+                <span class="text-[10px] text-zinc-500 block truncate">Lean, Standard, Enterprise</span>
+              </div>
+            </button>
+
+            <button onclick="triggerSkillFromSidepanel('brainstorm', 'Opportunity Brainstormer')" class="sidebar-skill-btn w-full p-2 rounded-lg text-left hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center gap-2.5 transition-colors group">
+              <span class="material-symbols-outlined text-[18px] text-amber-500 shrink-0">psychology_alt</span>
+              <div class="truncate sidebar-label">
+                <span class="text-[13px] font-medium block leading-tight">Opportunity Brainstorm</span>
+                <span class="text-[10px] text-zinc-500 block truncate">SCAMPER, HMW, 6 Hats</span>
+              </div>
+            </button>
+
+            <button onclick="triggerSkillFromSidepanel('validate-idea', 'Idea Validator')" class="sidebar-skill-btn w-full p-2 rounded-lg text-left hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center gap-2.5 transition-colors group">
+              <span class="material-symbols-outlined text-[18px] text-red-400 shrink-0">fact_check</span>
+              <div class="truncate sidebar-label">
+                <span class="text-[13px] font-medium block leading-tight">Idea & Risk Validator</span>
+                <span class="text-[10px] text-zinc-500 block truncate">Mom Test & 4-Risk</span>
+              </div>
+            </button>
+
+            <button onclick="triggerSkillFromSidepanel('create-documentation', 'Technical Docs')" class="sidebar-skill-btn w-full p-2 rounded-lg text-left hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center gap-2.5 transition-colors group">
+              <span class="material-symbols-outlined text-[18px] text-zinc-400 shrink-0">menu_book</span>
+              <div class="truncate sidebar-label">
+                <span class="text-[13px] font-medium block leading-tight">Technical Docs</span>
+                <span class="text-[10px] text-zinc-500 block truncate">OpenAPI & Sequence</span>
+              </div>
+            </button>
+          </div>
+
+          <!-- SECTION 2: STORIES & BACKLOG -->
+          <div class="space-y-1">
+            <div class="px-2 text-[10px] font-mono text-zinc-500 uppercase tracking-wider font-semibold sidebar-label">Stories & Backlog</div>
+            
+            <button onclick="triggerSkillFromSidepanel('create-user-stories', 'INVEST Story Breakdown')" class="sidebar-skill-btn w-full p-2 rounded-lg text-left hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center gap-2.5 transition-colors group">
+              <span class="material-symbols-outlined text-[18px] text-blue-400 shrink-0">splitscreen</span>
+              <div class="truncate sidebar-label">
+                <span class="text-[13px] font-medium block leading-tight">INVEST User Stories</span>
+                <span class="text-[10px] text-zinc-500 block truncate">Gherkin BDD & Points</span>
+              </div>
+            </button>
+
+            <button onclick="triggerSkillFromSidepanel('refine-user-stories', 'SPIDR Refinement')" class="sidebar-skill-btn w-full p-2 rounded-lg text-left hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center gap-2.5 transition-colors group">
+              <span class="material-symbols-outlined text-[18px] text-blue-400 shrink-0">tune</span>
+              <div class="truncate sidebar-label">
+                <span class="text-[13px] font-medium block leading-tight">Story Refinement</span>
+                <span class="text-[10px] text-zinc-500 block truncate">SPIDR Splitting & Score</span>
+              </div>
+            </button>
+          </div>
+
+          <!-- SECTION 3: WIREFRAMES & DESIGN -->
+          <div class="space-y-1">
+            <div class="px-2 text-[10px] font-mono text-zinc-500 uppercase tracking-wider font-semibold sidebar-label">Wireframes & Design</div>
+
+            <button onclick="triggerSkillFromSidepanel('create-mockup', 'Interactive Wireframe')" class="sidebar-skill-btn w-full p-2 rounded-lg text-left hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center gap-2.5 transition-colors group">
+              <span class="material-symbols-outlined text-[18px] text-teal-400 shrink-0">web</span>
+              <div class="truncate sidebar-label">
+                <span class="text-[13px] font-medium block leading-tight">HTML Wireframe</span>
+                <span class="text-[10px] text-zinc-500 block truncate">Clickable Tailwind Mock</span>
+              </div>
+            </button>
+
+            <button onclick="triggerSkillFromSidepanel('create-design-brief', 'UI/UX Design Brief')" class="sidebar-skill-btn w-full p-2 rounded-lg text-left hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center gap-2.5 transition-colors group">
+              <span class="material-symbols-outlined text-[18px] text-teal-400 shrink-0">palette</span>
+              <div class="truncate sidebar-label">
+                <span class="text-[13px] font-medium block leading-tight">UI/UX Design Brief</span>
+                <span class="text-[10px] text-zinc-500 block truncate">WCAG 2.1 & Figma Specs</span>
+              </div>
+            </button>
+          </div>
+
+          <!-- SECTION 4: INTEGRATIONS & MCP -->
+          <div class="space-y-1">
+            <div class="px-2 text-[10px] font-mono text-zinc-500 uppercase tracking-wider font-semibold sidebar-label">MCP Integrations</div>
+
+            <button onclick="triggerSkillFromSidepanel('sync-jira', 'Sync to Jira')" class="sidebar-skill-btn w-full p-2 rounded-lg text-left hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center gap-2.5 transition-colors group">
+              <span class="material-symbols-outlined text-[18px] text-blue-400 shrink-0">sync_alt</span>
+              <div class="truncate sidebar-label">
+                <span class="text-[13px] font-medium block leading-tight">Sync to Jira</span>
+                <span class="text-[10px] text-zinc-500 block truncate">Push Stories & Epics</span>
+              </div>
+            </button>
+
+            <button onclick="triggerSkillFromSidepanel('sync-confluence', 'Publish Confluence')" class="sidebar-skill-btn w-full p-2 rounded-lg text-left hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center gap-2.5 transition-colors group">
+              <span class="material-symbols-outlined text-[18px] text-blue-400 shrink-0">cloud_upload</span>
+              <div class="truncate sidebar-label">
+                <span class="text-[13px] font-medium block leading-tight">Publish Confluence</span>
+                <span class="text-[10px] text-zinc-500 block truncate">Export PRDs & Specs</span>
+              </div>
+            </button>
+
+            <button onclick="triggerSkillFromSidepanel('sync-figma', 'Figma Inspector')" class="sidebar-skill-btn w-full p-2 rounded-lg text-left hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center gap-2.5 transition-colors group">
+              <span class="material-symbols-outlined text-[18px] text-purple-400 shrink-0">design_services</span>
+              <div class="truncate sidebar-label">
+                <span class="text-[13px] font-medium block leading-tight">Figma Sync</span>
+                <span class="text-[10px] text-zinc-500 block truncate">Import Specs & Feedback</span>
+              </div>
+            </button>
+
+            <button onclick="triggerSkillFromSidepanel('sync-miro', 'Miro Stickies')" class="sidebar-skill-btn w-full p-2 rounded-lg text-left hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center gap-2.5 transition-colors group">
+              <span class="material-symbols-outlined text-[18px] text-yellow-400 shrink-0">dashboard_customize</span>
+              <div class="truncate sidebar-label">
+                <span class="text-[13px] font-medium block leading-tight">Miro Stickies</span>
+                <span class="text-[10px] text-zinc-500 block truncate">Export Brainstorm Boards</span>
+              </div>
+            </button>
+
+            <button onclick="triggerSkillFromSidepanel('connect-mcp', 'MCP Credential Manager')" class="sidebar-skill-btn w-full p-2 rounded-lg text-left hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center gap-2.5 transition-colors group">
+              <span class="material-symbols-outlined text-[18px] text-emerald-400 shrink-0">key</span>
+              <div class="truncate sidebar-label">
+                <span class="text-[13px] font-medium block leading-tight">MCP Credentials</span>
+                <span class="text-[10px] text-zinc-500 block truncate">Edit .env Tokens</span>
+              </div>
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Sidebar Footer Status -->
+        <div class="p-3 border-t border-[#2a2b30] bg-[#121316]/50">
+          <div class="flex items-center gap-2 font-mono text-[11px] text-zinc-400 sidebar-label">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span>REST Daemon Active</span>
+          </div>
+        </div>
+
+      </aside>
+
+      <!-- ================= MAIN CANVAS WORKSPACE ================= -->
+      <main class="flex-1 bg-[#121316] p-6 overflow-y-auto flex flex-col justify-between">
+        
+        <div class="space-y-6 max-w-5xl mx-auto w-full">
+
+          <!-- Dynamic Skill Launcher Panel -->
+          <section class="rounded-2xl bg-[#18191d] p-6 border border-[#2a2b30] shadow-sm">
+            <div class="flex items-center justify-between pb-4 mb-4 border-b border-[#2a2b30]">
+              <div>
+                <span class="px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 font-mono text-[10px] uppercase font-bold tracking-wider" id="active-skill-tag">Selected Skill</span>
+                <h1 class="font-headline text-2xl text-zinc-100 font-bold mt-1" id="active-skill-title">Interactive PRD Generator</h1>
+                <p class="text-xs text-zinc-400 mt-0.5" id="active-skill-desc">Triggered directly from the left SaaS sidepanel.</p>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                <span class="font-mono text-xs text-zinc-300">Ready to execute</span>
+              </div>
+            </div>
+
+            <!-- Execution Form -->
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-5">
+              
+              <div class="md:col-span-5 space-y-4">
+                <div>
+                  <label class="block text-xs font-mono uppercase text-zinc-400 mb-1">Feature Name / Subject</label>
+                  <input type="text" id="input-feature-name" value="Sidepanel Navigation Panel" class="w-full py-2 px-3 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-xs focus:outline-none focus:border-amber-500"/>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-xs font-mono uppercase text-zinc-400 mb-1">Agile Mode</label>
+                    <select id="input-mode" class="w-full py-2 px-3 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-xs focus:outline-none focus:border-amber-500">
+                      <option value="standard">Standard Agile</option>
+                      <option value="lean">Lean MVP</option>
+                      <option value="enterprise">Enterprise Scale</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-mono uppercase text-zinc-400 mb-1">Persona</label>
+                    <input type="text" id="input-persona" value="Paula (Lead PM)" class="w-full py-2 px-3 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-xs focus:outline-none focus:border-amber-500"/>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-mono uppercase text-zinc-400 mb-1">Key Requirements & Specs</label>
+                  <textarea id="input-requirements" rows="4" class="w-full py-2 px-3 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-xs focus:outline-none focus:border-amber-500" placeholder="Enter feature objectives and requirements...">Sidepanel navigation allowing PMs to trigger all 13 canonical skills directly from the left menu panel.</textarea>
+                </div>
+
+                <button onclick="runSidepanelSkill()" id="btn-sidepanel-run" class="w-full py-2.5 rounded-lg bg-amber-600 hover:bg-amber-500 text-white font-semibold text-xs transition-colors flex items-center justify-center gap-2 shadow-sm">
+                  <span class="material-symbols-outlined text-[18px]">play_arrow</span>
+                  Execute Skill via Sidepanel Trigger
+                </button>
+              </div>
+
+              <!-- Live Render Preview -->
+              <div class="md:col-span-7 flex flex-col h-[460px] rounded-xl bg-[#121316] border border-[#2a2b30] overflow-hidden">
+                <div class="h-9 bg-[#18191d] border-b border-[#2a2b30] px-3 flex items-center justify-between text-xs font-mono text-zinc-400">
+                  <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                    <span id="sidepanel-preview-filename">SIDEPANEL_PRD.md</span>
+                  </div>
+                  <span class="text-zinc-500 text-[10px]">Live Render</span>
+                </div>
+
+                <div id="sidepanel-preview-body" class="p-4 flex-1 overflow-y-auto font-sans text-xs text-zinc-300 space-y-3 prose prose-invert max-w-none">
+                  <p class="text-zinc-500 italic">Click any skill in the left SaaS sidepanel to immediately trigger output generation here.</p>
+                </div>
+              </div>
+
+            </div>
+          </section>
+
+          <!-- Toast Alert Notification (Interactive Trigger Feedback) -->
+          <div id="toast-notification" class="hidden p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono flex items-center gap-2">
+            <span class="material-symbols-outlined text-[18px]">check_circle</span>
+            <span id="toast-msg">Skill triggered from sidepanel successfully!</span>
+          </div>
+
+        </div>
+
+      </main>
+
+    </div>
+
+  </div>
+
+  <!-- ================= JAVASCRIPT LOGIC ================= -->
+  <script>
+    let currentSkillId = 'create-prd';
+    let sidebarExpanded = true;
+
+    // Toggle Sidebar Width
+    function toggleSidebar() {
+      const sidebar = document.getElementById('main-sidebar');
+      const toggleIcon = document.getElementById('sidebar-toggle-icon');
+      const labels = document.querySelectorAll('.sidebar-label');
+
+      sidebarExpanded = !sidebarExpanded;
+      if (sidebarExpanded) {
+        sidebar.classList.remove('w-16');
+        sidebar.classList.add('w-64');
+        labels.forEach(l => l.classList.remove('hidden'));
+        if (toggleIcon) toggleIcon.textContent = 'menu_open';
+      } else {
+        sidebar.classList.remove('w-64');
+        sidebar.classList.add('w-16');
+        labels.forEach(l => l.classList.add('hidden'));
+        if (toggleIcon) toggleIcon.textContent = 'menu';
+      }
+    }
+
+    // Viewport Switcher
+    function setViewport(device) {
+      const wrapper = document.getElementById('viewport-wrapper');
+      const btnDesktop = document.getElementById('vp-desktop');
+      const btnTablet = document.getElementById('vp-tablet');
+      const btnMobile = document.getElementById('vp-mobile');
+
+      [btnDesktop, btnTablet, btnMobile].forEach(btn => {
+        if (btn) {
+          btn.classList.remove('bg-amber-600', 'text-white');
+          btn.classList.add('text-zinc-400');
+        }
+      });
+
+      if (device === 'mobile') {
+        wrapper.style.maxWidth = '375px';
+        if (btnMobile) btnMobile.classList.add('bg-amber-600', 'text-white');
+      } else if (device === 'tablet') {
+        wrapper.style.maxWidth = '768px';
+        if (btnTablet) btnTablet.classList.add('bg-amber-600', 'text-white');
+      } else {
+        wrapper.style.maxWidth = '100%';
+        if (btnDesktop) btnDesktop.classList.add('bg-amber-600', 'text-white');
+      }
+    }
+
+    // Trigger Skill from Sidepanel Selection
+    function triggerSkillFromSidepanel(skillId, skillTitle) {
+      currentSkillId = skillId;
+      document.getElementById('active-skill-tag').textContent = skillId.toUpperCase();
+      document.getElementById('active-skill-title').textContent = skillTitle;
+      document.getElementById('active-skill-desc').textContent = `Active sidepanel trigger: ${skillId}`;
+      document.getElementById('sidepanel-preview-filename').textContent = `${skillId.toUpperCase()}_OUTPUT.md`;
+
+      showToast(`Triggered skill '${skillTitle}' from sidepanel`);
+      runSidepanelSkill();
+    }
+
+    // Execute Skill Output
+    async function runSidepanelSkill() {
+      const featureName = document.getElementById('input-feature-name').value || 'Sidepanel Navigation';
+      const mode = document.getElementById('input-mode').value;
+      const persona = document.getElementById('input-persona').value;
+      const requirements = document.getElementById('input-requirements').value;
+      const preview = document.getElementById('sidepanel-preview-body');
+
+      preview.innerHTML = `
+        <div class="flex items-center gap-2 text-amber-500 font-mono text-xs py-4">
+          <span class="material-symbols-outlined animate-spin text-[18px]">sync</span>
+          Executing <strong>${currentSkillId}</strong> via Sidepanel REST API...
+        </div>
+      `;
+
+      try {
+        const res = await fetch('/api/generate-deliverable', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            skill: currentSkillId,
+            feature_name: featureName,
+            mode: mode,
+            persona: persona,
+            requirements: requirements
+          })
+        });
+
+        const data = await res.json();
+        if (typeof marked !== 'undefined' && data.content) {
+          preview.innerHTML = marked.parse(data.content);
+        } else {
+          preview.innerHTML = `<pre class="font-mono text-xs text-zinc-300">${data.content || 'Generated deliverable'}</pre>`;
+        }
+      } catch (err) {
+        // Local fallback rendering for standalone preview
+        preview.innerHTML = `
+          <h1 class="text-base font-bold text-zinc-100">🎯 ${featureName} — ${currentSkillId.toUpperCase()}</h1>
+          <p class="text-zinc-400"><strong>Author:</strong> ${persona} | <strong>Mode:</strong> ${mode.toUpperCase()}</p>
+          <hr class="border-[#2a2b30] my-2"/>
+          <h2 class="text-sm font-semibold text-amber-500">1. Sidepanel Skill Output</h2>
+          <p class="text-zinc-300">${requirements}</p>
+          <div class="p-3 bg-[#18191d] rounded border border-[#2a2b30] font-mono text-[11px] text-emerald-400">
+            [SUCCESS] Executed skill ${currentSkillId} from SaaS sidepanel!
+          </div>
+        `;
+      }
+    }
+
+    // Filter Sidepanel Skills Search
+    function filterSidebarSkills() {
+      const q = document.getElementById('sidepanel-search').value.toLowerCase().trim();
+      const btns = document.querySelectorAll('.sidebar-skill-btn');
+      btns.forEach(btn => {
+        const text = btn.innerText.toLowerCase();
+        btn.style.display = text.includes(q) ? 'flex' : 'none';
+      });
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast-notification');
+      const toastMsg = document.getElementById('toast-msg');
+      if (toast && toastMsg) {
+        toastMsg.textContent = msg;
+        toast.classList.remove('hidden');
+        setTimeout(() => toast.classList.add('hidden'), 3000);
+      }
+    }
+  </script>
+
+</body>
+</html>
