@@ -1,611 +1,1155 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-slate-900 text-slate-100">
+<html class="dark h-full" lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI PM Sidekick — PM Command Center</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>AI PM Sidekick — PM Command Center UI</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
+  
+  <!-- Marked.js for Markdown Preview -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+  <script id="tailwind-config">
     tailwind.config = {
-      darkMode: 'class',
+      darkMode: "class",
       theme: {
         extend: {
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-            mono: ['JetBrains Mono', 'monospace'],
-          },
           colors: {
-            brand: {
-              50: '#f0f6ff',
-              100: '#e0edff',
-              500: '#3b82f6',
-              600: '#2563eb',
-              700: '#1d4ed8',
-              900: '#1e3a8a',
-            }
+            surface: "#121316",
+            "surface-container-low": "#18191d",
+            "surface-container": "#1f2025",
+            "surface-container-high": "#26272e",
+            "surface-container-highest": "#31323a",
+            "surface-bright": "#34353d",
+            outline: "#a38c7c",
+            "outline-variant": "#2a2b30",
+            primary: "#f59e0b",
+            "primary-container": "#d97706",
+            secondary: "#80d5cb",
+            "secondary-container": "#0f766e"
+          },
+          fontFamily: {
+            headline: ["Plus Jakarta Sans", "sans-serif"],
+            body: ["Inter", "sans-serif"],
+            mono: ["JetBrains Mono", "monospace"]
           }
         }
       }
     }
   </script>
+
   <style>
-    /* Custom Scrollbars */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: #0f172a; }
-    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: #475569; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #2a2b30; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #3f424d; }
     
     .device-viewport {
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: max-width 0.3s ease, margin 0.3s ease;
       margin: 0 auto;
     }
   </style>
 </head>
-<body class="h-full font-sans antialiased flex flex-col overflow-hidden bg-slate-950 text-slate-200">
+<body class="bg-[#121316] text-[#f4f4f5] font-body antialiased min-h-screen flex flex-col justify-between selection:bg-amber-600 selection:text-white transition-colors duration-200">
 
-  <!-- ================= TOP DEVICE VIEWPORT SWITCHER TOOLBAR ================= -->
-  <header class="bg-slate-900 border-b border-slate-800 px-4 py-2 flex items-center justify-between text-xs shrink-0 z-30">
+  <!-- ================= TOP VIEWPORT SWITCHER TOOLBAR ================= -->
+  <div class="bg-[#0d0e11] border-b border-[#2a2b30] px-4 py-1.5 flex items-center justify-between text-xs shrink-0 z-50 font-mono">
     <div class="flex items-center space-x-3">
       <div class="flex items-center space-x-2">
-        <div class="w-3 h-3 rounded-full bg-indigo-500 animate-pulse"></div>
-        <span class="font-bold text-slate-100 tracking-wide">AI PM SIDEKICK</span>
-        <span class="bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 px-2 py-0.5 rounded-full font-mono text-[10px]">v2.4 MCP</span>
+        <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+        <span class="font-bold text-amber-500 tracking-wider uppercase">PM Command Center</span>
+        <span class="bg-amber-500/10 text-amber-400 border border-amber-500/20 px-1.5 py-0.2 rounded text-[10px]">Stitch Atelier</span>
       </div>
-      <span class="text-slate-600">|</span>
-      <span class="text-slate-400 hidden sm:inline">PM Command Center UI</span>
+      <span class="text-zinc-600">|</span>
+      <span class="text-zinc-400 hidden sm:inline text-[11px]">Interactive Workspace GUI</span>
     </div>
-
-    <!-- Viewport Mode Switcher Buttons -->
-    <div class="flex items-center bg-slate-950 p-1 rounded-lg border border-slate-800 space-x-1">
-      <button onclick="setViewport('desktop')" id="btn-desktop" class="px-2.5 py-1 rounded-md text-slate-100 bg-indigo-600 font-medium flex items-center space-x-1.5 transition">
-        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-        <span>Desktop (1440px)</span>
+    
+    <!-- Viewport Switcher Buttons -->
+    <div class="flex items-center bg-[#18191d] border border-[#2a2b30] rounded-lg p-0.5 space-x-1">
+      <button onclick="setViewport('desktop')" id="vp-desktop" class="px-2 py-0.5 rounded bg-amber-600 text-white font-medium text-[11px] flex items-center gap-1 transition-colors">
+        <span class="material-symbols-outlined text-[13px]">desktop_windows</span> Desktop
       </button>
-      <button onclick="setViewport('tablet')" id="btn-tablet" class="px-2.5 py-1 rounded-md text-slate-400 hover:text-slate-200 font-medium flex items-center space-x-1.5 transition">
-        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
-        <span>Tablet (768px)</span>
+      <button onclick="setViewport('tablet')" id="vp-tablet" class="px-2 py-0.5 rounded text-zinc-400 hover:text-zinc-100 font-medium text-[11px] flex items-center gap-1 transition-colors">
+        <span class="material-symbols-outlined text-[13px]">tablet</span> Tablet (768px)
       </button>
-      <button onclick="setViewport('mobile')" id="btn-mobile" class="px-2.5 py-1 rounded-md text-slate-400 hover:text-slate-200 font-medium flex items-center space-x-1.5 transition">
-        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
-        <span>Mobile (375px)</span>
+      <button onclick="setViewport('mobile')" id="vp-mobile" class="px-2 py-0.5 rounded text-zinc-400 hover:text-zinc-100 font-medium text-[11px] flex items-center gap-1 transition-colors">
+        <span class="material-symbols-outlined text-[13px]">smartphone</span> Mobile (375px)
       </button>
     </div>
+  </div>
 
-    <!-- Top Action Badges -->
-    <div class="flex items-center space-x-3">
-      <button onclick="openModal('mcp-modal')" class="flex items-center space-x-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1 rounded-md border border-slate-700 transition">
-        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-        <span class="font-medium">MCP Status</span>
-        <span class="bg-slate-900 text-emerald-400 px-1.5 py-0.5 rounded text-[10px] font-mono">4 Connected</span>
-      </button>
-      <button onclick="toggleTerminal()" class="text-slate-400 hover:text-slate-200 bg-slate-900 p-1.5 rounded-md border border-slate-800">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-      </button>
-    </div>
-  </header>
+  <div id="viewport-wrapper" class="w-full flex-1 flex flex-col device-viewport">
 
-  <!-- ================= MAIN APP WRAPPER ================= -->
-  <div class="flex-1 flex overflow-hidden w-full relative">
-
-    <div id="app-viewport" class="device-viewport w-full h-full flex overflow-hidden border-x border-slate-800 shadow-2xl bg-slate-950">
-      
-      <!-- ================= SIDEBAR NAVIGATION ================= -->
-      <aside class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col shrink-0">
-        
-        <!-- Search Command Bar -->
-        <div class="p-3 border-b border-slate-800">
-          <div class="relative">
-            <svg class="w-4 h-4 absolute left-3 top-2.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-            <input type="text" placeholder="Search skill or command... (⌘K)" class="w-full bg-slate-950 border border-slate-800 rounded-lg pl-9 pr-3 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500">
+    <!-- ================= APP HEADER ================= -->
+    <header class="sticky top-0 z-40 bg-[#18191d]/95 border-b border-[#2a2b30] backdrop-blur-xl shadow-sm">
+      <div class="h-14 w-full px-6 flex items-center justify-between gap-4">
+        <!-- Logo & Title -->
+        <div class="flex items-center gap-4 shrink-0">
+          <div class="flex items-center gap-2.5">
+            <div class="h-8 w-8 rounded-lg bg-amber-600/10 border border-amber-600/30 flex items-center justify-center text-amber-500 font-bold text-base shadow-sm">
+              <span class="material-symbols-outlined text-[20px] text-amber-500">grid_view</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="font-headline text-lg text-zinc-100 tracking-tight font-bold">PM Command</span>
+              <span class="px-2 py-0.5 rounded bg-[#26272e] text-zinc-400 font-mono text-[11px] font-medium border border-[#2a2b30] uppercase">v1.0.0-MVP</span>
+            </div>
+          </div>
+          <div class="hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#1f2025] border border-[#2a2b30]">
+            <span class="relative flex h-2 w-2"><span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span></span>
+            <span class="font-mono text-[11px] text-zinc-400 font-medium">localhost:3000 (Connected)</span>
           </div>
         </div>
 
-        <!-- Navigation Menu Items -->
-        <nav class="flex-1 overflow-y-auto p-3 space-y-6 text-xs">
-
-          <!-- Section 1: Product Strategy -->
-          <div>
-            <div class="text-[10px] font-semibold text-slate-500 uppercase tracking-wider px-2 mb-2">Strategy & Ideation</div>
-            <div class="space-y-1">
-              <button onclick="selectSkill('validate-idea')" class="nav-item w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800/60 transition">
-                <div class="flex items-center space-x-2">
-                  <span>🧪</span>
-                  <span class="font-medium">Idea Validation</span>
-                </div>
-                <span class="font-mono text-[10px] text-slate-500">/validate-idea</span>
-              </button>
-              <button onclick="selectSkill('brainstorm')" class="nav-item w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800/60 transition">
-                <div class="flex items-center space-x-2">
-                  <span>💡</span>
-                  <span class="font-medium">Brainstorming</span>
-                </div>
-                <span class="font-mono text-[10px] text-slate-500">/brainstorm</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- Section 2: Requirements & Specs -->
-          <div>
-            <div class="text-[10px] font-semibold text-slate-500 uppercase tracking-wider px-2 mb-2">Requirements & Specs</div>
-            <div class="space-y-1">
-              <button onclick="selectSkill('create-prd')" class="nav-item active-nav w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-slate-100 bg-indigo-600/20 border border-indigo-500/30 font-medium transition">
-                <div class="flex items-center space-x-2">
-                  <span>📝</span>
-                  <span class="font-medium">PRD Generator</span>
-                </div>
-                <span class="font-mono text-[10px] text-indigo-400">/create-prd</span>
-              </button>
-              <button onclick="selectSkill('create-design-brief')" class="nav-item w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800/60 transition">
-                <div class="flex items-center space-x-2">
-                  <span>🎨</span>
-                  <span class="font-medium">Design Brief</span>
-                </div>
-                <span class="font-mono text-[10px] text-slate-500">/create-design-brief</span>
-              </button>
-              <button onclick="selectSkill('create-mockup')" class="nav-item w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800/60 transition">
-                <div class="flex items-center space-x-2">
-                  <span>🖥️</span>
-                  <span class="font-medium">Clickable Mockup</span>
-                </div>
-                <span class="font-mono text-[10px] text-slate-500">/create-mockup</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- Section 3: Agile Execution -->
-          <div>
-            <div class="text-[10px] font-semibold text-slate-500 uppercase tracking-wider px-2 mb-2">Agile & Sprint</div>
-            <div class="space-y-1">
-              <button onclick="selectSkill('create-user-stories')" class="nav-item w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800/60 transition">
-                <div class="flex items-center space-x-2">
-                  <span>📖</span>
-                  <span class="font-medium">User Stories</span>
-                </div>
-                <span class="font-mono text-[10px] text-slate-500">/create-user-stories</span>
-              </button>
-              <button onclick="selectSkill('refine-user-stories')" class="nav-item w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800/60 transition">
-                <div class="flex items-center space-x-2">
-                  <span>🔍</span>
-                  <span class="font-medium">Story Grooming</span>
-                </div>
-                <span class="font-mono text-[10px] text-slate-500">/refine-user-stories</span>
-              </button>
-              <button onclick="selectSkill('create-documentation')" class="nav-item w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800/60 transition">
-                <div class="flex items-center space-x-2">
-                  <span>📚</span>
-                  <span class="font-medium">Tech Docs</span>
-                </div>
-                <span class="font-mono text-[10px] text-slate-500">/create-documentation</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- Section 4: MCP External Integrations -->
-          <div>
-            <div class="text-[10px] font-semibold text-slate-500 uppercase tracking-wider px-2 mb-2">MCP Integrations</div>
-            <div class="space-y-1">
-              <button onclick="selectSkill('sync-jira')" class="nav-item w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800/60 transition">
-                <div class="flex items-center space-x-2">
-                  <span class="text-blue-400">🎟️</span>
-                  <span class="font-medium">Jira Sync</span>
-                </div>
-                <span class="font-mono text-[10px] text-slate-500">/sync-jira</span>
-              </button>
-              <button onclick="selectSkill('sync-confluence')" class="nav-item w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800/60 transition">
-                <div class="flex items-center space-x-2">
-                  <span class="text-indigo-400">📄</span>
-                  <span class="font-medium">Confluence Sync</span>
-                </div>
-                <span class="font-mono text-[10px] text-slate-500">/sync-confluence</span>
-              </button>
-              <button onclick="selectSkill('sync-figma')" class="nav-item w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800/60 transition">
-                <div class="flex items-center space-x-2">
-                  <span class="text-purple-400">🎨</span>
-                  <span class="font-medium">Figma Sync</span>
-                </div>
-                <span class="font-mono text-[10px] text-slate-500">/sync-figma</span>
-              </button>
-              <button onclick="selectSkill('sync-miro')" class="nav-item w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800/60 transition">
-                <div class="flex items-center space-x-2">
-                  <span class="text-yellow-400">📌</span>
-                  <span class="font-medium">Miro Sync</span>
-                </div>
-                <span class="font-mono text-[10px] text-slate-500">/sync-miro</span>
-              </button>
-            </div>
-          </div>
-
+        <!-- Navigation Tabs -->
+        <nav class="hidden lg:flex items-center gap-1 px-1.5 py-1 rounded-lg bg-[#18191d] border border-[#2a2b30]">
+          <button onclick="switchTab('dashboard-skills')" id="tab-dashboard-skills" class="nav-tab active px-3.5 py-1 rounded text-zinc-100 font-medium bg-[#26272e] shadow-xs transition-colors text-[13px] flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">dashboard</span> Dashboard & Skills
+          </button>
+          <button onclick="switchTab('skill-wizard')" id="tab-skill-wizard" class="nav-tab px-3.5 py-1 rounded text-zinc-400 hover:text-zinc-100 hover:bg-[#1f2025] transition-colors text-[13px] flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">auto_awesome</span> Skill Wizard
+          </button>
+          <button onclick="switchTab('deliverable-hub')" id="tab-deliverable-hub" class="nav-tab px-3.5 py-1 rounded text-zinc-400 hover:text-zinc-100 hover:bg-[#1f2025] transition-colors text-[13px] flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">folder</span> Deliverable Hub
+          </button>
+          <button onclick="switchTab('mcp-connections')" id="tab-mcp-connections" class="nav-tab px-3.5 py-1 rounded text-zinc-400 hover:text-zinc-100 hover:bg-[#1f2025] transition-colors text-[13px] flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">hub</span> MCP Connections
+          </button>
         </nav>
 
-        <!-- Sidebar Footer: Environment Status -->
-        <div class="p-3 border-t border-slate-800 bg-slate-900/80 flex items-center justify-between text-[11px]">
-          <div class="flex items-center space-x-2 text-slate-400">
-            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-            <span>Local Engine Active</span>
+        <!-- Right Action Controls -->
+        <div class="flex items-center gap-3 shrink-0">
+          <button id="theme-toggle-btn" type="button" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#1f2025] hover:bg-[#26272e] border border-[#2a2b30] text-zinc-300 transition-colors font-mono text-[11px]">
+            <span class="material-symbols-outlined text-[15px] text-amber-400" id="theme-icon">dark_mode</span>
+            <span class="hidden sm:inline font-medium" id="theme-label">Dark</span>
+          </button>
+
+          <button onclick="switchTab('skill-wizard')" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-500 text-white font-medium text-[13px] transition-colors shadow-sm">
+            <span class="material-symbols-outlined text-[16px]">play_arrow</span> Run Skill
+          </button>
+
+          <button onclick="toggleTerminalDrawer()" class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#1f2025] hover:bg-[#26272e] border border-[#2a2b30] text-zinc-300 font-mono text-[11px] transition-colors">
+            <span class="material-symbols-outlined text-[14px]">terminal</span> CLI Logs
+          </button>
+
+          <div class="flex items-center gap-2 pl-2 border-l border-[#2a2b30]">
+            <div class="w-8 h-8 rounded-full bg-amber-600/20 border border-amber-500/40 flex items-center justify-center text-amber-400 font-bold text-xs">P</div>
+            <div class="hidden md:flex flex-col text-left">
+              <span class="text-[13px] text-zinc-100 font-semibold leading-tight">Paula</span>
+              <span class="font-mono text-[10px] text-zinc-400 uppercase tracking-wider leading-none mt-0.5">Lead PM</span>
+            </div>
           </div>
-          <button onclick="openModal('mcp-modal')" class="text-indigo-400 hover:underline">Config</button>
         </div>
-      </aside>
+      </div>
+    </header>
 
-      <!-- ================= MAIN WORKSPACE AREA (SPLIT PANE) ================= -->
-      <main class="flex-1 flex flex-col min-w-0 bg-slate-950 overflow-hidden relative">
+    <!-- ================= MAIN CONTENT AREA ================= -->
+    <main class="w-full flex-1 pt-6 px-6 pb-16 bg-[#121316] min-h-[calc(100vh-8rem)]">
+      <div class="w-full max-w-7xl mx-auto">
 
-        <!-- Workspace Header Banner -->
-        <header class="bg-slate-900/90 border-b border-slate-800 px-6 py-3 flex items-center justify-between shrink-0">
-          <div class="flex items-center space-x-3">
-            <div class="p-2 bg-indigo-600/20 text-indigo-400 rounded-lg border border-indigo-500/30 text-lg">📝</div>
-            <div>
-              <div class="flex items-center space-x-2">
-                <h1 class="text-base font-semibold text-slate-100">Product Requirements Document (PRD)</h1>
-                <span class="bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 text-[10px] font-mono px-2 py-0.5 rounded">/create-prd</span>
-              </div>
-              <p class="text-xs text-slate-400">Generate structured, multi-mode PRDs with goals, flows, functional reqs, and edge cases.</p>
-            </div>
-          </div>
-
-          <!-- Mode Selector Tabs -->
-          <div class="flex items-center bg-slate-950 p-1 rounded-lg border border-slate-800 text-xs">
-            <button onclick="setMode('lean')" id="mode-lean" class="px-3 py-1 rounded-md text-slate-400 hover:text-slate-200 transition">⚡ Lean Mode</button>
-            <button onclick="setMode('standard')" id="mode-standard" class="px-3 py-1 rounded-md text-slate-100 bg-indigo-600 font-medium transition">🎯 Standard Agile</button>
-            <button onclick="setMode('enterprise')" id="mode-enterprise" class="px-3 py-1 rounded-md text-slate-400 hover:text-slate-200 transition">🏢 Enterprise</button>
-          </div>
-        </header>
-
-        <!-- Split Content Container -->
-        <div class="flex-1 flex overflow-hidden">
-
-          <!-- LEFT PANE: FORM WIZARD & CONTROLS -->
-          <div class="w-1/2 border-r border-slate-800 flex flex-col bg-slate-900/40 overflow-y-auto">
-            <div class="p-6 space-y-5">
-              
-              <div class="border-b border-slate-800/80 pb-4">
-                <h2 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Step 1: Input Feature Context</h2>
-                <p class="text-xs text-slate-500">Provide high-level details below. The sidekick will structure complete specs without placeholders.</p>
-              </div>
-
-              <!-- Feature Name Field -->
-              <div class="space-y-1.5">
-                <label class="block text-xs font-medium text-slate-300">Feature / Product Name <span class="text-rose-400">*</span></label>
-                <input type="text" id="input-feature" value="PM Command Center UI" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
-              </div>
-
-              <!-- Target Persona & Core Objective -->
-              <div class="grid grid-cols-2 gap-4">
-                <div class="space-y-1.5">
-                  <label class="block text-xs font-medium text-slate-300">Primary Persona</label>
-                  <input type="text" id="input-persona" value="Non-technical Product Manager" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
-                </div>
-                <div class="space-y-1.5">
-                  <label class="block text-xs font-medium text-slate-300">Target Release</label>
-                  <input type="text" id="input-release" value="Sprint 1 MVP" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-indigo-500">
-                </div>
-              </div>
-
-              <!-- Feature Objective & Problem -->
-              <div class="space-y-1.5">
-                <label class="block text-xs font-medium text-slate-300">Core Problem & Goal</label>
-                <textarea rows="3" id="input-goal" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-xs text-slate-100 focus:outline-none focus:border-indigo-500 leading-relaxed">Provide a clean, visual web interface for AI PM Sidekick so non-technical Product Managers can easily navigate skills, generate PRDs/user stories, and trigger 1-click MCP sync actions to Jira, Confluence, Figma, and Miro.</textarea>
-              </div>
-
-              <!-- Key Capabilities Checklist -->
-              <div class="space-y-2">
-                <label class="block text-xs font-medium text-slate-300">Key Features Included</label>
-                <div class="space-y-2 text-xs bg-slate-950 p-3 rounded-lg border border-slate-800">
-                  <label class="flex items-center space-x-2 text-slate-300">
-                    <input type="checkbox" checked class="rounded bg-slate-900 border-slate-700 text-indigo-600 focus:ring-0">
-                    <span>FR-01: Visual Skill Launcher & Guided Form Wizard</span>
-                  </label>
-                  <label class="flex items-center space-x-2 text-slate-300">
-                    <input type="checkbox" checked class="rounded bg-slate-900 border-slate-700 text-indigo-600 focus:ring-0">
-                    <span>FR-02: Real-time Markdown & Wireframe Dual-Pane Previewer</span>
-                  </label>
-                  <label class="flex items-center space-x-2 text-slate-300">
-                    <input type="checkbox" checked class="rounded bg-slate-900 border-slate-700 text-indigo-600 focus:ring-0">
-                    <span>FR-03: 1-Click MCP Status Dashboard & Credentials Modal</span>
-                  </label>
-                  <label class="flex items-center space-x-2 text-slate-300">
-                    <input type="checkbox" checked class="rounded bg-slate-900 border-slate-700 text-indigo-600 focus:ring-0">
-                    <span>FR-04: 1-Click Sync Triggers (Jira, Confluence, Figma, Miro)</span>
-                  </label>
-                </div>
-              </div>
-
-              <!-- Primary Execution Button -->
-              <div class="pt-2">
-                <button onclick="runSkill()" id="btn-run" class="w-full bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-slate-100 py-2.5 px-4 rounded-lg font-medium text-xs shadow-lg shadow-indigo-600/20 flex items-center justify-center space-x-2 transition">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                  <span>⚡ Generate PRD Spec</span>
-                </button>
-              </div>
-
-            </div>
-          </div>
-
-          <!-- RIGHT PANE: LIVE DELIVERABLE PREVIEW & MCP ACTION BAR -->
-          <div class="w-1/2 flex flex-col bg-slate-950 overflow-hidden relative">
-
-            <!-- Deliverable Header Toolbar -->
-            <div class="bg-slate-900/60 border-b border-slate-800 px-4 py-2 flex items-center justify-between shrink-0 text-xs">
-              <div class="flex items-center space-x-2">
-                <span class="w-2 h-2 rounded-full bg-indigo-400"></span>
-                <span class="font-medium text-slate-200">Live Preview</span>
-                <span class="text-slate-500">|</span>
-                <span class="font-mono text-[10px] text-slate-400">PM_COMMAND_CENTER_PRD.md</span>
-              </div>
-              
-              <div class="flex items-center space-x-2">
-                <button class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1 rounded text-[11px] border border-slate-700">Copy MD</button>
-                <button class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1 rounded text-[11px] border border-slate-700">Download</button>
-              </div>
-            </div>
-
-            <!-- Rendered Document View -->
-            <div id="preview-container" class="flex-1 overflow-y-auto p-6 text-xs text-slate-300 space-y-5 leading-relaxed font-sans">
-              
-              <!-- Document Title -->
-              <div class="border-b border-slate-800 pb-4">
-                <div class="inline-block bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 text-[10px] font-mono px-2 py-0.5 rounded mb-2">STANDARD AGILE MODE</div>
-                <h1 class="text-lg font-bold text-slate-100">🎯 PM Command Center UI — PRD</h1>
-                <div class="flex items-center space-x-3 text-[11px] text-slate-500 mt-1">
-                  <span>Author: AI PM Sidekick</span>
-                  <span>•</span>
-                  <span>Date: 2026-09-20</span>
-                  <span>•</span>
-                  <span class="text-emerald-400 font-medium">Status: Approved</span>
-                </div>
-              </div>
-
-              <!-- Section 1 -->
-              <div>
-                <h2 class="text-sm font-semibold text-slate-200 mb-2 border-b border-slate-800/60 pb-1">1. Executive Summary</h2>
-                <p>The <strong>PM Command Center UI</strong> is a lightweight, locally hosted web application (<code>http://localhost:3000</code>) wrapping AI PM Sidekick's terminal skills, automation scripts, and live MCP integrations (Atlassian Jira/Confluence, Figma, Miro) into a visual dashboard designed for non-technical Product Managers.</p>
-              </div>
-
-              <!-- Section 2 -->
-              <div>
-                <h2 class="text-sm font-semibold text-slate-200 mb-2 border-b border-slate-800/60 pb-1">2. Target Personas & Value</h2>
-                <ul class="list-disc pl-4 space-y-1 text-slate-400">
-                  <li><strong>Paula (Product Manager)</strong>: Desires visual guided forms and 1-click export to Jira without running CLI commands.</li>
-                  <li><strong>Dave (Engineering Manager)</strong>: Requires clear visual auditing of Gherkin BDD criteria before ticket creation.</li>
-                </ul>
-              </div>
-
-              <!-- Section 3: Reqs Table -->
-              <div>
-                <h2 class="text-sm font-semibold text-slate-200 mb-2 border-b border-slate-800/60 pb-1">3. Functional Requirements Matrix</h2>
-                <div class="overflow-x-auto border border-slate-800 rounded-lg bg-slate-900/50">
-                  <table class="w-full text-left border-collapse text-[11px]">
-                    <thead>
-                      <tr class="border-b border-slate-800 bg-slate-900 text-slate-400">
-                        <th class="p-2 font-medium">ID</th>
-                        <th class="p-2 font-medium">Requirement</th>
-                        <th class="p-2 font-medium">Priority</th>
-                      </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-800/60 text-slate-300">
-                      <tr>
-                        <td class="p-2 font-mono text-indigo-400">FR-01</td>
-                        <td class="p-2">Visual Skill Launcher & Wizard Forms</td>
-                        <td class="p-2"><span class="bg-rose-500/20 text-rose-400 px-1.5 py-0.5 rounded text-[10px]">Must</span></td>
-                      </tr>
-                      <tr>
-                        <td class="p-2 font-mono text-indigo-400">FR-02</td>
-                        <td class="p-2">Real-time Dual Pane Live Previewer</td>
-                        <td class="p-2"><span class="bg-rose-500/20 text-rose-400 px-1.5 py-0.5 rounded text-[10px]">Must</span></td>
-                      </tr>
-                      <tr>
-                        <td class="p-2 font-mono text-indigo-400">FR-03</td>
-                        <td class="p-2">1-Click MCP Status Dashboard & Modal</td>
-                        <td class="p-2"><span class="bg-rose-500/20 text-rose-400 px-1.5 py-0.5 rounded text-[10px]">Must</span></td>
-                      </tr>
-                      <tr>
-                        <td class="p-2 font-mono text-indigo-400">FR-04</td>
-                        <td class="p-2">1-Click Sync Triggers (Jira, Confluence, Figma, Miro)</td>
-                        <td class="p-2"><span class="bg-rose-500/20 text-rose-400 px-1.5 py-0.5 rounded text-[10px]">Must</span></td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-
-            </div>
-
-            <!-- FLOATING 1-CLICK MCP ACTION BAR -->
-            <div class="p-3 bg-slate-900 border-t border-slate-800 flex items-center justify-between shrink-0 z-20">
-              <span class="text-xs text-slate-400 font-medium flex items-center space-x-1.5">
-                <span>🔌 1-Click MCP Sync:</span>
-              </span>
-
-              <div class="flex items-center space-x-2">
-                <button onclick="triggerMcpSync('jira')" class="bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 border border-blue-500/30 px-3 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 transition">
-                  <span>🎟️ Export to Jira</span>
-                </button>
-                <button onclick="triggerMcpSync('confluence')" class="bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 px-3 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 transition">
-                  <span>📄 Publish Confluence</span>
-                </button>
-                <button onclick="triggerMcpSync('figma')" class="bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/30 px-3 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 transition">
-                  <span>🎨 Sync Figma</span>
-                </button>
-                <button onclick="triggerMcpSync('miro')" class="bg-yellow-600/20 hover:bg-yellow-600/30 text-yellow-300 border border-yellow-500/30 px-3 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 transition">
-                  <span>📌 Send to Miro</span>
-                </button>
-              </div>
-            </div>
-
-          </div>
-
-        </div>
-
-        <!-- ================= BOTTOM COLLAPSIBLE TERMINAL LOG DRAWER ================= -->
-        <div id="terminal-drawer" class="bg-slate-950 border-t border-slate-800 h-36 flex flex-col shrink-0 transition-all duration-300">
+        <!-- ================= TAB 1: DASHBOARD & SKILLS ================= -->
+        <div id="view-dashboard-skills" class="tab-view space-y-7">
           
-          <div class="bg-slate-900 px-4 py-1.5 flex items-center justify-between border-b border-slate-800 text-xs">
-            <div class="flex items-center space-x-2">
-              <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-              <span class="font-mono text-slate-300 text-[11px]">Execution Console (Terminal Logs)</span>
+          <!-- System HUD Banner -->
+          <section class="relative w-full rounded-2xl bg-[#18191d] p-6 border border-[#2a2b30] shadow-sm">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div>
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                  <span class="font-mono text-[11px] text-amber-400 font-medium tracking-wider uppercase">Local PM Workbench • Active Engine</span>
+                </div>
+                <h1 class="font-headline text-2xl md:text-3xl text-zinc-100 font-bold tracking-tight">Welcome back, Paula</h1>
+                <p class="text-sm md:text-base text-zinc-400 mt-1">What product deliverable would you like to build today?</p>
+              </div>
+              <div class="flex items-center gap-4 self-start md:self-auto">
+                <div class="px-5 py-3 rounded-xl bg-[#1f2025] border border-[#2a2b30] flex flex-col">
+                  <span class="font-mono text-[11px] text-zinc-400 uppercase font-medium">Deliverables Created</span>
+                  <span class="font-headline text-2xl text-zinc-100 font-bold mt-0.5">24</span>
+                </div>
+                <div class="px-5 py-3 rounded-xl bg-[#1f2025] border border-[#2a2b30] flex flex-col">
+                  <span class="font-mono text-[11px] text-zinc-400 uppercase font-medium">Avg Time to Spec</span>
+                  <span class="font-headline text-2xl text-amber-500 font-bold mt-0.5">2m 45s</span>
+                </div>
+                <div class="px-5 py-3 rounded-xl bg-[#1f2025] border border-[#2a2b30] flex flex-col">
+                  <span class="font-mono text-[11px] text-zinc-400 uppercase font-medium">MCP Integrations</span>
+                  <span class="font-headline text-2xl text-emerald-400 font-bold mt-0.5">4 Active</span>
+                </div>
+              </div>
             </div>
-            <button onclick="toggleTerminal()" class="text-slate-500 hover:text-slate-300">✕ Close</button>
-          </div>
+          </section>
 
-          <div class="flex-1 p-3 font-mono text-[11px] text-slate-400 overflow-y-auto space-y-1 bg-slate-950">
-            <div><span class="text-slate-600">[17:20:01]</span> <span class="text-indigo-400">INFO</span> Loaded skill: <code class="text-slate-300">/create-prd</code> (Standard Agile Mode)</div>
-            <div><span class="text-slate-600">[17:20:02]</span> <span class="text-indigo-400">INFO</span> Evaluating template: <code class="text-slate-300">templates/prd/standard.md</code></div>
-            <div><span class="text-slate-600">[17:20:03]</span> <span class="text-emerald-400">SUCCESS</span> Deliverable compiled: <code class="text-slate-200">docs/PM_COMMAND_CENTER_PRD.md</code></div>
-            <div><span class="text-slate-600">[17:20:04]</span> <span class="text-blue-400">MCP</span> Verified Atlassian server connection: <span class="text-slate-300">https://company.atlassian.net</span></div>
-          </div>
+          <!-- Filter, Search & Pipeline Actions Toolbar -->
+          <section class="w-full flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-1 md:pb-0" id="skill-filter-container">
+              <button onclick="filterSkills('all', this)" class="filter-pill px-4 py-1.5 rounded-lg bg-amber-600 text-white text-[13px] font-semibold transition-colors shrink-0 shadow-xs">All Skills</button>
+              <button onclick="filterSkills('strategy', this)" class="filter-pill px-4 py-1.5 rounded-lg bg-[#1f2025] text-zinc-400 hover:text-zinc-100 hover:bg-[#26272e] border border-[#2a2b30] transition-colors text-[13px] font-medium shrink-0">Strategy & PRD</button>
+              <button onclick="filterSkills('stories', this)" class="filter-pill px-4 py-1.5 rounded-lg bg-[#1f2025] text-zinc-400 hover:text-zinc-100 hover:bg-[#26272e] border border-[#2a2b30] transition-colors text-[13px] font-medium shrink-0">Stories & Backlog</button>
+              <button onclick="filterSkills('design', this)" class="filter-pill px-4 py-1.5 rounded-lg bg-[#1f2025] text-zinc-400 hover:text-zinc-100 hover:bg-[#26272e] border border-[#2a2b30] transition-colors text-[13px] font-medium shrink-0">Wireframing & Design</button>
+              <button onclick="filterSkills('mcp', this)" class="filter-pill px-4 py-1.5 rounded-lg bg-[#1f2025] text-zinc-400 hover:text-zinc-100 hover:bg-[#26272e] border border-[#2a2b30] transition-colors text-[13px] font-medium shrink-0">MCP Sync</button>
+            </div>
+
+            <div class="relative w-full md:w-80 shrink-0">
+              <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500 text-[18px]">search</span>
+              <input type="text" id="skill-search-input" onkeyup="searchSkills()" placeholder="Search skills (e.g. PRD, Jira, Figma)..." class="w-full pl-9 pr-11 py-2 rounded-lg bg-[#18191d] border border-[#2a2b30] text-zinc-100 placeholder:text-zinc-500 text-[13px] focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors"/>
+              <span class="absolute right-2.5 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded bg-[#26272e] text-zinc-400 font-mono text-[10px] border border-[#2a2b30]">⌘K</span>
+            </div>
+          </section>
+
+          <!-- Skills Grid -->
+          <section class="w-full">
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="font-headline text-lg md:text-xl text-zinc-100 font-semibold tracking-tight">Canonical Product Skills (13 Available)</h2>
+              <span class="font-mono text-[11px] text-zinc-400">Deterministic AI • Local Execution</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="skills-grid">
+              
+              <!-- Skill 1: create-prd -->
+              <div data-category="strategy" class="skill-card group relative flex flex-col justify-between p-5 rounded-xl bg-[#1f2025] hover:bg-[#26272e] border border-[#2a2b30] hover:border-zinc-600 transition-all cursor-pointer" onclick="launchSkillWizard('create-prd')">
+                <div class="space-y-3">
+                  <div class="w-10 h-10 rounded-lg bg-amber-600/10 text-amber-500 border border-amber-600/20 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[20px]">description</span>
+                  </div>
+                  <div>
+                    <h3 class="font-headline text-zinc-100 font-semibold text-[15px]">Interactive PRD Generator</h3>
+                    <p class="text-zinc-400 mt-1 text-[13px] leading-relaxed">Produce Lean, Standard, or Enterprise PRDs with Gherkin criteria & OKRs.</p>
+                  </div>
+                </div>
+                <div class="mt-4 pt-3 border-t border-[#2a2b30] flex items-center justify-between">
+                  <span class="font-mono text-[11px] text-zinc-400 font-medium uppercase">Strategy</span>
+                  <span class="inline-flex items-center gap-1 text-[13px] font-semibold text-amber-500 group-hover:translate-x-0.5 transition-transform">Launch <span class="material-symbols-outlined text-[15px]">arrow_forward</span></span>
+                </div>
+              </div>
+
+              <!-- Skill 2: create-user-stories -->
+              <div data-category="stories" class="skill-card group relative flex flex-col justify-between p-5 rounded-xl bg-[#1f2025] hover:bg-[#26272e] border border-[#2a2b30] hover:border-zinc-600 transition-all cursor-pointer" onclick="launchSkillWizard('create-user-stories')">
+                <div class="space-y-3">
+                  <div class="w-10 h-10 rounded-lg bg-[#2a2b30] text-zinc-300 border border-zinc-700 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[20px]">splitscreen</span>
+                  </div>
+                  <div>
+                    <h3 class="font-headline text-zinc-100 font-semibold text-[15px]">INVEST Story Breakdown</h3>
+                    <p class="text-zinc-400 mt-1 text-[13px] leading-relaxed">Decompose PRDs into sprint-ready stories with Gherkin BDD criteria & points.</p>
+                  </div>
+                </div>
+                <div class="mt-4 pt-3 border-t border-[#2a2b30] flex items-center justify-between">
+                  <span class="font-mono text-[11px] text-zinc-400 font-medium uppercase">Stories</span>
+                  <span class="inline-flex items-center gap-1 text-[13px] font-semibold text-amber-500 group-hover:translate-x-0.5 transition-transform">Launch <span class="material-symbols-outlined text-[15px]">arrow_forward</span></span>
+                </div>
+              </div>
+
+              <!-- Skill 3: refine-user-stories -->
+              <div data-category="stories" class="skill-card group relative flex flex-col justify-between p-5 rounded-xl bg-[#1f2025] hover:bg-[#26272e] border border-[#2a2b30] hover:border-zinc-600 transition-all cursor-pointer" onclick="launchSkillWizard('refine-user-stories')">
+                <div class="space-y-3">
+                  <div class="w-10 h-10 rounded-lg bg-[#2a2b30] text-zinc-300 border border-zinc-700 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[20px]">tune</span>
+                  </div>
+                  <div>
+                    <h3 class="font-headline text-zinc-100 font-semibold text-[15px]">Story Refinement & SPIDR</h3>
+                    <p class="text-zinc-400 mt-1 text-[13px] leading-relaxed">Groom backlog stories, split large epics (SPIDR), and score readiness (0-100%).</p>
+                  </div>
+                </div>
+                <div class="mt-4 pt-3 border-t border-[#2a2b30] flex items-center justify-between">
+                  <span class="font-mono text-[11px] text-zinc-400 font-medium uppercase">Stories</span>
+                  <span class="inline-flex items-center gap-1 text-[13px] font-semibold text-amber-500 group-hover:translate-x-0.5 transition-transform">Launch <span class="material-symbols-outlined text-[15px]">arrow_forward</span></span>
+                </div>
+              </div>
+
+              <!-- Skill 4: create-mockup -->
+              <div data-category="design" class="skill-card group relative flex flex-col justify-between p-5 rounded-xl bg-[#1f2025] hover:bg-[#26272e] border border-[#2a2b30] hover:border-zinc-600 transition-all cursor-pointer" onclick="launchSkillWizard('create-mockup')">
+                <div class="space-y-3">
+                  <div class="w-10 h-10 rounded-lg bg-teal-600/10 text-teal-400 border border-teal-600/20 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[20px]">web</span>
+                  </div>
+                  <div>
+                    <h3 class="font-headline text-zinc-100 font-semibold text-[15px]">Interactive HTML Wireframe</h3>
+                    <p class="text-zinc-400 mt-1 text-[13px] leading-relaxed">Generate clickable, responsive Tailwind wireframes with tab & modal triggers.</p>
+                  </div>
+                </div>
+                <div class="mt-4 pt-3 border-t border-[#2a2b30] flex items-center justify-between">
+                  <span class="font-mono text-[11px] text-zinc-400 font-medium uppercase">Design</span>
+                  <span class="inline-flex items-center gap-1 text-[13px] font-semibold text-amber-500 group-hover:translate-x-0.5 transition-transform">Launch <span class="material-symbols-outlined text-[15px]">arrow_forward</span></span>
+                </div>
+              </div>
+
+              <!-- Skill 5: create-design-brief -->
+              <div data-category="design" class="skill-card group relative flex flex-col justify-between p-5 rounded-xl bg-[#1f2025] hover:bg-[#26272e] border border-[#2a2b30] hover:border-zinc-600 transition-all cursor-pointer" onclick="launchSkillWizard('create-design-brief')">
+                <div class="space-y-3">
+                  <div class="w-10 h-10 rounded-lg bg-teal-600/10 text-teal-400 border border-teal-600/20 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[20px]">palette</span>
+                  </div>
+                  <div>
+                    <h3 class="font-headline text-zinc-100 font-semibold text-[15px]">UI/UX Design Brief</h3>
+                    <p class="text-zinc-400 mt-1 text-[13px] leading-relaxed">Draft detailed UX flow specs, WCAG 2.1 AA accessibility guidelines & Figma specs.</p>
+                  </div>
+                </div>
+                <div class="mt-4 pt-3 border-t border-[#2a2b30] flex items-center justify-between">
+                  <span class="font-mono text-[11px] text-zinc-400 font-medium uppercase">Design</span>
+                  <span class="inline-flex items-center gap-1 text-[13px] font-semibold text-amber-500 group-hover:translate-x-0.5 transition-transform">Launch <span class="material-symbols-outlined text-[15px]">arrow_forward</span></span>
+                </div>
+              </div>
+
+              <!-- Skill 6: create-documentation -->
+              <div data-category="strategy" class="skill-card group relative flex flex-col justify-between p-5 rounded-xl bg-[#1f2025] hover:bg-[#26272e] border border-[#2a2b30] hover:border-zinc-600 transition-all cursor-pointer" onclick="launchSkillWizard('create-documentation')">
+                <div class="space-y-3">
+                  <div class="w-10 h-10 rounded-lg bg-[#2a2b30] text-zinc-300 border border-zinc-700 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[20px]">menu_book</span>
+                  </div>
+                  <div>
+                    <h3 class="font-headline text-zinc-100 font-semibold text-[15px]">Technical & User Docs</h3>
+                    <p class="text-zinc-400 mt-1 text-[13px] leading-relaxed">Produce OpenAPI schemas, Mermaid sequence diagrams & end-user manuals.</p>
+                  </div>
+                </div>
+                <div class="mt-4 pt-3 border-t border-[#2a2b30] flex items-center justify-between">
+                  <span class="font-mono text-[11px] text-zinc-400 font-medium uppercase">Strategy</span>
+                  <span class="inline-flex items-center gap-1 text-[13px] font-semibold text-amber-500 group-hover:translate-x-0.5 transition-transform">Launch <span class="material-symbols-outlined text-[15px]">arrow_forward</span></span>
+                </div>
+              </div>
+
+              <!-- Skill 7: brainstorm -->
+              <div data-category="strategy" class="skill-card group relative flex flex-col justify-between p-5 rounded-xl bg-[#1f2025] hover:bg-[#26272e] border border-[#2a2b30] hover:border-zinc-600 transition-all cursor-pointer" onclick="launchSkillWizard('brainstorm')">
+                <div class="space-y-3">
+                  <div class="w-10 h-10 rounded-lg bg-amber-600/10 text-amber-500 border border-amber-600/20 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[20px]">psychology_alt</span>
+                  </div>
+                  <div>
+                    <h3 class="font-headline text-zinc-100 font-semibold text-[15px]">Opportunity Brainstormer</h3>
+                    <p class="text-zinc-400 mt-1 text-[13px] leading-relaxed">SCAMPER, How Might We (HMW), 6 Hats & Value vs Effort matrix ideation.</p>
+                  </div>
+                </div>
+                <div class="mt-4 pt-3 border-t border-[#2a2b30] flex items-center justify-between">
+                  <span class="font-mono text-[11px] text-zinc-400 font-medium uppercase">Ideation</span>
+                  <span class="inline-flex items-center gap-1 text-[13px] font-semibold text-amber-500 group-hover:translate-x-0.5 transition-transform">Launch <span class="material-symbols-outlined text-[15px]">arrow_forward</span></span>
+                </div>
+              </div>
+
+              <!-- Skill 8: validate-idea -->
+              <div data-category="strategy" class="skill-card group relative flex flex-col justify-between p-5 rounded-xl bg-[#1f2025] hover:bg-[#26272e] border border-[#2a2b30] hover:border-zinc-600 transition-all cursor-pointer" onclick="launchSkillWizard('validate-idea')">
+                <div class="space-y-3">
+                  <div class="w-10 h-10 rounded-lg bg-red-500/10 text-red-400 border border-red-500/20 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[20px]">fact_check</span>
+                  </div>
+                  <div>
+                    <h3 class="font-headline text-zinc-100 font-semibold text-[15px]">Idea & Risk Validator</h3>
+                    <p class="text-zinc-400 mt-1 text-[13px] leading-relaxed">Strategyzer 4-Risk analysis, The Mom Test interviews & Pre-mortem matrix.</p>
+                  </div>
+                </div>
+                <div class="mt-4 pt-3 border-t border-[#2a2b30] flex items-center justify-between">
+                  <span class="font-mono text-[11px] text-zinc-400 font-medium uppercase">Validation</span>
+                  <span class="inline-flex items-center gap-1 text-[13px] font-semibold text-amber-500 group-hover:translate-x-0.5 transition-transform">Launch <span class="material-symbols-outlined text-[15px]">arrow_forward</span></span>
+                </div>
+              </div>
+
+              <!-- Skill 9: sync-jira -->
+              <div data-category="mcp" class="skill-card group relative flex flex-col justify-between p-5 rounded-xl bg-[#1f2025] hover:bg-[#26272e] border border-[#2a2b30] hover:border-zinc-600 transition-all cursor-pointer" onclick="launchSkillWizard('sync-jira')">
+                <div class="space-y-3">
+                  <div class="w-10 h-10 rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/20 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[20px]">sync_alt</span>
+                  </div>
+                  <div>
+                    <h3 class="font-headline text-zinc-100 font-semibold text-[15px]">Sync to Jira Epics</h3>
+                    <p class="text-zinc-400 mt-1 text-[13px] leading-relaxed">Directly push approved Gherkin user stories to Jira Cloud backlog via MCP.</p>
+                  </div>
+                </div>
+                <div class="mt-4 pt-3 border-t border-[#2a2b30] flex items-center justify-between">
+                  <span class="font-mono text-[11px] text-zinc-400 font-medium uppercase">MCP Integration</span>
+                  <span class="inline-flex items-center gap-1 text-[13px] font-semibold text-amber-500 group-hover:translate-x-0.5 transition-transform">Launch <span class="material-symbols-outlined text-[15px]">arrow_forward</span></span>
+                </div>
+              </div>
+
+              <!-- Skill 10: sync-confluence -->
+              <div data-category="mcp" class="skill-card group relative flex flex-col justify-between p-5 rounded-xl bg-[#1f2025] hover:bg-[#26272e] border border-[#2a2b30] hover:border-zinc-600 transition-all cursor-pointer" onclick="launchSkillWizard('sync-confluence')">
+                <div class="space-y-3">
+                  <div class="w-10 h-10 rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/20 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[20px]">cloud_upload</span>
+                  </div>
+                  <div>
+                    <h3 class="font-headline text-zinc-100 font-semibold text-[15px]">Publish to Confluence</h3>
+                    <p class="text-zinc-400 mt-1 text-[13px] leading-relaxed">Publish formatted PRDs and Tech Specs directly into Confluence spaces.</p>
+                  </div>
+                </div>
+                <div class="mt-4 pt-3 border-t border-[#2a2b30] flex items-center justify-between">
+                  <span class="font-mono text-[11px] text-zinc-400 font-medium uppercase">MCP Integration</span>
+                  <span class="inline-flex items-center gap-1 text-[13px] font-semibold text-amber-500 group-hover:translate-x-0.5 transition-transform">Launch <span class="material-symbols-outlined text-[15px]">arrow_forward</span></span>
+                </div>
+              </div>
+
+              <!-- Skill 11: sync-figma -->
+              <div data-category="mcp" class="skill-card group relative flex flex-col justify-between p-5 rounded-xl bg-[#1f2025] hover:bg-[#26272e] border border-[#2a2b30] hover:border-zinc-600 transition-all cursor-pointer" onclick="launchSkillWizard('sync-figma')">
+                <div class="space-y-3">
+                  <div class="w-10 h-10 rounded-lg bg-purple-500/10 text-purple-400 border border-purple-500/20 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[20px]">design_services</span>
+                  </div>
+                  <div>
+                    <h3 class="font-headline text-zinc-100 font-semibold text-[15px]">Sync Figma Components</h3>
+                    <p class="text-zinc-400 mt-1 text-[13px] leading-relaxed">Inspect Figma files, import component specs, and post design feedback to nodes.</p>
+                  </div>
+                </div>
+                <div class="mt-4 pt-3 border-t border-[#2a2b30] flex items-center justify-between">
+                  <span class="font-mono text-[11px] text-zinc-400 font-medium uppercase">MCP Integration</span>
+                  <span class="inline-flex items-center gap-1 text-[13px] font-semibold text-amber-500 group-hover:translate-x-0.5 transition-transform">Launch <span class="material-symbols-outlined text-[15px]">arrow_forward</span></span>
+                </div>
+              </div>
+
+              <!-- Skill 12: sync-miro -->
+              <div data-category="mcp" class="skill-card group relative flex flex-col justify-between p-5 rounded-xl bg-[#1f2025] hover:bg-[#26272e] border border-[#2a2b30] hover:border-zinc-600 transition-all cursor-pointer" onclick="launchSkillWizard('sync-miro')">
+                <div class="space-y-3">
+                  <div class="w-10 h-10 rounded-lg bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[20px]">dashboard_customize</span>
+                  </div>
+                  <div>
+                    <h3 class="font-headline text-zinc-100 font-semibold text-[15px]">Export Brainstorm to Miro</h3>
+                    <p class="text-zinc-400 mt-1 text-[13px] leading-relaxed">Export SCAMPER & HMW brainstorm stickies directly to Miro whiteboards.</p>
+                  </div>
+                </div>
+                <div class="mt-4 pt-3 border-t border-[#2a2b30] flex items-center justify-between">
+                  <span class="font-mono text-[11px] text-zinc-400 font-medium uppercase">MCP Integration</span>
+                  <span class="inline-flex items-center gap-1 text-[13px] font-semibold text-amber-500 group-hover:translate-x-0.5 transition-transform">Launch <span class="material-symbols-outlined text-[15px]">arrow_forward</span></span>
+                </div>
+              </div>
+
+              <!-- Skill 13: connect-mcp -->
+              <div data-category="mcp" class="skill-card group relative flex flex-col justify-between p-5 rounded-xl bg-[#1f2025] hover:bg-[#26272e] border border-[#2a2b30] hover:border-zinc-600 transition-all cursor-pointer" onclick="switchTab('mcp-connections')">
+                <div class="space-y-3">
+                  <div class="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[20px]">key</span>
+                  </div>
+                  <div>
+                    <h3 class="font-headline text-zinc-100 font-semibold text-[15px]">MCP Credential Manager</h3>
+                    <p class="text-zinc-400 mt-1 text-[13px] leading-relaxed">Configure, test, and manage MCP tokens across AGY, Claude Code, and Cursor IDEs.</p>
+                  </div>
+                </div>
+                <div class="mt-4 pt-3 border-t border-[#2a2b30] flex items-center justify-between">
+                  <span class="font-mono text-[11px] text-zinc-400 font-medium uppercase">Setup</span>
+                  <span class="inline-flex items-center gap-1 text-[13px] font-semibold text-amber-500 group-hover:translate-x-0.5 transition-transform">Manage <span class="material-symbols-outlined text-[15px]">arrow_forward</span></span>
+                </div>
+              </div>
+
+            </div>
+          </section>
+
+          <!-- Recent Artifacts Panel -->
+          <section class="w-full rounded-2xl bg-[#18191d] p-6 border border-[#2a2b30] shadow-sm">
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center gap-2.5">
+                <h2 class="font-headline text-zinc-100 font-semibold text-[16px]">Recent Artifacts & Specs</h2>
+                <span class="px-2 py-0.5 rounded bg-[#26272e] text-zinc-400 font-mono text-[11px] border border-[#2a2b30]">4 generated</span>
+              </div>
+              <button onclick="switchTab('deliverable-hub')" class="text-amber-500 hover:underline flex items-center gap-1 font-medium text-[13px]">View all <span class="material-symbols-outlined text-[15px]">arrow_forward</span></button>
+            </div>
+
+            <div class="divide-y divide-[#2a2b30]">
+              
+              <div class="py-3 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-lg bg-[#1f2025] flex items-center justify-center text-amber-500">
+                    <span class="material-symbols-outlined text-[18px]">description</span>
+                  </div>
+                  <div>
+                    <span class="font-semibold text-zinc-100 text-[13px] block">PM_COMMAND_CENTER_PRD.md</span>
+                    <span class="font-mono text-[11px] text-zinc-400">Updated 14m ago • PRD Spec</span>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 font-mono text-[11px] font-medium border border-emerald-500/20">Ready</span>
+                  <button onclick="previewArtifact('PM_COMMAND_CENTER_PRD.md')" class="px-3 py-1 rounded-lg bg-[#26272e] hover:bg-[#31323a] text-zinc-200 text-[12px] font-medium transition-colors">Preview</button>
+                </div>
+              </div>
+
+              <div class="py-3 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-lg bg-[#1f2025] flex items-center justify-center text-teal-400">
+                    <span class="material-symbols-outlined text-[18px]">web</span>
+                  </div>
+                  <div>
+                    <span class="font-semibold text-zinc-100 text-[13px] block">pm-command-center.html</span>
+                    <span class="font-mono text-[11px] text-zinc-400">Updated 5m ago • Interactive Mockup</span>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-400 font-mono text-[11px] font-medium border border-amber-500/20">Active GUI</span>
+                  <button onclick="previewArtifact('pm-command-center.html')" class="px-3 py-1 rounded-lg bg-[#26272e] hover:bg-[#31323a] text-zinc-200 text-[12px] font-medium transition-colors">Preview</button>
+                </div>
+              </div>
+
+              <div class="py-3 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-lg bg-[#1f2025] flex items-center justify-center text-blue-400">
+                    <span class="material-symbols-outlined text-[18px]">splitscreen</span>
+                  </div>
+                  <div>
+                    <span class="font-semibold text-zinc-100 text-[13px] block">BACKLOG.md</span>
+                    <span class="font-mono text-[11px] text-zinc-400">Updated 1h ago • 8 Sprint Stories</span>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-400 font-mono text-[11px] font-medium border border-blue-500/20">Synced Jira</span>
+                  <button onclick="previewArtifact('BACKLOG.md')" class="px-3 py-1 rounded-lg bg-[#26272e] hover:bg-[#31323a] text-zinc-200 text-[12px] font-medium transition-colors">Preview</button>
+                </div>
+              </div>
+
+            </div>
+          </section>
 
         </div>
 
-      </main>
+        <!-- ================= TAB 2: SKILL WIZARD ================= -->
+        <div id="view-skill-wizard" class="tab-view hidden space-y-6">
+          <section class="w-full rounded-2xl bg-[#18191d] p-6 border border-[#2a2b30] shadow-sm">
+            <div class="flex items-center justify-between mb-4 pb-4 border-b border-[#2a2b30]">
+              <div>
+                <h2 class="font-headline text-xl text-zinc-100 font-bold flex items-center gap-2">
+                  <span class="material-symbols-outlined text-amber-500">auto_awesome</span>
+                  Interactive Skill Execution Wizard
+                </h2>
+                <p class="text-sm text-zinc-400 mt-0.5">Select a product skill and enter key details to stream live deliverables.</p>
+              </div>
+              <button onclick="switchTab('dashboard-skills')" class="px-3 py-1.5 rounded-lg bg-[#26272e] hover:bg-[#31323a] text-zinc-300 text-[12px] font-medium transition-colors">Back to Skills</button>
+            </div>
 
+            <!-- Wizard Layout Dual Pane -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+              
+              <!-- Form Panel -->
+              <div class="lg:col-span-5 space-y-4">
+                <div>
+                  <label class="block text-xs font-mono uppercase text-zinc-400 mb-1.5">Select Target Skill</label>
+                  <select id="wizard-skill-select" onchange="updateWizardForm()" class="w-full py-2 px-3 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-[13px] focus:outline-none focus:border-amber-500">
+                    <option value="create-prd">create-prd — PRD Generator</option>
+                    <option value="create-user-stories">create-user-stories — INVEST Breakdown</option>
+                    <option value="refine-user-stories">refine-user-stories — SPIDR Grooming</option>
+                    <option value="create-mockup">create-mockup — Tailwind Wireframe</option>
+                    <option value="create-design-brief">create-design-brief — UX Specs</option>
+                    <option value="create-documentation">create-documentation — Tech Specs</option>
+                    <option value="brainstorm">brainstorm — SCAMPER / HMW Ideation</option>
+                    <option value="validate-idea">validate-idea — Risk Analysis</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-mono uppercase text-zinc-400 mb-1.5">Feature Name / Subject</label>
+                  <input type="text" id="wizard-feature-name" value="PM Command Center UI" placeholder="e.g. AI Workflow Automation" class="w-full py-2 px-3 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-[13px] focus:outline-none focus:border-amber-500"/>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-xs font-mono uppercase text-zinc-400 mb-1.5">Agile Mode</label>
+                    <select id="wizard-mode" class="w-full py-2 px-3 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-[13px] focus:outline-none focus:border-amber-500">
+                      <option value="standard">Standard Agile</option>
+                      <option value="lean">Lean (Startup/MVP)</option>
+                      <option value="enterprise">Enterprise (Scale)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-mono uppercase text-zinc-400 mb-1.5">Target Persona</label>
+                    <input type="text" id="wizard-persona" value="Paula (Lead PM)" class="w-full py-2 px-3 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-[13px] focus:outline-none focus:border-amber-500"/>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-mono uppercase text-zinc-400 mb-1.5">Problem Statement & Requirements</label>
+                  <textarea id="wizard-requirements" rows="4" class="w-full py-2 px-3 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-[13px] focus:outline-none focus:border-amber-500" placeholder="Describe problem, target users, key goals, and acceptance criteria..."></textarea>
+                </div>
+
+                <div class="pt-2 flex items-center gap-3">
+                  <button onclick="executeWizardSkill()" id="btn-generate-skill" class="w-full py-2.5 rounded-lg bg-amber-600 hover:bg-amber-500 text-white font-semibold text-[13px] transition-colors flex items-center justify-center gap-2 shadow-sm">
+                    <span class="material-symbols-outlined text-[18px]">auto_awesome</span>
+                    Generate Deliverable
+                  </button>
+                </div>
+              </div>
+
+              <!-- Preview Panel -->
+              <div class="lg:col-span-7 flex flex-col h-[520px] rounded-xl bg-[#121316] border border-[#2a2b30] overflow-hidden">
+                <div class="h-10 bg-[#18191d] border-b border-[#2a2b30] px-4 flex items-center justify-between text-xs">
+                  <div class="flex items-center gap-2 font-mono text-zinc-400">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                    <span id="preview-filename">PRD_PM_COMMAND_CENTER.md</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <button onclick="copyPreviewContent()" class="text-zinc-400 hover:text-zinc-100 text-[11px] font-mono flex items-center gap-1">
+                      <span class="material-symbols-outlined text-[13px]">content_copy</span> Copy
+                    </button>
+                    <span class="text-zinc-600">|</span>
+                    <button onclick="syncToJiraFromWizard()" class="text-amber-500 hover:underline text-[11px] font-mono flex items-center gap-1">
+                      <span class="material-symbols-outlined text-[13px]">sync_alt</span> Sync to Jira
+                    </button>
+                  </div>
+                </div>
+
+                <div id="wizard-preview-body" class="p-5 flex-1 overflow-y-auto font-sans text-sm text-zinc-300 space-y-4 prose prose-invert max-w-none">
+                  <p class="text-zinc-500 italic">Select options on the left and click "Generate Deliverable" to stream output preview here.</p>
+                </div>
+              </div>
+
+            </div>
+          </section>
+        </div>
+
+        <!-- ================= TAB 3: DELIVERABLE HUB ================= -->
+        <div id="view-deliverable-hub" class="tab-view hidden space-y-6">
+          <section class="w-full rounded-2xl bg-[#18191d] p-6 border border-[#2a2b30] shadow-sm">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h2 class="font-headline text-xl text-zinc-100 font-bold">Deliverable & Artifact Repository</h2>
+                <p class="text-sm text-zinc-400 mt-0.5">Browse all generated PRDs, User Stories, Mockups, and Design Specs.</p>
+              </div>
+              <div class="relative w-72">
+                <input type="text" placeholder="Filter deliverables..." class="w-full py-1.5 pl-8 pr-3 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-[13px] focus:outline-none focus:border-amber-500"/>
+                <span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-500 text-[16px]">search</span>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              
+              <!-- Artifact Card 1 -->
+              <div class="p-4 rounded-xl bg-[#1f2025] border border-[#2a2b30] flex flex-col justify-between space-y-3">
+                <div class="space-y-1.5">
+                  <div class="flex items-center justify-between">
+                    <span class="px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 font-mono text-[10px] uppercase">PRD</span>
+                    <span class="text-zinc-500 text-[11px] font-mono">8.1 KB</span>
+                  </div>
+                  <h3 class="font-semibold text-zinc-100 text-sm">PM_COMMAND_CENTER_PRD.md</h3>
+                  <p class="text-zinc-400 text-xs">Standard Agile PRD spec for local web command center.</p>
+                </div>
+                <div class="pt-2 border-t border-[#2a2b30] flex items-center justify-between">
+                  <button onclick="previewArtifact('PM_COMMAND_CENTER_PRD.md')" class="text-amber-500 hover:underline text-xs font-medium">View Markdown</button>
+                  <button onclick="downloadArtifact('PM_COMMAND_CENTER_PRD.md')" class="text-zinc-400 hover:text-zinc-100 text-xs font-mono flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[14px]">download</span> Save
+                  </button>
+                </div>
+              </div>
+
+              <!-- Artifact Card 2 -->
+              <div class="p-4 rounded-xl bg-[#1f2025] border border-[#2a2b30] flex flex-col justify-between space-y-3">
+                <div class="space-y-1.5">
+                  <div class="flex items-center justify-between">
+                    <span class="px-2 py-0.5 rounded bg-teal-500/10 text-teal-400 font-mono text-[10px] uppercase">Mockup</span>
+                    <span class="text-zinc-500 text-[11px] font-mono">37.2 KB</span>
+                  </div>
+                  <h3 class="font-semibold text-zinc-100 text-sm">pm-command-center.html</h3>
+                  <p class="text-zinc-400 text-xs">Interactive standalone Tailwind wireframe.</p>
+                </div>
+                <div class="pt-2 border-t border-[#2a2b30] flex items-center justify-between">
+                  <button onclick="previewArtifact('pm-command-center.html')" class="text-amber-500 hover:underline text-xs font-medium">Launch Wireframe</button>
+                  <button onclick="downloadArtifact('pm-command-center.html')" class="text-zinc-400 hover:text-zinc-100 text-xs font-mono flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[14px]">download</span> Save
+                  </button>
+                </div>
+              </div>
+
+              <!-- Artifact Card 3 -->
+              <div class="p-4 rounded-xl bg-[#1f2025] border border-[#2a2b30] flex flex-col justify-between space-y-3">
+                <div class="space-y-1.5">
+                  <div class="flex items-center justify-between">
+                    <span class="px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 font-mono text-[10px] uppercase">User Stories</span>
+                    <span class="text-zinc-500 text-[11px] font-mono">3.8 KB</span>
+                  </div>
+                  <h3 class="font-semibold text-zinc-100 text-sm">BACKLOG.md</h3>
+                  <p class="text-zinc-400 text-xs">INVEST user stories with Gherkin acceptance criteria.</p>
+                </div>
+                <div class="pt-2 border-t border-[#2a2b30] flex items-center justify-between">
+                  <button onclick="previewArtifact('BACKLOG.md')" class="text-amber-500 hover:underline text-xs font-medium">View Stories</button>
+                  <button onclick="downloadArtifact('BACKLOG.md')" class="text-zinc-400 hover:text-zinc-100 text-xs font-mono flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[14px]">download</span> Save
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </section>
+        </div>
+
+        <!-- ================= TAB 4: MCP CONNECTIONS ================= -->
+        <div id="view-mcp-connections" class="tab-view hidden space-y-6">
+          <section class="w-full rounded-2xl bg-[#18191d] p-6 border border-[#2a2b30] shadow-sm">
+            <div class="flex items-center justify-between mb-4 pb-4 border-b border-[#2a2b30]">
+              <div>
+                <h2 class="font-headline text-xl text-zinc-100 font-bold flex items-center gap-2">
+                  <span class="material-symbols-outlined text-emerald-400">hub</span>
+                  MCP Integration Manager (Model Context Protocol)
+                </h2>
+                <p class="text-sm text-zinc-400 mt-0.5">Manage external PM tool connections across Atlassian, Figma, Miro, and AGY.</p>
+              </div>
+              <button onclick="openCredentialModal()" class="px-3.5 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-500 text-white text-[13px] font-semibold transition-colors flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px]">key</span> Edit Credentials (.env)
+              </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+              
+              <!-- Atlassian Card -->
+              <div class="p-5 rounded-xl bg-[#1f2025] border border-[#2a2b30] space-y-3">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/20 flex items-center justify-center">
+                      <span class="material-symbols-outlined text-[20px]">sync_alt</span>
+                    </div>
+                    <div>
+                      <h3 class="font-semibold text-zinc-100 text-sm">Atlassian (Jira & Confluence)</h3>
+                      <span class="font-mono text-[11px] text-zinc-400">@modelcontextprotocol/server-atlassian</span>
+                    </div>
+                  </div>
+                  <span class="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 font-mono text-[11px] font-medium border border-emerald-500/20 flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Active
+                  </span>
+                </div>
+                <div class="p-3 rounded-lg bg-[#121316] font-mono text-[11px] text-zinc-400 space-y-1 border border-[#2a2b30]">
+                  <div>HOST: <span class="text-zinc-200">https://your-domain.atlassian.net</span></div>
+                  <div>EMAIL: <span class="text-zinc-200">user@company.com</span></div>
+                  <div>TOKEN: <span class="text-amber-500">ATATT3xFfGF0...</span></div>
+                </div>
+                <div class="flex justify-end gap-2 pt-1">
+                  <button onclick="testMcpConnection('atlassian')" class="px-3 py-1 rounded bg-[#26272e] hover:bg-[#31323a] text-zinc-300 text-xs font-mono">Test Connection</button>
+                </div>
+              </div>
+
+              <!-- Figma Card -->
+              <div class="p-5 rounded-xl bg-[#1f2025] border border-[#2a2b30] space-y-3">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-lg bg-purple-500/10 text-purple-400 border border-purple-500/20 flex items-center justify-center">
+                      <span class="material-symbols-outlined text-[20px]">design_services</span>
+                    </div>
+                    <div>
+                      <h3 class="font-semibold text-zinc-100 text-sm">Figma Integration</h3>
+                      <span class="font-mono text-[11px] text-zinc-400">@figma/mcp</span>
+                    </div>
+                  </div>
+                  <span class="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 font-mono text-[11px] font-medium border border-emerald-500/20 flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Active
+                  </span>
+                </div>
+                <div class="p-3 rounded-lg bg-[#121316] font-mono text-[11px] text-zinc-400 space-y-1 border border-[#2a2b30]">
+                  <div>ACCESS TOKEN: <span class="text-amber-500">figd_98412x789...</span></div>
+                  <div>STATUS: <span class="text-emerald-400">Read/Write Specs</span></div>
+                </div>
+                <div class="flex justify-end gap-2 pt-1">
+                  <button onclick="testMcpConnection('figma')" class="px-3 py-1 rounded bg-[#26272e] hover:bg-[#31323a] text-zinc-300 text-xs font-mono">Test Connection</button>
+                </div>
+              </div>
+
+              <!-- Miro Card -->
+              <div class="p-5 rounded-xl bg-[#1f2025] border border-[#2a2b30] space-y-3">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-lg bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 flex items-center justify-center">
+                      <span class="material-symbols-outlined text-[20px]">dashboard_customize</span>
+                    </div>
+                    <div>
+                      <h3 class="font-semibold text-zinc-100 text-sm">Miro Whiteboard</h3>
+                      <span class="font-mono text-[11px] text-zinc-400">mcp-server-miro</span>
+                    </div>
+                  </div>
+                  <span class="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 font-mono text-[11px] font-medium border border-emerald-500/20 flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Active
+                  </span>
+                </div>
+                <div class="p-3 rounded-lg bg-[#121316] font-mono text-[11px] text-zinc-400 space-y-1 border border-[#2a2b30]">
+                  <div>ACCESS TOKEN: <span class="text-amber-500">eyJhbGciOiJIUzI1Ni...</span></div>
+                  <div>STATUS: <span class="text-emerald-400">Stickies & Roadmaps</span></div>
+                </div>
+                <div class="flex justify-end gap-2 pt-1">
+                  <button onclick="testMcpConnection('miro')" class="px-3 py-1 rounded bg-[#26272e] hover:bg-[#31323a] text-zinc-300 text-xs font-mono">Test Connection</button>
+                </div>
+              </div>
+
+              <!-- AGY / Stitch Card -->
+              <div class="p-5 rounded-xl bg-[#1f2025] border border-[#2a2b30] space-y-3">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-lg bg-amber-600/10 text-amber-500 border border-amber-600/20 flex items-center justify-center">
+                      <span class="material-symbols-outlined text-[20px]">terminal</span>
+                    </div>
+                    <div>
+                      <h3 class="font-semibold text-zinc-100 text-sm">Antigravity & Google Stitch Daemon</h3>
+                      <span class="font-mono text-[11px] text-zinc-400">ws://127.0.0.1:3000/bridge</span>
+                    </div>
+                  </div>
+                  <span class="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 font-mono text-[11px] font-medium border border-emerald-500/20 flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Connected
+                  </span>
+                </div>
+                <div class="p-3 rounded-lg bg-[#121316] font-mono text-[11px] text-zinc-400 space-y-1 border border-[#2a2b30]">
+                  <div>LOCAL DAEMON: <span class="text-emerald-400">Listening on port 3000</span></div>
+                  <div>SECURITY: <span class="text-emerald-400">100% Local (Zero Cloud Leakage)</span></div>
+                </div>
+                <div class="flex justify-end gap-2 pt-1">
+                  <button onclick="toggleTerminalDrawer()" class="px-3 py-1 rounded bg-[#26272e] hover:bg-[#31323a] text-zinc-300 text-xs font-mono">View Daemon Logs</button>
+                </div>
+              </div>
+
+            </div>
+          </section>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- ================= EXPANDABLE LOCAL DAEMON TERMINAL DRAWER ================= -->
+    <section class="fixed bottom-8 left-0 right-0 z-40 bg-[#0d0e11] border-t border-[#2a2b30] shadow-xl transition-all duration-300" id="terminal-drawer">
+      <button onclick="toggleTerminalDrawer()" class="w-full px-6 py-2 flex items-center justify-between text-left hover:bg-[#18191d] transition-colors" type="button">
+        <div class="flex items-center gap-2 font-mono text-[11px]">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <span class="text-zinc-300 font-medium">Local Daemon Logs</span>
+          <span class="text-zinc-500">• PID 49201 (ws://127.0.0.1:3000)</span>
+        </div>
+        <div class="flex items-center gap-1.5 text-zinc-400 font-mono text-[11px]">
+          <span id="terminal-toggle-label">Hide log window</span>
+          <span class="material-symbols-outlined text-[16px]" id="terminal-chevron">keyboard_arrow_down</span>
+        </div>
+      </button>
+
+      <div class="p-4 font-mono text-[11px] space-y-1.5 text-zinc-400 max-h-40 overflow-y-auto border-t border-[#2a2b30] bg-[#0d0e11]" id="terminal-content-area">
+        <div class="flex items-start gap-2">
+          <span class="text-zinc-500">[DAEMON]</span>
+          <span class="text-zinc-200 font-medium">MCP server listening on ws://127.0.0.1:3000/bridge</span>
+        </div>
+        <div class="flex items-start gap-2">
+          <span class="text-emerald-400">[SUCCESS]</span>
+          <span class="text-zinc-200">Loaded 13 canonical skills into local workspace registry</span>
+        </div>
+        <div class="flex items-start gap-2">
+          <span class="text-amber-400">[INFO]</span>
+          <span class="text-zinc-200">Connected to Google Stitch Atelier Workspace design system</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= FOOTER BAR ================= -->
+    <footer class="fixed bottom-0 left-0 right-0 z-40 bg-[#0d0e11]/95 backdrop-blur-md border-t border-[#2a2b30]">
+      <div class="h-8 w-full px-6 flex items-center justify-between font-mono text-[11px] text-zinc-400">
+        <span>Localhost: <strong class="text-zinc-200 font-medium">127.0.0.1:3000</strong></span>
+        <div class="flex items-center gap-1.5 text-zinc-400">
+          <span class="material-symbols-outlined text-[13px] text-emerald-500">lock</span>
+          <span>Zero cloud leakage • Sandboxed local execution</span>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- ================= CREDENTIALS EDIT MODAL ================= -->
+  <div id="credential-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="w-full max-w-lg rounded-2xl bg-[#18191d] border border-[#2a2b30] shadow-2xl p-6 space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-[#2a2b30]">
+        <h3 class="font-headline font-bold text-zinc-100 text-lg flex items-center gap-2">
+          <span class="material-symbols-outlined text-amber-500">key</span> MCP Integration Credentials (.env)
+        </h3>
+        <button onclick="closeCredentialModal()" class="text-zinc-400 hover:text-zinc-100 text-xl font-bold">&times;</button>
+      </div>
+
+      <div class="space-y-3 font-mono text-xs">
+        <div>
+          <label class="block text-zinc-400 mb-1">ATLASSIAN_HOST</label>
+          <input type="text" value="https://your-domain.atlassian.net" class="w-full py-1.5 px-3 rounded bg-[#121316] border border-[#2a2b30] text-zinc-100 focus:outline-none focus:border-amber-500"/>
+        </div>
+        <div>
+          <label class="block text-zinc-400 mb-1">ATLASSIAN_EMAIL</label>
+          <input type="text" value="user@company.com" class="w-full py-1.5 px-3 rounded bg-[#121316] border border-[#2a2b30] text-zinc-100 focus:outline-none focus:border-amber-500"/>
+        </div>
+        <div>
+          <label class="block text-zinc-400 mb-1">ATLASSIAN_API_TOKEN</label>
+          <input type="password" value="ATATT3xFfGF0..." class="w-full py-1.5 px-3 rounded bg-[#121316] border border-[#2a2b30] text-zinc-100 focus:outline-none focus:border-amber-500"/>
+        </div>
+        <div>
+          <label class="block text-zinc-400 mb-1">FIGMA_ACCESS_TOKEN</label>
+          <input type="password" value="figd_98412x789..." class="w-full py-1.5 px-3 rounded bg-[#121316] border border-[#2a2b30] text-zinc-100 focus:outline-none focus:border-amber-500"/>
+        </div>
+        <div>
+          <label class="block text-zinc-400 mb-1">MIRO_ACCESS_TOKEN</label>
+          <input type="password" value="eyJhbGciOiJIUzI1Ni..." class="w-full py-1.5 px-3 rounded bg-[#121316] border border-[#2a2b30] text-zinc-100 focus:outline-none focus:border-amber-500"/>
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-[#2a2b30] flex items-center justify-end gap-3">
+        <button onclick="closeCredentialModal()" class="px-4 py-1.5 rounded-lg bg-[#26272e] hover:bg-[#31323a] text-zinc-300 text-xs font-mono">Cancel</button>
+        <button onclick="saveCredentials()" class="px-4 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-500 text-white text-xs font-mono font-semibold">Save to .env</button>
+      </div>
     </div>
-
   </div>
 
-  <!-- ================= MCP CREDENTIAL SETTINGS MODAL ================= -->
-  <div id="mcp-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-2xl max-w-lg w-full overflow-hidden">
-      
-      <div class="p-4 border-b border-slate-800 flex items-center justify-between">
-        <div class="flex items-center space-x-2">
-          <span class="text-lg">🔌</span>
-          <h3 class="font-semibold text-slate-100 text-sm">MCP Integration Credentials</h3>
-        </div>
-        <button onclick="closeModal('mcp-modal')" class="text-slate-500 hover:text-slate-300">✕</button>
-      </div>
-
-      <div class="p-5 space-y-4 text-xs">
-        <p class="text-slate-400">Provide API tokens below. Settings are safely saved to your local <code>.env</code> file.</p>
-
-        <!-- Atlassian -->
-        <div class="space-y-2 border-b border-slate-800/80 pb-3">
-          <div class="font-medium text-slate-200 flex items-center justify-between">
-            <span>Atlassian (Jira & Confluence)</span>
-            <span class="text-emerald-400 text-[10px]">Connected</span>
-          </div>
-          <input type="text" placeholder="ATLASSIAN_HOST (https://your-domain.atlassian.net)" value="https://acme.atlassian.net" class="w-full bg-slate-950 border border-slate-800 rounded px-2.5 py-1.5 text-slate-200">
-          <input type="password" value="••••••••••••••••••••••••" class="w-full bg-slate-950 border border-slate-800 rounded px-2.5 py-1.5 text-slate-200">
-        </div>
-
-        <!-- Figma -->
-        <div class="space-y-2 border-b border-slate-800/80 pb-3">
-          <div class="font-medium text-slate-200 flex items-center justify-between">
-            <span>Figma Access Token</span>
-            <span class="text-emerald-400 text-[10px]">Connected</span>
-          </div>
-          <input type="password" value="••••••••••••••••••••••••" class="w-full bg-slate-950 border border-slate-800 rounded px-2.5 py-1.5 text-slate-200">
-        </div>
-
-        <!-- Miro -->
-        <div class="space-y-2">
-          <div class="font-medium text-slate-200 flex items-center justify-between">
-            <span>Miro Access Token</span>
-            <span class="text-emerald-400 text-[10px]">Connected</span>
-          </div>
-          <input type="password" value="••••••••••••••••••••••••" class="w-full bg-slate-950 border border-slate-800 rounded px-2.5 py-1.5 text-slate-200">
-        </div>
-      </div>
-
-      <div class="p-4 bg-slate-950 border-t border-slate-800 flex items-center justify-between text-xs">
-        <button onclick="closeModal('mcp-modal')" class="text-slate-400 hover:text-slate-200">Cancel</button>
-        <button onclick="closeModal('mcp-modal')" class="bg-indigo-600 hover:bg-indigo-500 text-slate-100 px-4 py-1.5 rounded font-medium">Save & Test Connections</button>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- ================= TOAST NOTIFICATION ================= -->
-  <div id="toast" class="fixed bottom-5 right-5 bg-emerald-600 text-white px-4 py-2.5 rounded-lg shadow-xl text-xs font-medium flex items-center space-x-2 transition-all transform translate-y-10 opacity-0 pointer-events-none z-50">
-    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-    <span id="toast-message">Export to Jira completed successfully! (PROJ-142)</span>
-  </div>
-
-  <!-- ================= JAVASCRIPT LOGIC ================= -->
+  <!-- ================= JAVASCRIPT CONTROLLERS ================= -->
   <script>
-    function setViewport(mode) {
-      const viewport = document.getElementById('app-viewport');
-      const btnDesktop = document.getElementById('btn-desktop');
-      const btnTablet = document.getElementById('btn-tablet');
-      const btnMobile = document.getElementById('btn-mobile');
-
-      // Reset button styles
-      [btnDesktop, btnTablet, btnMobile].forEach(btn => {
-        btn.className = "px-2.5 py-1 rounded-md text-slate-400 hover:text-slate-200 font-medium flex items-center space-x-1.5 transition";
+    // Tab Navigation Logic
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-view').forEach(view => view.classList.add('hidden'));
+      document.querySelectorAll('.nav-tab').forEach(tab => {
+        tab.classList.remove('active', 'bg-[#26272e]', 'text-zinc-100');
+        tab.classList.add('text-zinc-400');
       });
 
-      if (mode === 'desktop') {
-        viewport.style.maxWidth = '100%';
-        btnDesktop.className = "px-2.5 py-1 rounded-md text-slate-100 bg-indigo-600 font-medium flex items-center space-x-1.5 transition";
-      } else if (mode === 'tablet') {
-        viewport.style.maxWidth = '768px';
-        btnTablet.className = "px-2.5 py-1 rounded-md text-slate-100 bg-indigo-600 font-medium flex items-center space-x-1.5 transition";
-      } else if (mode === 'mobile') {
-        viewport.style.maxWidth = '375px';
-        btnMobile.className = "px-2.5 py-1 rounded-md text-slate-100 bg-indigo-600 font-medium flex items-center space-x-1.5 transition";
+      const activeView = document.getElementById('view-' + tabId);
+      const activeTab = document.getElementById('tab-' + tabId);
+      
+      if (activeView) activeView.classList.remove('hidden');
+      if (activeTab) {
+        activeTab.classList.add('active', 'bg-[#26272e]', 'text-zinc-100');
+        activeTab.classList.remove('text-zinc-400');
       }
     }
 
-    function setMode(mode) {
-      ['lean', 'standard', 'enterprise'].forEach(m => {
-        const btn = document.getElementById(`mode-${m}`);
-        if (m === mode) {
-          btn.className = "px-3 py-1 rounded-md text-slate-100 bg-indigo-600 font-medium transition";
-        } else {
-          btn.className = "px-3 py-1 rounded-md text-slate-400 hover:text-slate-200 transition";
+    // Viewport Switcher
+    function setViewport(device) {
+      const wrapper = document.getElementById('viewport-wrapper');
+      const btnDesktop = document.getElementById('vp-desktop');
+      const btnTablet = document.getElementById('vp-tablet');
+      const btnMobile = document.getElementById('vp-mobile');
+
+      [btnDesktop, btnTablet, btnMobile].forEach(btn => {
+        if (btn) {
+          btn.classList.remove('bg-amber-600', 'text-white');
+          btn.classList.add('text-zinc-400');
         }
       });
-      showToast(`Switched PRD mode to: ${mode.toUpperCase()}`);
+
+      if (device === 'mobile') {
+        wrapper.style.maxWidth = '375px';
+        if (btnMobile) btnMobile.classList.add('bg-amber-600', 'text-white');
+      } else if (device === 'tablet') {
+        wrapper.style.maxWidth = '768px';
+        if (btnTablet) btnTablet.classList.add('bg-amber-600', 'text-white');
+      } else {
+        wrapper.style.maxWidth = '100%';
+        if (btnDesktop) btnDesktop.classList.add('bg-amber-600', 'text-white');
+      }
     }
 
-    function runSkill() {
-      const btn = document.getElementById('btn-run');
-      btn.innerHTML = `<svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg> <span>Generating Deliverable...</span>`;
+    // Filter Skills by Category
+    function filterSkills(category, pillEl) {
+      const pills = document.querySelectorAll('.filter-pill');
+      pills.forEach(p => {
+        p.classList.remove('bg-amber-600', 'text-white');
+        p.classList.add('bg-[#1f2025]', 'text-zinc-400');
+      });
+      pillEl.classList.remove('bg-[#1f2025]', 'text-zinc-400');
+      pillEl.classList.add('bg-amber-600', 'text-white');
+
+      const cards = document.querySelectorAll('.skill-card');
+      cards.forEach(card => {
+        if (category === 'all' || card.getAttribute('data-category') === category) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    // Search Skills
+    function searchSkills() {
+      const query = document.getElementById('skill-search-input').value.toLowerCase().trim();
+      const cards = document.querySelectorAll('.skill-card');
+      cards.forEach(card => {
+        const text = card.innerText.toLowerCase();
+        card.style.display = text.includes(query) ? 'flex' : 'none';
+      });
+    }
+
+    // Command + K Shortcut
+    window.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        const input = document.getElementById('skill-search-input');
+        if (input) input.focus();
+      }
+    });
+
+    // Theme Toggle
+    const themeBtn = document.getElementById('theme-toggle-btn');
+    const themeIcon = document.getElementById('theme-icon');
+    const themeLabel = document.getElementById('theme-label');
+    const htmlEl = document.documentElement;
+
+    function setTheme(theme) {
+      if (theme === 'light') {
+        htmlEl.classList.remove('dark');
+        document.body.classList.remove('bg-[#121316]', 'text-[#f4f4f5]');
+        document.body.classList.add('bg-stone-50', 'text-stone-900');
+        if (themeIcon) themeIcon.textContent = 'light_mode';
+        if (themeLabel) themeLabel.textContent = 'Light';
+        localStorage.setItem('pm_theme', 'light');
+      } else {
+        htmlEl.classList.add('dark');
+        document.body.add && document.body.classList.add('bg-[#121316]', 'text-[#f4f4f5]');
+        document.body.classList.remove('bg-stone-50', 'text-stone-900');
+        if (themeIcon) themeIcon.textContent = 'dark_mode';
+        if (themeLabel) themeLabel.textContent = 'Dark';
+        localStorage.setItem('pm_theme', 'dark');
+      }
+    }
+
+    if (themeBtn) {
+      themeBtn.addEventListener('click', () => {
+        const isDark = htmlEl.classList.contains('dark');
+        setTheme(isDark ? 'light' : 'dark');
+      });
+    }
+
+    // Terminal Drawer Toggle
+    let terminalExpanded = true;
+    function toggleTerminalDrawer() {
+      const area = document.getElementById('terminal-content-area');
+      const chevron = document.getElementById('terminal-chevron');
+      const label = document.getElementById('terminal-toggle-label');
       
+      terminalExpanded = !terminalExpanded;
+      if (terminalExpanded) {
+        area.classList.remove('hidden');
+        if (chevron) chevron.textContent = 'keyboard_arrow_down';
+        if (label) label.textContent = 'Hide log window';
+      } else {
+        area.classList.add('hidden');
+        if (chevron) chevron.textContent = 'keyboard_arrow_up';
+        if (label) label.textContent = 'Show log window';
+      }
+    }
+
+    // Launch Skill Wizard Pre-configured
+    function launchSkillWizard(skillName) {
+      switchTab('skill-wizard');
+      const select = document.getElementById('wizard-skill-select');
+      if (select) {
+        select.value = skillName;
+        updateWizardForm();
+      }
+    }
+
+    // Update Form based on Skill
+    function updateWizardForm() {
+      const select = document.getElementById('wizard-skill-select');
+      const filename = document.getElementById('preview-filename');
+      if (select && filename) {
+        const val = select.value;
+        filename.textContent = val.toUpperCase() + '_SPEC.md';
+      }
+    }
+
+    // Execute Skill (Simulated Live Generation)
+    function executeWizardSkill() {
+      const skillName = document.getElementById('wizard-skill-select').value;
+      const featureName = document.getElementById('wizard-feature-name').value || 'PM Command Center UI';
+      const mode = document.getElementById('wizard-mode').value;
+      const preview = document.getElementById('wizard-preview-body');
+
+      preview.innerHTML = `
+        <div class="flex items-center gap-2 text-amber-500 font-mono text-xs py-4">
+          <span class="material-symbols-outlined animate-spin text-[18px]">sync</span>
+          Executing <strong>${skillName}</strong> in <strong>${mode}</strong> mode...
+        </div>
+      `;
+
+      appendDaemonLog(`[EXEC] Executing skill '${skillName}' for '${featureName}' (${mode} mode)`);
+
       setTimeout(() => {
-        btn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg> <span>⚡ Generate PRD Spec</span>`;
-        showToast("PRD successfully generated and saved to workspace!");
+        const markdownOutput = `# 🎯 ${featureName} — Product Requirements Document (PRD)
+
+**Author:** Paula (Lead PM) | **Mode:** ${mode.toUpperCase()} | **Date:** 2026-09-23  
+**Status:** Approved / Ready for Engineering  
+
+---
+
+## 1. Executive Summary
+The **${featureName}** provides a zero-friction, interactive workspace interface wrapped around canonical AI PM skills. It converts terminal CLI skills into a visual dashboard accessible to 100% of product team members.
+
+---
+
+## 2. Problem Statement
+Product Managers need structured PRD generation, INVEST story breakdowns, and 1-click MCP syncing (Jira, Confluence, Figma, Miro) without terminal configuration overhead.
+
+---
+
+## 3. Acceptance Criteria (Gherkin BDD)
+
+\`\`\`gherkin
+Scenario: PM launches skill wizard from GUI
+  Given the PM Command Center UI is open on http://localhost:3000
+  When Paula selects "create-prd" and clicks "Generate Deliverable"
+  Then the system streams live rendered markdown in the right preview pane
+  And displays "1-Click Sync to Jira" action button
+\`\`\`
+
+---
+
+## 4. MCP Sync Targets
+- **Jira Cloud:** Backlog Epics & User Stories
+- **Confluence:** Full PRD Architecture Document
+- **Figma:** UX Wireframe Component Specifications
+- **Miro:** Ideation & Strategy Sticky Boards
+`;
+
+        if (typeof marked !== 'undefined') {
+          preview.innerHTML = marked.parse(markdownOutput);
+        } else {
+          preview.innerHTML = `<pre class="font-mono text-xs text-zinc-300">${markdownOutput}</pre>`;
+        }
+
+        appendDaemonLog(`[SUCCESS] Generated deliverable: ${skillName.toUpperCase()}_SPEC.md`);
       }, 800);
     }
 
-    function triggerMcpSync(tool) {
-      const toolNames = { jira: 'Jira Backlog', confluence: 'Confluence Space', figma: 'Figma Components', miro: 'Miro Board' };
-      showToast(`Exporting to ${toolNames[tool]} via MCP...`);
-    }
-
-    function toggleTerminal() {
-      const drawer = document.getElementById('terminal-drawer');
-      if (drawer.classList.contains('h-36')) {
-        drawer.classList.remove('h-36');
-        drawer.classList.add('h-0', 'overflow-hidden');
-      } else {
-        drawer.classList.remove('h-0', 'overflow-hidden');
-        drawer.classList.add('h-36');
+    // Append Log to Terminal
+    function appendDaemonLog(msg) {
+      const area = document.getElementById('terminal-content-area');
+      if (area) {
+        const div = document.createElement('div');
+        div.className = 'flex items-start gap-2';
+        div.innerHTML = `<span class="text-amber-400">[CLI]</span><span class="text-zinc-200">${msg}</span>`;
+        area.appendChild(div);
+        area.scrollTop = area.scrollHeight;
       }
     }
 
-    function openModal(id) {
-      document.getElementById(id).classList.remove('hidden');
+    // Modal Control
+    function openCredentialModal() {
+      document.getElementById('credential-modal').classList.remove('hidden');
+    }
+    function closeCredentialModal() {
+      document.getElementById('credential-modal').classList.add('hidden');
+    }
+    function saveCredentials() {
+      closeCredentialModal();
+      appendDaemonLog('[SUCCESS] Updated .env file with new MCP tokens');
+      alert('MCP credentials updated successfully!');
     }
 
-    function closeModal(id) {
-      document.getElementById(id).classList.add('hidden');
-    }
-
-    function showToast(msg) {
-      const toast = document.getElementById('toast');
-      document.getElementById('toast-message').innerText = msg;
-      toast.classList.remove('translate-y-10', 'opacity-0', 'pointer-events-none');
+    function testMcpConnection(target) {
+      appendDaemonLog(`[PING] Testing MCP server connection for '${target}'...`);
       setTimeout(() => {
-        toast.classList.add('translate-y-10', 'opacity-0', 'pointer-events-none');
-      }, 3000);
+        appendDaemonLog(`[SUCCESS] '${target}' MCP server responded 200 OK (Latency: 42ms)`);
+        alert(`MCP connection for '${target}' is healthy!`);
+      }, 500);
     }
 
-    function selectSkill(skillId) {
-      showToast(`Switched active skill wizard to: /${skillId}`);
+    function previewArtifact(filename) {
+      switchTab('skill-wizard');
+      const filenameEl = document.getElementById('preview-filename');
+      if (filenameEl) filenameEl.textContent = filename;
+      executeWizardSkill();
+    }
+
+    function downloadArtifact(filename) {
+      alert(`Downloading artifact ${filename} to local downloads folder...`);
+    }
+
+    function copyPreviewContent() {
+      alert('Preview content copied to clipboard!');
+    }
+
+    function syncToJiraFromWizard() {
+      appendDaemonLog('[MCP] Executing sync-jira tool via Atlassian MCP server...');
+      setTimeout(() => {
+        appendDaemonLog('[SUCCESS] Pushed 4 user stories to Jira Epic PROJ-104');
+        alert('Successfully pushed stories to Jira Cloud!');
+      }, 600);
     }
   </script>
+
 </body>
 </html>
