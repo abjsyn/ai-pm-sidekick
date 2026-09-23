@@ -13,7 +13,6 @@
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
-  
   <!-- Marked.js for Markdown Preview -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
@@ -28,13 +27,9 @@
             "surface-container": "#1f2025",
             "surface-container-high": "#26272e",
             "surface-container-highest": "#31323a",
-            "surface-bright": "#34353d",
-            outline: "#a38c7c",
-            "outline-variant": "#2a2b30",
+            outline-variant: "#2a2b30",
             primary: "#f59e0b",
-            "primary-container": "#d97706",
-            secondary: "#80d5cb",
-            "secondary-container": "#0f766e"
+            "primary-container": "#d97706"
           },
           fontFamily: {
             headline: ["Plus Jakarta Sans", "sans-serif"],
@@ -70,10 +65,10 @@
       <div class="flex items-center space-x-2">
         <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
         <span class="font-bold text-amber-500 tracking-wider uppercase">PM Command Center</span>
-        <span class="bg-amber-500/10 text-amber-400 border border-amber-500/20 px-1.5 py-0.2 rounded text-[10px]">Sidepanel Enabled</span>
+        <span class="bg-amber-500/10 text-amber-400 border border-amber-500/20 px-1.5 py-0.2 rounded text-[10px]">Favorites System</span>
       </div>
       <span class="text-zinc-600">|</span>
-      <span class="text-zinc-400 hidden sm:inline text-[11px]">Click any skill in left sidepanel to trigger execution</span>
+      <span class="text-zinc-400 hidden sm:inline text-[11px]">Pin skills with ⭐ to create your custom sidepanel workflow</span>
     </div>
     
     <!-- Viewport Switcher Buttons -->
@@ -97,7 +92,7 @@
       <div class="h-14 w-full px-6 flex items-center justify-between gap-4">
         
         <div class="flex items-center gap-3 shrink-0">
-          <!-- Sidepanel Toggle Button -->
+          <!-- Sidebar Collapse Toggle Button -->
           <button onclick="toggleSidebar()" title="Toggle Side Panel" class="p-1.5 rounded-lg bg-[#26272e] hover:bg-[#31323a] text-zinc-300 transition-colors">
             <span class="material-symbols-outlined text-[20px]" id="sidebar-toggle-icon">menu_open</span>
           </button>
@@ -148,95 +143,172 @@
       </div>
     </header>
 
-    <!-- ================= MAIN LAYOUT WITH SAAS SIDEPANEL ================= -->
+    <!-- ================= MAIN LAYOUT WITH SAAS SIDEPANEL & FAVORITES ================= -->
     <div class="flex-1 flex overflow-hidden">
 
-      <!-- ================= LEFT SAAS SIDE PANEL ================= -->
-      <aside id="main-sidebar" class="sidebar-transition w-60 bg-[#18191d] border-r border-[#2a2b30] flex flex-col justify-between shrink-0 overflow-y-auto z-30">
+      <!-- ================= LEFT SAAS SIDE PANEL WITH PINNED FAVORITES ================= -->
+      <aside id="main-sidebar" class="sidebar-transition w-64 bg-[#18191d] border-r border-[#2a2b30] flex flex-col justify-between shrink-0 overflow-y-auto z-30">
         
         <div class="p-3 space-y-4">
-          <div class="px-2 pt-1 flex items-center justify-between sidebar-label">
-            <span class="font-mono text-[10px] font-bold text-zinc-400 tracking-wider uppercase">Product Skills (13)</span>
+          
+          <!-- Filter Search in Sidebar -->
+          <div class="px-1 sidebar-label">
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-zinc-500 text-[14px]">search</span>
+              <input type="text" id="sidepanel-search" onkeyup="filterSidebarSkills()" placeholder="Search sidepanel skills..." class="w-full py-1 pl-7 pr-2 rounded bg-[#121316] border border-[#2a2b30] text-zinc-100 text-[11px] focus:outline-none focus:border-amber-500"/>
+            </div>
           </div>
+
+          <!-- SECTION 0: ⭐ PINNED FAVORITES SECTION -->
+          <div class="space-y-1" id="sidepanel-favorites-section">
+            <div class="px-2 text-[10px] font-mono text-amber-400 uppercase tracking-wider font-bold sidebar-label flex items-center gap-1">
+              <span class="material-symbols-outlined text-[13px] text-amber-400">star</span> Pinned Favorites
+            </div>
+            <div id="favorites-list" class="space-y-1">
+              <!-- Dynamically populated from localStorage favorites -->
+            </div>
+          </div>
+
+          <hr class="border-[#2a2b30] my-2 sidebar-label"/>
 
           <!-- SECTION 1: STRATEGY & PRD -->
           <div class="space-y-1">
             <div class="px-2 text-[10px] font-mono text-zinc-500 uppercase tracking-wider font-semibold sidebar-label">Strategy & PRD</div>
             
-            <button onclick="triggerSkillFromSidepanel('create-prd')" class="w-full p-2 rounded-lg text-left hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center gap-2.5 transition-colors group">
-              <span class="material-symbols-outlined text-[18px] text-amber-500 shrink-0">description</span>
-              <span class="text-[13px] font-medium truncate sidebar-label">PRD Generator</span>
-            </button>
+            <div data-skill-id="create-prd" class="sidebar-skill-item w-full p-2 rounded-lg hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center justify-between transition-colors group cursor-pointer" onclick="triggerSkillFromSidepanel('create-prd')">
+              <div class="flex items-center gap-2.5 truncate">
+                <span class="material-symbols-outlined text-[18px] text-amber-500 shrink-0">description</span>
+                <span class="text-[13px] font-medium truncate sidebar-label">PRD Generator</span>
+              </div>
+              <button onclick="toggleFavorite('create-prd', event)" title="Pin to Favorites" class="opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
+                <span class="material-symbols-outlined text-[16px]" id="fav-icon-create-prd">star_outline</span>
+              </button>
+            </div>
 
-            <button onclick="triggerSkillFromSidepanel('brainstorm')" class="w-full p-2 rounded-lg text-left hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center gap-2.5 transition-colors group">
-              <span class="material-symbols-outlined text-[18px] text-amber-500 shrink-0">psychology_alt</span>
-              <span class="text-[13px] font-medium truncate sidebar-label">Opportunity Brainstorm</span>
-            </button>
+            <div data-skill-id="brainstorm" class="sidebar-skill-item w-full p-2 rounded-lg hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center justify-between transition-colors group cursor-pointer" onclick="triggerSkillFromSidepanel('brainstorm')">
+              <div class="flex items-center gap-2.5 truncate">
+                <span class="material-symbols-outlined text-[18px] text-amber-500 shrink-0">psychology_alt</span>
+                <span class="text-[13px] font-medium truncate sidebar-label">Opportunity Brainstorm</span>
+              </div>
+              <button onclick="toggleFavorite('brainstorm', event)" title="Pin to Favorites" class="opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
+                <span class="material-symbols-outlined text-[16px]" id="fav-icon-brainstorm">star_outline</span>
+              </button>
+            </div>
 
-            <button onclick="triggerSkillFromSidepanel('validate-idea')" class="w-full p-2 rounded-lg text-left hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center gap-2.5 transition-colors group">
-              <span class="material-symbols-outlined text-[18px] text-red-400 shrink-0">fact_check</span>
-              <span class="text-[13px] font-medium truncate sidebar-label">Idea Validator</span>
-            </button>
+            <div data-skill-id="validate-idea" class="sidebar-skill-item w-full p-2 rounded-lg hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center justify-between transition-colors group cursor-pointer" onclick="triggerSkillFromSidepanel('validate-idea')">
+              <div class="flex items-center gap-2.5 truncate">
+                <span class="material-symbols-outlined text-[18px] text-red-400 shrink-0">fact_check</span>
+                <span class="text-[13px] font-medium truncate sidebar-label">Idea Validator</span>
+              </div>
+              <button onclick="toggleFavorite('validate-idea', event)" title="Pin to Favorites" class="opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
+                <span class="material-symbols-outlined text-[16px]" id="fav-icon-validate-idea">star_outline</span>
+              </button>
+            </div>
 
-            <button onclick="triggerSkillFromSidepanel('create-documentation')" class="w-full p-2 rounded-lg text-left hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center gap-2.5 transition-colors group">
-              <span class="material-symbols-outlined text-[18px] text-zinc-400 shrink-0">menu_book</span>
-              <span class="text-[13px] font-medium truncate sidebar-label">Technical Docs</span>
-            </button>
+            <div data-skill-id="create-documentation" class="sidebar-skill-item w-full p-2 rounded-lg hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center justify-between transition-colors group cursor-pointer" onclick="triggerSkillFromSidepanel('create-documentation')">
+              <div class="flex items-center gap-2.5 truncate">
+                <span class="material-symbols-outlined text-[18px] text-zinc-400 shrink-0">menu_book</span>
+                <span class="text-[13px] font-medium truncate sidebar-label">Technical Docs</span>
+              </div>
+              <button onclick="toggleFavorite('create-documentation', event)" title="Pin to Favorites" class="opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
+                <span class="material-symbols-outlined text-[16px]" id="fav-icon-create-documentation">star_outline</span>
+              </button>
+            </div>
           </div>
 
           <!-- SECTION 2: STORIES & BACKLOG -->
           <div class="space-y-1">
             <div class="px-2 text-[10px] font-mono text-zinc-500 uppercase tracking-wider font-semibold sidebar-label">Stories & Backlog</div>
             
-            <button onclick="triggerSkillFromSidepanel('create-user-stories')" class="w-full p-2 rounded-lg text-left hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center gap-2.5 transition-colors group">
-              <span class="material-symbols-outlined text-[18px] text-blue-400 shrink-0">splitscreen</span>
-              <span class="text-[13px] font-medium truncate sidebar-label">INVEST User Stories</span>
-            </button>
+            <div data-skill-id="create-user-stories" class="sidebar-skill-item w-full p-2 rounded-lg hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center justify-between transition-colors group cursor-pointer" onclick="triggerSkillFromSidepanel('create-user-stories')">
+              <div class="flex items-center gap-2.5 truncate">
+                <span class="material-symbols-outlined text-[18px] text-blue-400 shrink-0">splitscreen</span>
+                <span class="text-[13px] font-medium truncate sidebar-label">INVEST User Stories</span>
+              </div>
+              <button onclick="toggleFavorite('create-user-stories', event)" title="Pin to Favorites" class="opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
+                <span class="material-symbols-outlined text-[16px]" id="fav-icon-create-user-stories">star_outline</span>
+              </button>
+            </div>
 
-            <button onclick="triggerSkillFromSidepanel('refine-user-stories')" class="w-full p-2 rounded-lg text-left hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center gap-2.5 transition-colors group">
-              <span class="material-symbols-outlined text-[18px] text-blue-400 shrink-0">tune</span>
-              <span class="text-[13px] font-medium truncate sidebar-label">Story Refinement</span>
-            </button>
+            <div data-skill-id="refine-user-stories" class="sidebar-skill-item w-full p-2 rounded-lg hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center justify-between transition-colors group cursor-pointer" onclick="triggerSkillFromSidepanel('refine-user-stories')">
+              <div class="flex items-center gap-2.5 truncate">
+                <span class="material-symbols-outlined text-[18px] text-blue-400 shrink-0">tune</span>
+                <span class="text-[13px] font-medium truncate sidebar-label">Story Refinement</span>
+              </div>
+              <button onclick="toggleFavorite('refine-user-stories', event)" title="Pin to Favorites" class="opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
+                <span class="material-symbols-outlined text-[16px]" id="fav-icon-refine-user-stories">star_outline</span>
+              </button>
+            </div>
           </div>
 
           <!-- SECTION 3: DESIGN -->
           <div class="space-y-1">
             <div class="px-2 text-[10px] font-mono text-zinc-500 uppercase tracking-wider font-semibold sidebar-label">Design & Wireframe</div>
 
-            <button onclick="triggerSkillFromSidepanel('create-mockup')" class="w-full p-2 rounded-lg text-left hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center gap-2.5 transition-colors group">
-              <span class="material-symbols-outlined text-[18px] text-teal-400 shrink-0">web</span>
-              <span class="text-[13px] font-medium truncate sidebar-label">HTML Wireframe</span>
-            </button>
+            <div data-skill-id="create-mockup" class="sidebar-skill-item w-full p-2 rounded-lg hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center justify-between transition-colors group cursor-pointer" onclick="triggerSkillFromSidepanel('create-mockup')">
+              <div class="flex items-center gap-2.5 truncate">
+                <span class="material-symbols-outlined text-[18px] text-teal-400 shrink-0">web</span>
+                <span class="text-[13px] font-medium truncate sidebar-label">HTML Wireframe</span>
+              </div>
+              <button onclick="toggleFavorite('create-mockup', event)" title="Pin to Favorites" class="opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
+                <span class="material-symbols-outlined text-[16px]" id="fav-icon-create-mockup">star_outline</span>
+              </button>
+            </div>
 
-            <button onclick="triggerSkillFromSidepanel('create-design-brief')" class="w-full p-2 rounded-lg text-left hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center gap-2.5 transition-colors group">
-              <span class="material-symbols-outlined text-[18px] text-teal-400 shrink-0">palette</span>
-              <span class="text-[13px] font-medium truncate sidebar-label">UI/UX Design Brief</span>
-            </button>
+            <div data-skill-id="create-design-brief" class="sidebar-skill-item w-full p-2 rounded-lg hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center justify-between transition-colors group cursor-pointer" onclick="triggerSkillFromSidepanel('create-design-brief')">
+              <div class="flex items-center gap-2.5 truncate">
+                <span class="material-symbols-outlined text-[18px] text-teal-400 shrink-0">palette</span>
+                <span class="text-[13px] font-medium truncate sidebar-label">UI/UX Design Brief</span>
+              </div>
+              <button onclick="toggleFavorite('create-design-brief', event)" title="Pin to Favorites" class="opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
+                <span class="material-symbols-outlined text-[16px]" id="fav-icon-create-design-brief">star_outline</span>
+              </button>
+            </div>
           </div>
 
           <!-- SECTION 4: MCP -->
           <div class="space-y-1">
             <div class="px-2 text-[10px] font-mono text-zinc-500 uppercase tracking-wider font-semibold sidebar-label">MCP Sync</div>
 
-            <button onclick="triggerSkillFromSidepanel('sync-jira')" class="w-full p-2 rounded-lg text-left hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center gap-2.5 transition-colors group">
-              <span class="material-symbols-outlined text-[18px] text-blue-400 shrink-0">sync_alt</span>
-              <span class="text-[13px] font-medium truncate sidebar-label">Sync to Jira</span>
-            </button>
+            <div data-skill-id="sync-jira" class="sidebar-skill-item w-full p-2 rounded-lg hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center justify-between transition-colors group cursor-pointer" onclick="triggerSkillFromSidepanel('sync-jira')">
+              <div class="flex items-center gap-2.5 truncate">
+                <span class="material-symbols-outlined text-[18px] text-blue-400 shrink-0">sync_alt</span>
+                <span class="text-[13px] font-medium truncate sidebar-label">Sync to Jira</span>
+              </div>
+              <button onclick="toggleFavorite('sync-jira', event)" title="Pin to Favorites" class="opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
+                <span class="material-symbols-outlined text-[16px]" id="fav-icon-sync-jira">star_outline</span>
+              </button>
+            </div>
 
-            <button onclick="triggerSkillFromSidepanel('sync-confluence')" class="w-full p-2 rounded-lg text-left hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center gap-2.5 transition-colors group">
-              <span class="material-symbols-outlined text-[18px] text-blue-400 shrink-0">cloud_upload</span>
-              <span class="text-[13px] font-medium truncate sidebar-label">Publish Confluence</span>
-            </button>
+            <div data-skill-id="sync-confluence" class="sidebar-skill-item w-full p-2 rounded-lg hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center justify-between transition-colors group cursor-pointer" onclick="triggerSkillFromSidepanel('sync-confluence')">
+              <div class="flex items-center gap-2.5 truncate">
+                <span class="material-symbols-outlined text-[18px] text-blue-400 shrink-0">cloud_upload</span>
+                <span class="text-[13px] font-medium truncate sidebar-label">Publish Confluence</span>
+              </div>
+              <button onclick="toggleFavorite('sync-confluence', event)" title="Pin to Favorites" class="opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
+                <span class="material-symbols-outlined text-[16px]" id="fav-icon-sync-confluence">star_outline</span>
+              </button>
+            </div>
 
-            <button onclick="triggerSkillFromSidepanel('sync-figma')" class="w-full p-2 rounded-lg text-left hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center gap-2.5 transition-colors group">
-              <span class="material-symbols-outlined text-[18px] text-purple-400 shrink-0">design_services</span>
-              <span class="text-[13px] font-medium truncate sidebar-label">Figma Sync</span>
-            </button>
+            <div data-skill-id="sync-figma" class="sidebar-skill-item w-full p-2 rounded-lg hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center justify-between transition-colors group cursor-pointer" onclick="triggerSkillFromSidepanel('sync-figma')">
+              <div class="flex items-center gap-2.5 truncate">
+                <span class="material-symbols-outlined text-[18px] text-purple-400 shrink-0">design_services</span>
+                <span class="text-[13px] font-medium truncate sidebar-label">Figma Sync</span>
+              </div>
+              <button onclick="toggleFavorite('sync-figma', event)" title="Pin to Favorites" class="opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
+                <span class="material-symbols-outlined text-[16px]" id="fav-icon-sync-figma">star_outline</span>
+              </button>
+            </div>
 
-            <button onclick="triggerSkillFromSidepanel('sync-miro')" class="w-full p-2 rounded-lg text-left hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center gap-2.5 transition-colors group">
-              <span class="material-symbols-outlined text-[18px] text-yellow-400 shrink-0">dashboard_customize</span>
-              <span class="text-[13px] font-medium truncate sidebar-label">Miro Stickies</span>
-            </button>
+            <div data-skill-id="sync-miro" class="sidebar-skill-item w-full p-2 rounded-lg hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center justify-between transition-colors group cursor-pointer" onclick="triggerSkillFromSidepanel('sync-miro')">
+              <div class="flex items-center gap-2.5 truncate">
+                <span class="material-symbols-outlined text-[18px] text-yellow-400 shrink-0">dashboard_customize</span>
+                <span class="text-[13px] font-medium truncate sidebar-label">Miro Stickies</span>
+              </div>
+              <button onclick="toggleFavorite('sync-miro', event)" title="Pin to Favorites" class="opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
+                <span class="material-symbols-outlined text-[16px]" id="fav-icon-sync-miro">star_outline</span>
+              </button>
+            </div>
           </div>
 
         </div>
@@ -244,7 +316,7 @@
         <div class="p-3 border-t border-[#2a2b30] bg-[#121316]/50">
           <div class="flex items-center gap-2 font-mono text-[10px] text-zinc-400 sidebar-label">
             <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-            <span>Local Daemon Active</span>
+            <span>REST Daemon Listening</span>
           </div>
         </div>
       </aside>
@@ -262,10 +334,10 @@
                 <div>
                   <div class="flex items-center gap-2 mb-2">
                     <span class="w-2 h-2 rounded-full bg-amber-500"></span>
-                    <span class="font-mono text-[11px] text-amber-400 font-medium tracking-wider uppercase">Local PM Workbench • Active Sidepanel</span>
+                    <span class="font-mono text-[11px] text-amber-400 font-medium tracking-wider uppercase">Local PM Workbench • Pinned Favorites Navigation</span>
                   </div>
                   <h1 class="font-headline text-2xl md:text-3xl text-zinc-100 font-bold tracking-tight">Welcome back, Paula</h1>
-                  <p class="text-sm md:text-base text-zinc-400 mt-1">Select any skill from the left sidepanel or grid below to launch deliverables.</p>
+                  <p class="text-sm md:text-base text-zinc-400 mt-1">Pin your most frequently used product skills with ⭐ in the left sidepanel.</p>
                 </div>
                 <div class="flex items-center gap-4 self-start md:self-auto">
                   <div class="px-5 py-3 rounded-xl bg-[#1f2025] border border-[#2a2b30] flex flex-col">
@@ -273,8 +345,8 @@
                     <span class="font-headline text-2xl text-zinc-100 font-bold mt-0.5" id="stat-artifact-count">0</span>
                   </div>
                   <div class="px-5 py-3 rounded-xl bg-[#1f2025] border border-[#2a2b30] flex flex-col">
-                    <span class="font-mono text-[11px] text-zinc-400 uppercase font-medium">Canonical Skills</span>
-                    <span class="font-headline text-2xl text-amber-500 font-bold mt-0.5">13</span>
+                    <span class="font-mono text-[11px] text-amber-400 uppercase font-medium">⭐ Pinned Skills</span>
+                    <span class="font-headline text-2xl text-amber-400 font-bold mt-0.5" id="stat-favorites-count">0</span>
                   </div>
                 </div>
               </div>
@@ -283,23 +355,26 @@
             <!-- Skills Grid -->
             <section class="w-full">
               <div class="flex items-center justify-between mb-4">
-                <h2 class="font-headline text-lg md:text-xl text-zinc-100 font-semibold tracking-tight">Product Skills Grid</h2>
+                <h2 class="font-headline text-lg md:text-xl text-zinc-100 font-semibold tracking-tight">Product Skills</h2>
                 <span class="font-mono text-[11px] text-zinc-400">Trigger directly from sidepanel or cards below</span>
               </div>
 
               <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="skills-grid">
                 
-                <div onclick="launchSkillWizard('create-prd')" class="group p-5 rounded-xl bg-[#1f2025] hover:bg-[#26272e] border border-[#2a2b30] transition-all cursor-pointer">
+                <div onclick="launchSkillWizard('create-prd')" class="group p-5 rounded-xl bg-[#1f2025] hover:bg-[#26272e] border border-[#2a2b30] transition-all cursor-pointer flex items-center justify-between">
                   <div class="flex items-center gap-3">
                     <span class="material-symbols-outlined text-[24px] text-amber-500">description</span>
                     <div>
                       <h3 class="font-headline font-semibold text-zinc-100 text-sm">PRD Generator</h3>
-                      <p class="text-zinc-400 text-xs mt-0.5">Lean, Standard, Enterprise PRD specs</p>
+                      <p class="text-zinc-400 text-xs mt-0.5">Lean, Standard, Enterprise PRDs</p>
                     </div>
                   </div>
+                  <button onclick="toggleFavorite('create-prd', event)" class="text-zinc-500 hover:text-amber-400 p-1">
+                    <span class="material-symbols-outlined text-[18px]" id="grid-fav-create-prd">star_outline</span>
+                  </button>
                 </div>
 
-                <div onclick="launchSkillWizard('create-user-stories')" class="group p-5 rounded-xl bg-[#1f2025] hover:bg-[#26272e] border border-[#2a2b30] transition-all cursor-pointer">
+                <div onclick="launchSkillWizard('create-user-stories')" class="group p-5 rounded-xl bg-[#1f2025] hover:bg-[#26272e] border border-[#2a2b30] transition-all cursor-pointer flex items-center justify-between">
                   <div class="flex items-center gap-3">
                     <span class="material-symbols-outlined text-[24px] text-blue-400">splitscreen</span>
                     <div>
@@ -307,9 +382,12 @@
                       <p class="text-zinc-400 text-xs mt-0.5">Sprint-ready Gherkin stories</p>
                     </div>
                   </div>
+                  <button onclick="toggleFavorite('create-user-stories', event)" class="text-zinc-500 hover:text-amber-400 p-1">
+                    <span class="material-symbols-outlined text-[18px]" id="grid-fav-create-user-stories">star_outline</span>
+                  </button>
                 </div>
 
-                <div onclick="launchSkillWizard('create-mockup')" class="group p-5 rounded-xl bg-[#1f2025] hover:bg-[#26272e] border border-[#2a2b30] transition-all cursor-pointer">
+                <div onclick="launchSkillWizard('create-mockup')" class="group p-5 rounded-xl bg-[#1f2025] hover:bg-[#26272e] border border-[#2a2b30] transition-all cursor-pointer flex items-center justify-between">
                   <div class="flex items-center gap-3">
                     <span class="material-symbols-outlined text-[24px] text-teal-400">web</span>
                     <div>
@@ -317,6 +395,9 @@
                       <p class="text-zinc-400 text-xs mt-0.5">Clickable Tailwind prototypes</p>
                     </div>
                   </div>
+                  <button onclick="toggleFavorite('create-mockup', event)" class="text-zinc-500 hover:text-amber-400 p-1">
+                    <span class="material-symbols-outlined text-[18px]" id="grid-fav-create-mockup">star_outline</span>
+                  </button>
                 </div>
 
               </div>
@@ -370,7 +451,7 @@
 
                   <div>
                     <label class="block text-xs font-mono uppercase text-zinc-400 mb-1.5">Feature Name / Subject</label>
-                    <input type="text" id="wizard-feature-name" value="Sidepanel Navigation Panel" class="w-full py-2 px-3 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-[13px] focus:outline-none focus:border-amber-500"/>
+                    <input type="text" id="wizard-feature-name" value="Sidepanel Favorites Navigation" class="w-full py-2 px-3 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-[13px] focus:outline-none focus:border-amber-500"/>
                   </div>
 
                   <div class="grid grid-cols-2 gap-3">
@@ -390,7 +471,7 @@
 
                   <div>
                     <label class="block text-xs font-mono uppercase text-zinc-400 mb-1.5">Requirements & Objectives</label>
-                    <textarea id="wizard-requirements" rows="4" class="w-full py-2 px-3 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-[13px]" placeholder="Enter feature requirements...">Left side menu panel allowing users to trigger all 13 product skills directly.</textarea>
+                    <textarea id="wizard-requirements" rows="4" class="w-full py-2 px-3 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-[13px]" placeholder="Enter feature requirements...">Left side panel navigation with ability to pin favorite skills with star icons.</textarea>
                   </div>
 
                   <button onclick="executeWizardSkill()" class="w-full py-2.5 rounded-lg bg-amber-600 hover:bg-amber-500 text-white font-semibold text-[13px] transition-colors flex items-center justify-center gap-2">
@@ -438,14 +519,111 @@
 
   </div>
 
-  <!-- JAVASCRIPT CONTROLLERS -->
+  <!-- JAVASCRIPT CONTROLLERS WITH FAVORITES SYSTEM -->
   <script>
     let globalArtifacts = [];
     let currentPreviewContent = '';
     let sidebarExpanded = true;
+    
+    // Skills dictionary for titles and icons
+    const SKILL_DETAILS = {
+      'create-prd': { name: 'PRD Generator', icon: 'description', color: 'text-amber-500' },
+      'create-user-stories': { name: 'INVEST User Stories', icon: 'splitscreen', color: 'text-blue-400' },
+      'refine-user-stories': { name: 'Story Refinement', icon: 'tune', color: 'text-blue-400' },
+      'create-mockup': { name: 'HTML Wireframe', icon: 'web', color: 'text-teal-400' },
+      'create-design-brief': { name: 'UI/UX Design Brief', icon: 'palette', color: 'text-teal-400' },
+      'create-documentation': { name: 'Technical Docs', icon: 'menu_book', color: 'text-zinc-400' },
+      'brainstorm': { name: 'Opportunity Brainstorm', icon: 'psychology_alt', color: 'text-amber-500' },
+      'validate-idea': { name: 'Idea Validator', icon: 'fact_check', color: 'text-red-400' },
+      'sync-jira': { name: 'Sync to Jira', icon: 'sync_alt', color: 'text-blue-400' },
+      'sync-confluence': { name: 'Publish Confluence', icon: 'cloud_upload', color: 'text-blue-400' },
+      'sync-figma': { name: 'Figma Sync', icon: 'design_services', color: 'text-purple-400' },
+      'sync-miro': { name: 'Miro Stickies', icon: 'dashboard_customize', color: 'text-yellow-400' }
+    };
+
+    // Load Pinned Favorites from localStorage
+    function getFavoriteSkills() {
+      try {
+        const stored = localStorage.getItem('pm_favorite_skills');
+        return stored ? JSON.parse(stored) : ['create-prd', 'create-user-stories', 'create-mockup'];
+      } catch (e) {
+        return ['create-prd', 'create-user-stories', 'create-mockup'];
+      }
+    }
+
+    function saveFavoriteSkills(favs) {
+      localStorage.setItem('pm_favorite_skills', JSON.stringify(favs));
+      renderFavoritesSection();
+      updateFavoriteIcons();
+    }
+
+    function toggleFavorite(skillId, event) {
+      if (event) event.stopPropagation(); // prevent triggering skill launch on star click
+      let favs = getFavoriteSkills();
+      if (favs.includes(skillId)) {
+        favs = favs.filter(id => id !== skillId);
+      } else {
+        favs.push(skillId);
+      }
+      saveFavoriteSkills(favs);
+    }
+
+    function renderFavoritesSection() {
+      const favs = getFavoriteSkills();
+      const container = document.getElementById('favorites-list');
+      const section = document.getElementById('sidepanel-favorites-section');
+      const badgeCount = document.getElementById('stat-favorites-count');
+
+      if (badgeCount) badgeCount.textContent = favs.length;
+
+      if (!container) return;
+
+      if (favs.length === 0) {
+        container.innerHTML = `<div class="px-2 py-1 text-[11px] text-zinc-500 italic sidebar-label">No pinned skills yet. Click ⭐ to pin.</div>`;
+        return;
+      }
+
+      container.innerHTML = favs.map(skillId => {
+        const info = SKILL_DETAILS[skillId] || { name: skillId, icon: 'star', color: 'text-amber-400' };
+        return `
+          <div data-skill-id="${skillId}" class="sidebar-skill-item w-full p-2 rounded-lg bg-[#26272e]/60 hover:bg-[#26272e] text-zinc-200 hover:text-zinc-100 flex items-center justify-between transition-colors group cursor-pointer border border-amber-500/20" onclick="triggerSkillFromSidepanel('${skillId}')">
+            <div class="flex items-center gap-2.5 truncate">
+              <span class="material-symbols-outlined text-[18px] ${info.color} shrink-0">${info.icon}</span>
+              <span class="text-[13px] font-semibold truncate sidebar-label text-zinc-100">${info.name}</span>
+            </div>
+            <button onclick="toggleFavorite('${skillId}', event)" title="Unpin from Favorites" class="p-0.5 text-amber-400 hover:text-red-400">
+              <span class="material-symbols-outlined text-[16px]">star</span>
+            </button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function updateFavoriteIcons() {
+      const favs = getFavoriteSkills();
+      Object.keys(SKILL_DETAILS).forEach(skillId => {
+        const sideIcon = document.getElementById(`fav-icon-${skillId}`);
+        const gridIcon = document.getElementById(`grid-fav-${skillId}`);
+        const isFav = favs.includes(skillId);
+
+        [sideIcon, gridIcon].forEach(icon => {
+          if (icon) {
+            icon.textContent = isFav ? 'star' : 'star_outline';
+            if (isFav) {
+              icon.classList.add('text-amber-400');
+              icon.classList.remove('text-zinc-500');
+            } else {
+              icon.classList.remove('text-amber-400');
+            }
+          }
+        });
+      });
+    }
 
     document.addEventListener('DOMContentLoaded', () => {
       loadArtifactsFromApi();
+      renderFavoritesSection();
+      updateFavoriteIcons();
     });
 
     function toggleSidebar() {
@@ -456,11 +634,11 @@
       sidebarExpanded = !sidebarExpanded;
       if (sidebarExpanded) {
         sidebar.classList.remove('w-16');
-        sidebar.classList.add('w-60');
+        sidebar.classList.add('w-64');
         labels.forEach(l => l.classList.remove('hidden'));
         if (toggleIcon) toggleIcon.textContent = 'menu_open';
       } else {
-        sidebar.classList.remove('w-60');
+        sidebar.classList.remove('w-64');
         sidebar.classList.add('w-16');
         labels.forEach(l => l.classList.add('hidden'));
         if (toggleIcon) toggleIcon.textContent = 'menu';
@@ -562,7 +740,7 @@
 
     async function executeWizardSkill() {
       const skillName = document.getElementById('wizard-skill-select').value;
-      const featureName = document.getElementById('wizard-feature-name').value || 'Sidepanel Navigation';
+      const featureName = document.getElementById('wizard-feature-name').value || 'Sidepanel Favorites Navigation';
       const mode = document.getElementById('wizard-mode').value;
       const persona = document.getElementById('wizard-persona').value;
       const requirements = document.getElementById('wizard-requirements').value;
@@ -606,6 +784,15 @@
       } catch (err) {
         preview.innerHTML = `<div class="text-red-400 text-xs">Error loading file</div>`;
       }
+    }
+
+    function filterSidebarSkills() {
+      const q = document.getElementById('sidepanel-search').value.toLowerCase().trim();
+      const items = document.querySelectorAll('.sidebar-skill-item');
+      items.forEach(item => {
+        const text = item.innerText.toLowerCase();
+        item.style.display = text.includes(q) ? 'flex' : 'none';
+      });
     }
 
     function copyPreviewContent() {
