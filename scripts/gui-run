@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# AI PM Sidekick — Quick GUI Launcher Script
+# Launches the local web server and opens the PM Command Center in your web browser.
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT_DIR="$(dirname "$SCRIPT_DIR")"
+
+echo "🚀 Starting AI PM Sidekick — PM Command Center UI..."
+python3 "$ROOT_DIR/scripts/launch-ui.py" --open "$@"
