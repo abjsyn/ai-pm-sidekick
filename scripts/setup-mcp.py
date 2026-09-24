@@ -44,6 +44,13 @@ DEFAULT_CONFIG = {
             "env": {
                 "MIRO_ACCESS_TOKEN": "${MIRO_ACCESS_TOKEN}"
             }
+        },
+        "stitch": {
+            "command": "npx",
+            "args": ["-y", "@_davideast/stitch-mcp", "proxy"],
+            "env": {
+                "STITCH_API_KEY": "${STITCH_API_KEY}"
+            }
         }
     }
 }
@@ -61,6 +68,20 @@ FIGMA_ACCESS_TOKEN=your_figma_personal_access_token_here
 
 # --- Miro ---
 MIRO_ACCESS_TOKEN=your_miro_access_token_here
+
+# --- Google Stitch ---
+STITCH_API_KEY=your_stitch_api_key_here
+
+# --- User Profile & PM Persona ---
+USER_NAME=Paula (Lead PM)
+USER_EMAIL=paula.pm@company.com
+DEFAULT_PERSONA=paula
+
+# --- Skill Execution Defaults ---
+DEFAULT_PRD_MODE=standard
+DEFAULT_AC_FORMAT=gherkin
+DEFAULT_STORY_SCALE=fibonacci
+DEFAULT_UI_THEME=stitch
 """
 
 def load_env_file(env_path):
@@ -126,16 +147,17 @@ def check_status():
     req_vars = {
         "Atlassian": ["ATLASSIAN_HOST", "ATLASSIAN_EMAIL", "ATLASSIAN_API_TOKEN"],
         "Figma": ["FIGMA_ACCESS_TOKEN"],
-        "Miro": ["MIRO_ACCESS_TOKEN"]
+        "Miro": ["MIRO_ACCESS_TOKEN"],
+        "Google Stitch": ["STITCH_API_KEY"]
     }
     
     print("\n🔐 Credential Check:")
     for tool, vars_list in req_vars.items():
         missing = [v for v in vars_list if not env_vars.get(v) and not os.environ.get(v) or env_vars.get(v, "").startswith("your_")]
         if not missing:
-            print(f"  • {tool:<12}: ✅ All credentials configured")
+            print(f"  • {tool:<14}: ✅ All credentials configured")
         else:
-            print(f"  • {tool:<12}: ⚠️  Missing or default: {', '.join(missing)}")
+            print(f"  • {tool:<14}: ⚠️  Missing or default: {', '.join(missing)}")
             
     print("\n📁 Checking Target Configuration Files:")
     for p in [ROOT_DIR / ".agents" / "mcp.json", ROOT_DIR / ".claude" / "mcp.json", ROOT_DIR / ".cursor" / "mcp.json"]:
@@ -148,7 +170,7 @@ def main():
     parser = argparse.ArgumentParser(description="Configure MCP integrations for AI PM Sidekick.")
     parser.add_argument("--target", choices=["agy", "claude", "cursor", "root", "all"], default="all",
                         help="Target AI environment configuration file (default: all)")
-    parser.add_argument("--tool", choices=["atlassian", "figma", "miro", "all"], default="all",
+    parser.add_argument("--tool", choices=["atlassian", "figma", "miro", "stitch", "all"], default="all",
                         help="Specific tool integration to enable (default: all)")
     parser.add_argument("--check", action="store_true", help="Check setup readiness and credentials")
     parser.add_argument("--interactive", action="store_true", help="Prompt interactively for credentials")
@@ -187,6 +209,12 @@ def main():
             print("\n--- Miro Setup ---")
             miro_token = input(f"Miro Access Token [{env_vars.get('MIRO_ACCESS_TOKEN', '')}]: ").strip()
             if miro_token: env_vars['MIRO_ACCESS_TOKEN'] = miro_token
+
+        # Google Stitch
+        if args.tool in ("stitch", "all"):
+            print("\n--- Google Stitch Setup ---")
+            stitch_key = input(f"Google Stitch API Key [{env_vars.get('STITCH_API_KEY', '')}]: ").strip()
+            if stitch_key: env_vars['STITCH_API_KEY'] = stitch_key
 
         # Save to .env
         env_content = "\n".join([f"{k}={v}" for k, v in env_vars.items()])

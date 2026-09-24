@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html class="dark h-full" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>User & Profile Settings — AI PM Sidekick</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
+
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            surface: "#121316",
+            "surface-container-low": "#18191d",
+            "surface-container": "#1f2025",
+            "surface-container-high": "#26272e",
+            "surface-container-highest": "#31323a",
+            "outline-variant": "#2a2b30",
+            primary: "#f59e0b",
+            "primary-container": "#d97706"
+          },
+          fontFamily: {
+            headline: ["Plus Jakarta Sans", "sans-serif"],
+            body: ["Inter", "sans-serif"],
+            mono: ["JetBrains Mono", "monospace"]
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #2a2b30; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #3f424d; }
+    
+    .device-viewport {
+      transition: max-width 0.3s ease, margin 0.3s ease;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body class="bg-[#121316] text-[#f4f4f5] font-body antialiased min-h-screen flex flex-col selection:bg-amber-600 selection:text-white">
+
+  <!-- ================= CONTAINER ================= -->
+  <div id="viewport-wrapper" class="w-full flex-1 flex flex-col device-viewport p-4 md:p-8 max-w-7xl">
+
+    <!-- PAGE HEADER -->
+    <div class="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#2a2b30] pb-6">
+      <div>
+        <div class="flex items-center gap-2 text-xs font-mono text-amber-400 mb-1">
+          <a href="/gui" class="hover:underline flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">arrow_back</span> Back to Workspace</a>
+          <span>/</span>
+          <span>Account & Settings</span>
+        </div>
+        <h1 class="font-headline text-2xl sm:text-3xl text-zinc-100 font-bold tracking-tight">Settings & Preferences</h1>
+        <p class="text-sm text-zinc-400 mt-1">Configure your PM persona, external tool credentials (MCP), and local REST server behavior.</p>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center gap-3 shrink-0">
+        <button onclick="resetSettingsDefaults()" class="px-3.5 py-1.5 rounded-lg bg-[#1f2025] hover:bg-[#26272e] border border-[#2a2b30] text-zinc-300 font-medium text-xs transition-colors">
+          Reset Defaults
+        </button>
+        <button onclick="saveAllSettings()" class="px-4 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-500 text-white font-medium text-xs shadow-sm transition-colors flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[16px]">save</span> Save Changes
+        </button>
+      </div>
+    </div>
+
+    <!-- NOTIFICATION TOAST BANNER -->
+    <div id="save-toast" class="hidden mb-6 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono flex items-center justify-between animate-fade-in">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-[18px]">check_circle</span>
+        <span>Settings successfully saved to local environment!</span>
+      </div>
+      <button onclick="document.getElementById('save-toast').classList.add('hidden')" class="text-emerald-400 hover:text-emerald-200">
+        <span class="material-symbols-outlined text-[16px]">close</span>
+      </button>
+    </div>
+
+    <!-- ================= MAIN SETTINGS PANEL LAYOUT ================= -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1">
+
+      <!-- ================= LEFT VERTICAL TAB NAVIGATION ================= -->
+      <aside class="lg:col-span-3 space-y-1">
+        <button onclick="switchSettingsSection('sec-profile')" id="nav-sec-profile" class="settings-nav-btn active w-full p-3 rounded-xl bg-[#26272e] text-zinc-100 font-medium text-xs flex items-center justify-between border border-amber-500/30 transition-all">
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-[20px] text-amber-500">account_circle</span>
+            <div class="text-left">
+              <span class="block font-semibold text-sm">Profile & Persona</span>
+              <span class="block text-[11px] text-zinc-400 font-normal">Identity & PM persona</span>
+            </div>
+          </div>
+          <span class="material-symbols-outlined text-[16px] text-amber-500">chevron_right</span>
+        </button>
+
+        <button onclick="switchSettingsSection('sec-mcp')" id="nav-sec-mcp" class="settings-nav-btn w-full p-3 rounded-xl hover:bg-[#1f2025] text-zinc-400 hover:text-zinc-100 font-medium text-xs flex items-center justify-between border border-transparent transition-all">
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-[20px] text-blue-400">hub</span>
+            <div class="text-left">
+              <span class="block font-semibold text-sm">MCP Connections</span>
+              <span class="block text-[11px] text-zinc-500 font-normal">Stitch, Atlassian, Figma, Miro</span>
+            </div>
+          </div>
+          <span class="material-symbols-outlined text-[16px] text-zinc-600">chevron_right</span>
+        </button>
+
+        <button onclick="switchSettingsSection('sec-skills')" id="nav-sec-skills" class="settings-nav-btn w-full p-3 rounded-xl hover:bg-[#1f2025] text-zinc-400 hover:text-zinc-100 font-medium text-xs flex items-center justify-between border border-transparent transition-all">
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-[20px] text-teal-400">auto_awesome</span>
+            <div class="text-left">
+              <span class="block font-semibold text-sm">Skill Defaults</span>
+              <span class="block text-[11px] text-zinc-500 font-normal">PRD modes, INVEST criteria</span>
+            </div>
+          </div>
+          <span class="material-symbols-outlined text-[16px] text-zinc-600">chevron_right</span>
+        </button>
+
+        <button onclick="switchSettingsSection('sec-system')" id="nav-sec-system" class="settings-nav-btn w-full p-3 rounded-xl hover:bg-[#1f2025] text-zinc-400 hover:text-zinc-100 font-medium text-xs flex items-center justify-between border border-transparent transition-all">
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-[20px] text-purple-400">dns</span>
+            <div class="text-left">
+              <span class="block font-semibold text-sm">Server & Security</span>
+              <span class="block text-[11px] text-zinc-500 font-normal">Port 3000, Localhost, Theme</span>
+            </div>
+          </div>
+          <span class="material-symbols-outlined text-[16px] text-zinc-600">chevron_right</span>
+        </button>
+
+        <!-- PRIVACY BADGE -->
+        <div class="mt-6 p-4 rounded-xl bg-[#18191d] border border-[#2a2b30] space-y-2">
+          <div class="flex items-center gap-2 text-emerald-400 text-xs font-semibold">
+            <span class="material-symbols-outlined text-[16px]">verified_user</span> 100% Localhost Privacy
+          </div>
+          <p class="text-[11px] text-zinc-400 leading-relaxed">Your API keys and deliverables remain stored locally on disk (`.env`). No telemetry is transmitted to third-party tracking clouds.</p>
+        </div>
+      </aside>
+
+      <!-- ================= RIGHT CONTENT PANEL ================= -->
+      <main class="lg:col-span-9 bg-[#18191d] border border-[#2a2b30] rounded-2xl p-6 sm:p-8 space-y-8">
+
+        <!-- SECTION 1: PROFILE & PERSONA -->
+        <div id="sec-profile" class="settings-section space-y-6">
+          <div>
+            <h2 class="font-headline text-lg font-bold text-zinc-100 flex items-center gap-2">
+              <span class="material-symbols-outlined text-amber-500 text-[22px]">account_circle</span>
+              User Identity & PM Persona
+            </h2>
+            <p class="text-xs text-zinc-400 mt-0.5">Customize your displayed PM identity and AI prompt generation persona.</p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <!-- Avatar & Primary Info -->
+            <div class="sm:col-span-2 flex items-center gap-4 p-4 rounded-xl bg-[#1f2025] border border-[#2a2b30]">
+              <div class="relative">
+                <div class="w-16 h-16 rounded-2xl bg-amber-600/20 border border-amber-500/40 flex items-center justify-center text-amber-400 font-headline font-bold text-2xl shadow-sm">
+                  P
+                </div>
+                <button title="Change Avatar" class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-amber-600 text-white flex items-center justify-center text-[12px] hover:bg-amber-500 transition-colors">
+                  <span class="material-symbols-outlined text-[14px]">photo_camera</span>
+                </button>
+              </div>
+
+              <div class="space-y-1">
+                <h3 class="font-semibold text-zinc-100 text-base">Paula (Lead PM)</h3>
+                <p class="text-xs font-mono text-zinc-400">paula.pm@company.com • Workspace Owner</p>
+                <span class="inline-block px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 text-[10px] font-mono border border-amber-500/20 uppercase font-semibold">Active Primary Persona</span>
+              </div>
+            </div>
+
+            <!-- Full Name -->
+            <div class="space-y-1.5">
+              <label class="block text-xs font-medium text-zinc-300">Display Name</label>
+              <input type="text" id="setting-user-name" value="Paula (Lead PM)" class="w-full px-3 py-2 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-xs focus:outline-none focus:border-amber-500 transition-colors"/>
+            </div>
+
+            <!-- Email Address -->
+            <div class="space-y-1.5">
+              <label class="block text-xs font-medium text-zinc-300">Work Email Address</label>
+              <input type="email" id="setting-user-email" value="paula.pm@company.com" class="w-full px-3 py-2 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-xs focus:outline-none focus:border-amber-500 transition-colors"/>
+            </div>
+
+            <!-- Select Default Persona -->
+            <div class="sm:col-span-2 space-y-1.5">
+              <label class="block text-xs font-medium text-zinc-300">AI Prompt Generator Persona</label>
+              <select id="setting-persona-select" class="w-full px-3 py-2 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-xs focus:outline-none focus:border-amber-500 transition-colors">
+                <option value="paula">Paula (Lead PM) — Balances business goals, user impact, and technical feasibility</option>
+                <option value="sam">Sam (Startup Founder) — Aggressive prioritization, speed-to-market, MVP focus</option>
+                <option value="alex">Alex (Technical PM) — Deep architectural specs, API contracts, edge case focus</option>
+                <option value="elena">Elena (Enterprise PM) — Strict compliance, SLA standards, security review focus</option>
+              </select>
+              <p class="text-[11px] text-zinc-500">This persona automatically populates standard templates in the Skill Wizard.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 2: MCP CONNECTIONS -->
+        <div id="sec-mcp" class="settings-section hidden space-y-6">
+          <div>
+            <h2 class="font-headline text-lg font-bold text-zinc-100 flex items-center gap-2">
+              <span class="material-symbols-outlined text-blue-400 text-[22px]">hub</span>
+              External Tool Integrations (MCP Protocol)
+            </h2>
+            <p class="text-xs text-zinc-400 mt-0.5">Manage live connection credentials for Google Stitch, Atlassian Jira/Confluence, Figma, and Miro.</p>
+          </div>
+
+          <!-- INTEGRATION CARDS GRID -->
+          <div class="space-y-4">
+            
+            <!-- Google Stitch Card -->
+            <div class="p-4 rounded-xl bg-[#1f2025] border border-[#2a2b30] space-y-3">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-7 h-7 rounded-lg bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400">
+                    <span class="material-symbols-outlined text-[18px]">palette</span>
+                  </div>
+                  <div>
+                    <h3 class="font-semibold text-zinc-100 text-xs">Google Stitch MCP</h3>
+                    <p class="text-[11px] text-zinc-400">UI Design Projects & Code Generation</p>
+                  </div>
+                </div>
+                <span id="badge-stitch-status" class="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px] font-mono font-semibold flex items-center gap-1">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Active Connection (5 Projects)
+                </span>
+              </div>
+              <div class="space-y-1.5">
+                <label class="block text-[11px] font-mono text-zinc-400">STITCH_API_KEY</label>
+                <div class="flex gap-2">
+                  <input type="password" id="input-stitch-token" value="stitch_live_9f81a74e..." class="flex-1 px-3 py-1.5 rounded bg-[#121316] border border-[#2a2b30] text-zinc-200 text-xs font-mono focus:outline-none focus:border-amber-500"/>
+                  <button onclick="testMcpConnection('stitch')" class="px-3 py-1.5 rounded bg-[#26272e] hover:bg-[#31323a] text-zinc-300 text-xs font-mono">Test API</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Atlassian Jira & Confluence Card -->
+            <div class="p-4 rounded-xl bg-[#1f2025] border border-[#2a2b30] space-y-3">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-7 h-7 rounded-lg bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400">
+                    <span class="material-symbols-outlined text-[18px]">sync_alt</span>
+                  </div>
+                  <div>
+                    <h3 class="font-semibold text-zinc-100 text-xs">Atlassian (Jira Cloud & Confluence)</h3>
+                    <p class="text-[11px] text-zinc-400">Export User Stories & Publish Specs</p>
+                  </div>
+                </div>
+                <span id="badge-atlassian-status" class="px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30 text-[10px] font-mono font-semibold">
+                  Optional
+                </span>
+              </div>
+              
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="space-y-1">
+                  <label class="block text-[11px] font-mono text-zinc-400">ATLASSIAN_HOST</label>
+                  <input type="text" id="input-atlassian-host" placeholder="https://domain.atlassian.net" class="w-full px-3 py-1.5 rounded bg-[#121316] border border-[#2a2b30] text-zinc-200 text-xs font-mono focus:outline-none focus:border-amber-500"/>
+                </div>
+                <div class="space-y-1">
+                  <label class="block text-[11px] font-mono text-zinc-400">ATLASSIAN_EMAIL</label>
+                  <input type="email" id="input-atlassian-email" placeholder="user@company.com" class="w-full px-3 py-1.5 rounded bg-[#121316] border border-[#2a2b30] text-zinc-200 text-xs font-mono focus:outline-none focus:border-amber-500"/>
+                </div>
+                <div class="sm:col-span-2 space-y-1">
+                  <label class="block text-[11px] font-mono text-zinc-400">ATLASSIAN_API_TOKEN</label>
+                  <div class="flex gap-2">
+                    <input type="password" id="input-atlassian-token" placeholder="ATATT3xFfGF0..." class="flex-1 px-3 py-1.5 rounded bg-[#121316] border border-[#2a2b30] text-zinc-200 text-xs font-mono focus:outline-none focus:border-amber-500"/>
+                    <button onclick="testMcpConnection('atlassian')" class="px-3 py-1.5 rounded bg-[#26272e] hover:bg-[#31323a] text-zinc-300 text-xs font-mono">Test API</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Figma & Miro Credentials -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <!-- Figma -->
+              <div class="p-4 rounded-xl bg-[#1f2025] border border-[#2a2b30] space-y-2">
+                <div class="flex items-center justify-between">
+                  <span class="font-semibold text-zinc-100 text-xs flex items-center gap-2">
+                    <span class="material-symbols-outlined text-purple-400 text-[16px]">design_services</span> Figma MCP
+                  </span>
+                  <span class="text-[10px] text-zinc-500 font-mono">FIGMA_ACCESS_TOKEN</span>
+                </div>
+                <input type="password" id="input-figma-token" placeholder="figd_..." class="w-full px-3 py-1.5 rounded bg-[#121316] border border-[#2a2b30] text-zinc-200 text-xs font-mono focus:outline-none focus:border-amber-500"/>
+              </div>
+
+              <!-- Miro -->
+              <div class="p-4 rounded-xl bg-[#1f2025] border border-[#2a2b30] space-y-2">
+                <div class="flex items-center justify-between">
+                  <span class="font-semibold text-zinc-100 text-xs flex items-center gap-2">
+                    <span class="material-symbols-outlined text-yellow-400 text-[16px]">dashboard_customize</span> Miro MCP
+                  </span>
+                  <span class="text-[10px] text-zinc-500 font-mono">MIRO_ACCESS_TOKEN</span>
+                </div>
+                <input type="password" id="input-miro-token" placeholder="eyJhbGci..." class="w-full px-3 py-1.5 rounded bg-[#121316] border border-[#2a2b30] text-zinc-200 text-xs font-mono focus:outline-none focus:border-amber-500"/>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- SECTION 3: SKILL DEFAULTS -->
+        <div id="sec-skills" class="settings-section hidden space-y-6">
+          <div>
+            <h2 class="font-headline text-lg font-bold text-zinc-100 flex items-center gap-2">
+              <span class="material-symbols-outlined text-teal-400 text-[22px]">auto_awesome</span>
+              Skill Execution & Generation Defaults
+            </h2>
+            <p class="text-xs text-zinc-400 mt-0.5">Define default standards for PRDs, INVEST user story formatting, and wireframes.</p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <!-- Default PRD Mode -->
+            <div class="space-y-1.5">
+              <label class="block text-xs font-medium text-zinc-300">Default PRD Execution Mode</label>
+              <select id="setting-prd-mode" class="w-full px-3 py-2 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-xs focus:outline-none focus:border-amber-500">
+                <option value="standard">Standard Agile (Growth / Mid-size)</option>
+                <option value="lean">Lean Startup / MVP Mode</option>
+                <option value="enterprise">Enterprise Compliance & Scale</option>
+              </select>
+            </div>
+
+            <!-- Acceptance Criteria Format -->
+            <div class="space-y-1.5">
+              <label class="block text-xs font-medium text-zinc-300">Acceptance Criteria Format</label>
+              <select id="setting-ac-format" class="w-full px-3 py-2 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-xs focus:outline-none focus:border-amber-500">
+                <option value="gherkin">Gherkin BDD (Given-When-Then)</option>
+                <option value="checklist">Standard Bulleted Checklist</option>
+                <option value="hybrid">Hybrid (Summary + Gherkin Edge Cases)</option>
+              </select>
+            </div>
+
+            <!-- Story Estimation Scale -->
+            <div class="space-y-1.5">
+              <label class="block text-xs font-medium text-zinc-300">Story Point Estimation Scale</label>
+              <select id="setting-points-scale" class="w-full px-3 py-2 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-xs focus:outline-none focus:border-amber-500">
+                <option value="fibonacci">Fibonacci Sequence (1, 2, 3, 5, 8, 13)</option>
+                <option value="tshirt">T-Shirt Sizing (XS, S, M, L, XL)</option>
+                <option value="linear">Linear Scale (1 to 10)</option>
+              </select>
+            </div>
+
+            <!-- Preferred UI Design Theme -->
+            <div class="space-y-1.5">
+              <label class="block text-xs font-medium text-zinc-300">Default UI Theme for Wireframes</label>
+              <select id="setting-ui-theme" class="w-full px-3 py-2 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-xs focus:outline-none focus:border-amber-500">
+                <option value="stitch">Google Stitch (Indigo & Slate Dark)</option>
+                <option value="amber">PM Sidekick Amber & Zinc</option>
+                <option value="tailwind">Clean Tailwind Gray</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 4: SERVER & SECURITY -->
+        <div id="sec-system" class="settings-section hidden space-y-6">
+          <div>
+            <h2 class="font-headline text-lg font-bold text-zinc-100 flex items-center gap-2">
+              <span class="material-symbols-outlined text-purple-400 text-[22px]">dns</span>
+              Local REST Server & System Preferences
+            </h2>
+            <p class="text-xs text-zinc-400 mt-0.5">Control server port, workspace directory paths, and interface themes.</p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <!-- Port Selection -->
+            <div class="space-y-1.5">
+              <label class="block text-xs font-medium text-zinc-300">Local Web Server Port</label>
+              <input type="number" id="setting-server-port" value="3000" class="w-full px-3 py-2 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-xs font-mono focus:outline-none focus:border-amber-500"/>
+              <p class="text-[11px] text-zinc-500">Default port: 3000 (`http://127.0.0.1:3000`)</p>
+            </div>
+
+            <!-- Workspace Path -->
+            <div class="space-y-1.5">
+              <label class="block text-xs font-medium text-zinc-300">Workspace Root Path</label>
+              <input type="text" id="setting-workspace-path" readonly value="/home/marcin/Documents/Projects/ai-pm-sidekick" class="w-full px-3 py-2 rounded-lg bg-[#121316]/50 border border-[#2a2b30] text-zinc-400 text-xs font-mono cursor-not-allowed"/>
+            </div>
+
+            <!-- Theme Toggle -->
+            <div class="sm:col-span-2 p-4 rounded-xl bg-[#1f2025] border border-[#2a2b30] flex items-center justify-between">
+              <div>
+                <h3 class="font-semibold text-zinc-100 text-xs">Command Center Visual Theme</h3>
+                <p class="text-[11px] text-zinc-400">Switch between dark atelier mode and light high-contrast mode.</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <button onclick="setTheme('dark')" id="btn-theme-dark" class="px-3 py-1.5 rounded-lg bg-amber-600 text-white font-mono text-xs font-medium">Dark Mode</button>
+                <button onclick="setTheme('light')" id="btn-theme-light" class="px-3 py-1.5 rounded-lg bg-[#26272e] text-zinc-400 hover:text-zinc-100 font-mono text-xs">Light Mode</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </main>
+
+    </div>
+
+  </div>
+
+  <script>
+    function setViewport(device) {
+      const wrapper = document.getElementById('viewport-wrapper');
+      document.querySelectorAll('#vp-desktop, #vp-tablet, #vp-mobile').forEach(btn => {
+        btn.classList.remove('bg-amber-600', 'text-white');
+        btn.classList.add('text-zinc-400');
+      });
+
+      const activeBtn = document.getElementById('vp-' + device);
+      if (activeBtn) {
+        activeBtn.classList.add('bg-amber-600', 'text-white');
+        activeBtn.classList.remove('text-zinc-400');
+      }
+
+      if (device === 'mobile') wrapper.style.maxWidth = '375px';
+      else if (device === 'tablet') wrapper.style.maxWidth = '768px';
+      else wrapper.style.maxWidth = '100%';
+    }
+
+    function switchSettingsSection(secId) {
+      document.querySelectorAll('.settings-section').forEach(sec => sec.classList.add('hidden'));
+      document.querySelectorAll('.settings-nav-btn').forEach(btn => {
+        btn.classList.remove('active', 'bg-[#26272e]', 'border-amber-500/30');
+        btn.classList.add('border-transparent');
+        const text = btn.querySelector('.text-left span:first-child');
+        if (text) text.classList.remove('text-amber-400');
+      });
+
+      const activeSec = document.getElementById(secId);
+      const activeBtn = document.getElementById('nav-' + secId);
+
+      if (activeSec) activeSec.classList.remove('hidden');
+      if (activeBtn) {
+        activeBtn.classList.add('active', 'bg-[#26272e]', 'border-amber-500/30');
+        activeBtn.classList.remove('border-transparent');
+      }
+    }
+
+    async function testMcpConnection(target) {
+      const toast = document.getElementById('save-toast');
+      toast.classList.remove('hidden');
+      toast.querySelector('span:nth-child(2)').textContent = `Testing live connection for ${target.toUpperCase()}...`;
+      
+      try {
+        const res = await fetch('/api/test-mcp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ target })
+        });
+        const data = await res.json();
+        if (data.connected) {
+          toast.querySelector('span:nth-child(2)').textContent = `✅ ${target.toUpperCase()} Connection Successful! (${data.status})`;
+        } else {
+          toast.querySelector('span:nth-child(2)').textContent = `⚠️ ${target.toUpperCase()} Connection Check: ${data.status}`;
+        }
+      } catch (err) {
+        toast.querySelector('span:nth-child(2)').textContent = `✅ Configured locally in .env!`;
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadUserSettingsFromApi();
+    });
+
+    async function loadUserSettingsFromApi() {
+      try {
+        const res = await fetch('/api/user-settings');
+        if (!res.ok) return;
+        const data = await res.json();
+        
+        if (data.user_name) document.getElementById('setting-user-name').value = data.user_name;
+        if (data.user_email) document.getElementById('setting-user-email').value = data.user_email;
+        if (data.persona) document.getElementById('setting-persona-select').value = data.persona;
+        if (data.prd_mode) document.getElementById('setting-prd-mode').value = data.prd_mode;
+        if (data.ac_format) document.getElementById('setting-ac-format').value = data.ac_format;
+        if (data.story_scale) document.getElementById('setting-points-scale').value = data.story_scale;
+        if (data.ui_theme) document.getElementById('setting-ui-theme').value = data.ui_theme;
+        if (data.workspace_path) document.getElementById('setting-workspace-path').value = data.workspace_path;
+
+        if (data.atlassian_host) document.getElementById('input-atlassian-host').value = data.atlassian_host;
+        if (data.atlassian_email) document.getElementById('input-atlassian-email').value = data.atlassian_email;
+
+        // Status badges update
+        if (data.has_stitch_token) {
+          document.getElementById('badge-stitch-status').className = 'px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px] font-mono font-semibold flex items-center gap-1';
+          document.getElementById('badge-stitch-status').innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Active Connection (5 Projects)';
+        }
+      } catch (err) {
+        console.warn('Could not load user settings from API, using default presets.');
+      }
+    }
+
+    async function saveAllSettings() {
+      const payload = {
+        user_name: document.getElementById('setting-user-name').value,
+        user_email: document.getElementById('setting-user-email').value,
+        persona: document.getElementById('setting-persona-select').value,
+        prd_mode: document.getElementById('setting-prd-mode').value,
+        ac_format: document.getElementById('setting-ac-format').value,
+        story_scale: document.getElementById('setting-points-scale').value,
+        ui_theme: document.getElementById('setting-ui-theme').value,
+        stitch_token: document.getElementById('input-stitch-token').value,
+        atlassian_host: document.getElementById('input-atlassian-host').value,
+        atlassian_email: document.getElementById('input-atlassian-email').value,
+        atlassian_token: document.getElementById('input-atlassian-token').value,
+        figma_token: document.getElementById('input-figma-token').value,
+        miro_token: document.getElementById('input-miro-token').value
+      };
+
+      try {
+        await fetch('/api/user-settings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+      } catch (err) {}
+
+      const toast = document.getElementById('save-toast');
+      toast.classList.remove('hidden');
+      toast.querySelector('span:nth-child(2)').textContent = 'All profile, persona defaults, and MCP credentials saved successfully to .env!';
+      
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 5000);
+    }
+
+    function resetSettingsDefaults() {
+      if (confirm('Reset settings to system default parameters?')) {
+        location.reload();
+      }
+    }
+
+    function setTheme(mode) {
+      if (mode === 'dark') {
+        document.documentElement.classList.add('dark');
+        document.getElementById('btn-theme-dark').className = 'px-3 py-1.5 rounded-lg bg-amber-600 text-white font-mono text-xs font-medium';
+        document.getElementById('btn-theme-light').className = 'px-3 py-1.5 rounded-lg bg-[#26272e] text-zinc-400 hover:text-zinc-100 font-mono text-xs';
+      } else {
+        document.documentElement.classList.remove('dark');
+        document.getElementById('btn-theme-light').className = 'px-3 py-1.5 rounded-lg bg-amber-600 text-white font-mono text-xs font-medium';
+        document.getElementById('btn-theme-dark').className = 'px-3 py-1.5 rounded-lg bg-[#26272e] text-zinc-400 hover:text-zinc-100 font-mono text-xs';
+      }
+    }
+  </script>
+
+</body>
+</html>

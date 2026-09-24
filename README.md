@@ -1,6 +1,6 @@
 # 🚀 AI PM Sidekick
 
-**AI PM Sidekick** is a tool-agnostic AI assistant framework built to empower Product Managers across the entire product lifecycle—from idea validation and PRDs to user stories, interactive HTML wireframes, design briefs, technical documentation, and **live integrations via MCP with Atlassian (Jira, Confluence), Figma, and Miro**.
+**AI PM Sidekick** is a tool-agnostic AI assistant framework built to empower Product Managers across the entire product lifecycle—from idea validation and PRDs to user stories, interactive HTML wireframes, design briefs, technical documentation, **PM Command Center Web GUI**, and **live integrations via MCP with Atlassian (Jira, Confluence), Figma, Miro, and Google Stitch**.
 
 ---
 
@@ -8,10 +8,11 @@
 
 | Skill / Integration | Slash Command | Description | Integration Framework / Standard | Next Skill Suggestion |
 | :--- | :--- | :--- | :--- | :--- |
+| **PM Command Center** | `/gui-run` | Web GUI dashboard & REST API on `localhost:3000` | Google Stitch Atelier UI, REST API, Localhost daemon | `create-prd`, `connect-mcp` |
 | **Idea Validation** | `/validate-idea` | Evaluates raw concepts & hypotheses | Strategyzer 4-Risk, The Mom Test, TAM/SAM/SOM, Pre-mortem | `brainstorm` or `create-prd` |
 | **Brainstorming** | `/brainstorm` | Generates innovative solution angles | SCAMPER, How Might We (HMW), 6 Hats, Value vs Effort | `sync-miro`, `create-prd` |
 | **PRD Generation** | `/create-prd` | Generates structured PRDs | 3 Modes (Lean, Standard Agile, Enterprise) | `sync-confluence`, `create-user-stories` |
-| **Clickable Mockups** | `/create-mockup` | Generates interactive HTML wireframes | Tailwind CSS, responsive switcher, interactive modals/tabs | `create-design-brief`, `create-user-stories` |
+| **Clickable Mockups** | `/create-mockup` | Generates interactive HTML wireframes | Tailwind CSS, interactive modals/tabs | `create-design-brief`, `create-user-stories` |
 | **Design Briefs** | `/create-design-brief` | Bridges PM and UI/UX design specs | WCAG 2.1 AA accessibility, UX flows, Figma handoff | `sync-figma`, `create-mockup` |
 | **User Stories** | `/create-user-stories` | Creates engineering-ready user stories | INVEST, Gherkin BDD (`Given/When/Then`), Fibonacci Points, DoD | `sync-jira`, `refine-user-stories` |
 | **Story Grooming** | `/refine-user-stories` | Refines & splits stories with Readiness Score | SPIDR Splitting framework, Grooming Score (0-100%) | `sync-jira`, `create-documentation` |

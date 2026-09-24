@@ -55,35 +55,60 @@
     .sidebar-transition {
       transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }
+
+    /* Ligature icons need a fixed box. A clipped name (truncate / narrow flex) renders as a star. */
+    .material-symbols-outlined {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1em;
+      height: 1em;
+      line-height: 1;
+      flex-shrink: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+
+    #main-sidebar.w-16 .sidebar-fav {
+      display: none;
+    }
+
+    #main-sidebar.w-16 .sidebar-skill-item {
+      justify-content: center;
+      padding-left: 0.375rem;
+      padding-right: 0.375rem;
+    }
+
+    #main-sidebar.w-16 .sidebar-skill-main {
+      overflow: visible;
+      justify-content: center;
+      gap: 0;
+    }
+
+    #sidebar-tooltip {
+      position: fixed;
+      z-index: 70;
+      display: none;
+      pointer-events: none;
+      padding: 4px 8px;
+      border-radius: 6px;
+      background: #31323a;
+      border: 1px solid #3f424d;
+      color: #f4f4f5;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 1.3;
+      white-space: nowrap;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+    }
+
+    #sidebar-tooltip.visible {
+      display: block;
+    }
   </style>
 </head>
 <body class="bg-[#121316] text-[#f4f4f5] font-body antialiased min-h-screen flex flex-col justify-between selection:bg-amber-600 selection:text-white transition-colors duration-200">
-
-  <!-- ================= TOP VIEWPORT SWITCHER TOOLBAR ================= -->
-  <div class="bg-[#0d0e11] border-b border-[#2a2b30] px-4 py-1.5 flex items-center justify-between text-xs shrink-0 z-50 font-mono">
-    <div class="flex items-center space-x-3">
-      <div class="flex items-center space-x-2">
-        <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
-        <span class="font-bold text-amber-500 tracking-wider uppercase">PM Command Center</span>
-        <span class="bg-amber-500/10 text-amber-400 border border-amber-500/20 px-1.5 py-0.2 rounded text-[10px]">Favorites System</span>
-      </div>
-      <span class="text-zinc-600">|</span>
-      <span class="text-zinc-400 hidden sm:inline text-[11px]">Pin skills with ⭐ to create your custom sidepanel workflow</span>
-    </div>
-    
-    <!-- Viewport Switcher Buttons -->
-    <div class="flex items-center bg-[#18191d] border border-[#2a2b30] rounded-lg p-0.5 space-x-1">
-      <button onclick="setViewport('desktop')" id="vp-desktop" class="px-2 py-0.5 rounded bg-amber-600 text-white font-medium text-[11px] flex items-center gap-1 transition-colors">
-        <span class="material-symbols-outlined text-[13px]">desktop_windows</span> Desktop
-      </button>
-      <button onclick="setViewport('tablet')" id="vp-tablet" class="px-2 py-0.5 rounded text-zinc-400 hover:text-zinc-100 font-medium text-[11px] flex items-center gap-1 transition-colors">
-        <span class="material-symbols-outlined text-[13px]">tablet</span> Tablet (768px)
-      </button>
-      <button onclick="setViewport('mobile')" id="vp-mobile" class="px-2 py-0.5 rounded text-zinc-400 hover:text-zinc-100 font-medium text-[11px] flex items-center gap-1 transition-colors">
-        <span class="material-symbols-outlined text-[13px]">smartphone</span> Mobile (375px)
-      </button>
-    </div>
-  </div>
 
   <div id="viewport-wrapper" class="w-full flex-1 flex flex-col device-viewport">
 
@@ -122,6 +147,9 @@
           <button onclick="switchTab('mcp-connections')" id="tab-mcp-connections" class="nav-tab px-3.5 py-1 rounded text-zinc-400 hover:text-zinc-100 hover:bg-[#1f2025] transition-colors text-[13px] flex items-center gap-1.5">
             <span class="material-symbols-outlined text-[16px]">hub</span> MCP Connections
           </button>
+          <button onclick="switchTab('user-settings')" id="tab-user-settings" class="nav-tab px-3.5 py-1 rounded text-zinc-400 hover:text-zinc-100 hover:bg-[#1f2025] transition-colors text-[13px] flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">settings</span> User & Settings
+          </button>
         </nav>
 
         <!-- Right Controls -->
@@ -135,9 +163,9 @@
             <span class="material-symbols-outlined text-[16px]">play_arrow</span> Run Skill
           </button>
 
-          <div class="flex items-center gap-2 pl-2 border-l border-[#2a2b30]">
-            <div class="w-8 h-8 rounded-full bg-amber-600/20 border border-amber-500/40 flex items-center justify-center text-amber-400 font-bold text-xs">P</div>
-            <span class="text-[13px] text-zinc-100 font-semibold leading-tight hidden md:inline">Paula</span>
+          <div onclick="switchTab('user-settings')" class="flex items-center gap-2 pl-2 border-l border-[#2a2b30] cursor-pointer hover:opacity-80 transition-opacity" title="Open User & Profile Settings">
+            <div id="header-user-avatar" class="w-8 h-8 rounded-full bg-amber-600/20 border border-amber-500/40 flex items-center justify-center text-amber-400 font-bold text-xs">M</div>
+            <span id="header-user-name" class="text-[13px] text-zinc-100 font-semibold leading-tight hidden md:inline">Marcin</span>
           </div>
         </div>
       </div>
@@ -176,41 +204,41 @@
             <div class="px-2 text-[10px] font-mono text-zinc-500 uppercase tracking-wider font-semibold sidebar-label">Strategy & PRD</div>
             
             <div data-skill-id="create-prd" class="sidebar-skill-item w-full p-2 rounded-lg hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center justify-between transition-colors group cursor-pointer" onclick="triggerSkillFromSidepanel('create-prd')">
-              <div class="flex items-center gap-2.5 truncate">
+              <div class="sidebar-skill-main flex items-center gap-2.5 min-w-0">
                 <span class="material-symbols-outlined text-[18px] text-amber-500 shrink-0">description</span>
                 <span class="text-[13px] font-medium truncate sidebar-label">PRD Generator</span>
               </div>
-              <button onclick="toggleFavorite('create-prd', event)" title="Pin to Favorites" class="opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
+              <button onclick="toggleFavorite('create-prd', event)" title="Pin to Favorites" class="sidebar-fav opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
                 <span class="material-symbols-outlined text-[16px]" id="fav-icon-create-prd">star_outline</span>
               </button>
             </div>
 
             <div data-skill-id="brainstorm" class="sidebar-skill-item w-full p-2 rounded-lg hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center justify-between transition-colors group cursor-pointer" onclick="triggerSkillFromSidepanel('brainstorm')">
-              <div class="flex items-center gap-2.5 truncate">
+              <div class="sidebar-skill-main flex items-center gap-2.5 min-w-0">
                 <span class="material-symbols-outlined text-[18px] text-amber-500 shrink-0">psychology_alt</span>
                 <span class="text-[13px] font-medium truncate sidebar-label">Opportunity Brainstorm</span>
               </div>
-              <button onclick="toggleFavorite('brainstorm', event)" title="Pin to Favorites" class="opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
+              <button onclick="toggleFavorite('brainstorm', event)" title="Pin to Favorites" class="sidebar-fav opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
                 <span class="material-symbols-outlined text-[16px]" id="fav-icon-brainstorm">star_outline</span>
               </button>
             </div>
 
             <div data-skill-id="validate-idea" class="sidebar-skill-item w-full p-2 rounded-lg hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center justify-between transition-colors group cursor-pointer" onclick="triggerSkillFromSidepanel('validate-idea')">
-              <div class="flex items-center gap-2.5 truncate">
+              <div class="sidebar-skill-main flex items-center gap-2.5 min-w-0">
                 <span class="material-symbols-outlined text-[18px] text-red-400 shrink-0">fact_check</span>
                 <span class="text-[13px] font-medium truncate sidebar-label">Idea Validator</span>
               </div>
-              <button onclick="toggleFavorite('validate-idea', event)" title="Pin to Favorites" class="opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
+              <button onclick="toggleFavorite('validate-idea', event)" title="Pin to Favorites" class="sidebar-fav opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
                 <span class="material-symbols-outlined text-[16px]" id="fav-icon-validate-idea">star_outline</span>
               </button>
             </div>
 
             <div data-skill-id="create-documentation" class="sidebar-skill-item w-full p-2 rounded-lg hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center justify-between transition-colors group cursor-pointer" onclick="triggerSkillFromSidepanel('create-documentation')">
-              <div class="flex items-center gap-2.5 truncate">
+              <div class="sidebar-skill-main flex items-center gap-2.5 min-w-0">
                 <span class="material-symbols-outlined text-[18px] text-zinc-400 shrink-0">menu_book</span>
                 <span class="text-[13px] font-medium truncate sidebar-label">Technical Docs</span>
               </div>
-              <button onclick="toggleFavorite('create-documentation', event)" title="Pin to Favorites" class="opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
+              <button onclick="toggleFavorite('create-documentation', event)" title="Pin to Favorites" class="sidebar-fav opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
                 <span class="material-symbols-outlined text-[16px]" id="fav-icon-create-documentation">star_outline</span>
               </button>
             </div>
@@ -221,21 +249,21 @@
             <div class="px-2 text-[10px] font-mono text-zinc-500 uppercase tracking-wider font-semibold sidebar-label">Stories & Backlog</div>
             
             <div data-skill-id="create-user-stories" class="sidebar-skill-item w-full p-2 rounded-lg hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center justify-between transition-colors group cursor-pointer" onclick="triggerSkillFromSidepanel('create-user-stories')">
-              <div class="flex items-center gap-2.5 truncate">
+              <div class="sidebar-skill-main flex items-center gap-2.5 min-w-0">
                 <span class="material-symbols-outlined text-[18px] text-blue-400 shrink-0">splitscreen</span>
                 <span class="text-[13px] font-medium truncate sidebar-label">INVEST User Stories</span>
               </div>
-              <button onclick="toggleFavorite('create-user-stories', event)" title="Pin to Favorites" class="opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
+              <button onclick="toggleFavorite('create-user-stories', event)" title="Pin to Favorites" class="sidebar-fav opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
                 <span class="material-symbols-outlined text-[16px]" id="fav-icon-create-user-stories">star_outline</span>
               </button>
             </div>
 
             <div data-skill-id="refine-user-stories" class="sidebar-skill-item w-full p-2 rounded-lg hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center justify-between transition-colors group cursor-pointer" onclick="triggerSkillFromSidepanel('refine-user-stories')">
-              <div class="flex items-center gap-2.5 truncate">
+              <div class="sidebar-skill-main flex items-center gap-2.5 min-w-0">
                 <span class="material-symbols-outlined text-[18px] text-blue-400 shrink-0">tune</span>
                 <span class="text-[13px] font-medium truncate sidebar-label">Story Refinement</span>
               </div>
-              <button onclick="toggleFavorite('refine-user-stories', event)" title="Pin to Favorites" class="opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
+              <button onclick="toggleFavorite('refine-user-stories', event)" title="Pin to Favorites" class="sidebar-fav opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
                 <span class="material-symbols-outlined text-[16px]" id="fav-icon-refine-user-stories">star_outline</span>
               </button>
             </div>
@@ -246,21 +274,21 @@
             <div class="px-2 text-[10px] font-mono text-zinc-500 uppercase tracking-wider font-semibold sidebar-label">Design & Wireframe</div>
 
             <div data-skill-id="create-mockup" class="sidebar-skill-item w-full p-2 rounded-lg hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center justify-between transition-colors group cursor-pointer" onclick="triggerSkillFromSidepanel('create-mockup')">
-              <div class="flex items-center gap-2.5 truncate">
+              <div class="sidebar-skill-main flex items-center gap-2.5 min-w-0">
                 <span class="material-symbols-outlined text-[18px] text-teal-400 shrink-0">web</span>
                 <span class="text-[13px] font-medium truncate sidebar-label">HTML Wireframe</span>
               </div>
-              <button onclick="toggleFavorite('create-mockup', event)" title="Pin to Favorites" class="opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
+              <button onclick="toggleFavorite('create-mockup', event)" title="Pin to Favorites" class="sidebar-fav opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
                 <span class="material-symbols-outlined text-[16px]" id="fav-icon-create-mockup">star_outline</span>
               </button>
             </div>
 
             <div data-skill-id="create-design-brief" class="sidebar-skill-item w-full p-2 rounded-lg hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center justify-between transition-colors group cursor-pointer" onclick="triggerSkillFromSidepanel('create-design-brief')">
-              <div class="flex items-center gap-2.5 truncate">
+              <div class="sidebar-skill-main flex items-center gap-2.5 min-w-0">
                 <span class="material-symbols-outlined text-[18px] text-teal-400 shrink-0">palette</span>
                 <span class="text-[13px] font-medium truncate sidebar-label">UI/UX Design Brief</span>
               </div>
-              <button onclick="toggleFavorite('create-design-brief', event)" title="Pin to Favorites" class="opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
+              <button onclick="toggleFavorite('create-design-brief', event)" title="Pin to Favorites" class="sidebar-fav opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
                 <span class="material-symbols-outlined text-[16px]" id="fav-icon-create-design-brief">star_outline</span>
               </button>
             </div>
@@ -271,41 +299,41 @@
             <div class="px-2 text-[10px] font-mono text-zinc-500 uppercase tracking-wider font-semibold sidebar-label">MCP Sync</div>
 
             <div data-skill-id="sync-jira" class="sidebar-skill-item w-full p-2 rounded-lg hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center justify-between transition-colors group cursor-pointer" onclick="triggerSkillFromSidepanel('sync-jira')">
-              <div class="flex items-center gap-2.5 truncate">
+              <div class="sidebar-skill-main flex items-center gap-2.5 min-w-0">
                 <span class="material-symbols-outlined text-[18px] text-blue-400 shrink-0">sync_alt</span>
                 <span class="text-[13px] font-medium truncate sidebar-label">Sync to Jira</span>
               </div>
-              <button onclick="toggleFavorite('sync-jira', event)" title="Pin to Favorites" class="opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
+              <button onclick="toggleFavorite('sync-jira', event)" title="Pin to Favorites" class="sidebar-fav opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
                 <span class="material-symbols-outlined text-[16px]" id="fav-icon-sync-jira">star_outline</span>
               </button>
             </div>
 
             <div data-skill-id="sync-confluence" class="sidebar-skill-item w-full p-2 rounded-lg hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center justify-between transition-colors group cursor-pointer" onclick="triggerSkillFromSidepanel('sync-confluence')">
-              <div class="flex items-center gap-2.5 truncate">
+              <div class="sidebar-skill-main flex items-center gap-2.5 min-w-0">
                 <span class="material-symbols-outlined text-[18px] text-blue-400 shrink-0">cloud_upload</span>
                 <span class="text-[13px] font-medium truncate sidebar-label">Publish Confluence</span>
               </div>
-              <button onclick="toggleFavorite('sync-confluence', event)" title="Pin to Favorites" class="opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
+              <button onclick="toggleFavorite('sync-confluence', event)" title="Pin to Favorites" class="sidebar-fav opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
                 <span class="material-symbols-outlined text-[16px]" id="fav-icon-sync-confluence">star_outline</span>
               </button>
             </div>
 
             <div data-skill-id="sync-figma" class="sidebar-skill-item w-full p-2 rounded-lg hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center justify-between transition-colors group cursor-pointer" onclick="triggerSkillFromSidepanel('sync-figma')">
-              <div class="flex items-center gap-2.5 truncate">
+              <div class="sidebar-skill-main flex items-center gap-2.5 min-w-0">
                 <span class="material-symbols-outlined text-[18px] text-purple-400 shrink-0">design_services</span>
                 <span class="text-[13px] font-medium truncate sidebar-label">Figma Sync</span>
               </div>
-              <button onclick="toggleFavorite('sync-figma', event)" title="Pin to Favorites" class="opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
+              <button onclick="toggleFavorite('sync-figma', event)" title="Pin to Favorites" class="sidebar-fav opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
                 <span class="material-symbols-outlined text-[16px]" id="fav-icon-sync-figma">star_outline</span>
               </button>
             </div>
 
             <div data-skill-id="sync-miro" class="sidebar-skill-item w-full p-2 rounded-lg hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center justify-between transition-colors group cursor-pointer" onclick="triggerSkillFromSidepanel('sync-miro')">
-              <div class="flex items-center gap-2.5 truncate">
+              <div class="sidebar-skill-main flex items-center gap-2.5 min-w-0">
                 <span class="material-symbols-outlined text-[18px] text-yellow-400 shrink-0">dashboard_customize</span>
                 <span class="text-[13px] font-medium truncate sidebar-label">Miro Stickies</span>
               </div>
-              <button onclick="toggleFavorite('sync-miro', event)" title="Pin to Favorites" class="opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
+              <button onclick="toggleFavorite('sync-miro', event)" title="Pin to Favorites" class="sidebar-fav opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
                 <span class="material-symbols-outlined text-[16px]" id="fav-icon-sync-miro">star_outline</span>
               </button>
             </div>
@@ -320,6 +348,7 @@
           </div>
         </div>
       </aside>
+      <div id="sidebar-tooltip" role="tooltip"></div>
 
       <!-- ================= MAIN CONTENT AREA ================= -->
       <main class="flex-1 w-full pt-6 px-6 pb-16 bg-[#121316] overflow-y-auto">
@@ -336,7 +365,7 @@
                     <span class="w-2 h-2 rounded-full bg-amber-500"></span>
                     <span class="font-mono text-[11px] text-amber-400 font-medium tracking-wider uppercase">Local PM Workbench • Pinned Favorites Navigation</span>
                   </div>
-                  <h1 class="font-headline text-2xl md:text-3xl text-zinc-100 font-bold tracking-tight">Welcome back, Paula</h1>
+                  <h1 id="dashboard-welcome-name" class="font-headline text-2xl md:text-3xl text-zinc-100 font-bold tracking-tight">Welcome back, Marcin</h1>
                   <p class="text-sm md:text-base text-zinc-400 mt-1">Pin your most frequently used product skills with ⭐ in the left sidepanel.</p>
                 </div>
                 <div class="flex items-center gap-4 self-start md:self-auto">
@@ -508,8 +537,276 @@
           <div id="view-mcp-connections" class="tab-view hidden space-y-6">
             <section class="w-full rounded-2xl bg-[#18191d] p-6 border border-[#2a2b30] shadow-sm">
               <h2 class="font-headline text-xl text-zinc-100 font-bold mb-4">MCP Connection Manager</h2>
-              <p class="text-sm text-zinc-400">Configure Atlassian, Figma, and Miro integrations.</p>
+              <p class="text-sm text-zinc-400 mb-6">Configure Google Stitch, Atlassian (Jira & Confluence), Figma, and Miro credentials.</p>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="p-4 rounded-xl bg-[#1f2025] border border-[#2a2b30] space-y-2">
+                  <div class="flex items-center justify-between">
+                    <span class="font-semibold text-zinc-100 text-xs flex items-center gap-2">
+                      <span class="material-symbols-outlined text-indigo-400 text-[18px]">palette</span> Google Stitch MCP
+                    </span>
+                    <span class="text-[10px] text-emerald-400 font-mono bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">Connected (5 Projects)</span>
+                  </div>
+                  <input type="password" id="mcp-stitch-key" value="stitch_live_9f81a74e..." class="w-full px-3 py-1.5 rounded bg-[#121316] border border-[#2a2b30] text-zinc-200 text-xs font-mono focus:outline-none focus:border-amber-500"/>
+                </div>
+
+                <div class="p-4 rounded-xl bg-[#1f2025] border border-[#2a2b30] space-y-2">
+                  <div class="flex items-center justify-between">
+                    <span class="font-semibold text-zinc-100 text-xs flex items-center gap-2">
+                      <span class="material-symbols-outlined text-blue-400 text-[18px]">sync_alt</span> Atlassian Jira & Confluence
+                    </span>
+                    <span class="text-[10px] text-amber-400 font-mono bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">Optional</span>
+                  </div>
+                  <input type="password" id="mcp-atlassian-key" placeholder="ATATT3xFfGF0..." class="w-full px-3 py-1.5 rounded bg-[#121316] border border-[#2a2b30] text-zinc-200 text-xs font-mono focus:outline-none focus:border-amber-500"/>
+                </div>
+              </div>
             </section>
+          </div>
+
+          <!-- ================= TAB 5: USER & SETTINGS ================= -->
+          <div id="view-user-settings" class="tab-view hidden space-y-6">
+            
+            <!-- HEADER BAR -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#2a2b30] pb-4">
+              <div>
+                <h2 class="font-headline text-xl text-zinc-100 font-bold">Settings & Preferences</h2>
+                <p class="text-xs text-zinc-400 mt-0.5">Manage your profile, preferred AI persona, MCP credentials, and local server defaults.</p>
+              </div>
+
+              <div class="flex items-center gap-3 shrink-0">
+                <button onclick="saveAllSettings()" class="px-4 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-500 text-white font-medium text-xs shadow-sm transition-colors flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-[16px]">save</span> Save Changes
+                </button>
+              </div>
+            </div>
+
+            <!-- TOAST BANNER -->
+            <div id="save-toast" class="hidden p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px]">check_circle</span>
+                <span id="save-toast-text">Settings saved to .env!</span>
+              </div>
+              <button onclick="document.getElementById('save-toast').classList.add('hidden')" class="text-emerald-400 hover:text-emerald-200">
+                <span class="material-symbols-outlined text-[16px]">close</span>
+              </button>
+            </div>
+
+            <!-- MAIN SETTINGS PANEL -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+              <!-- LEFT NAVIGATION -->
+              <aside class="lg:col-span-3 space-y-1">
+                <button onclick="switchSettingsSection('sec-profile')" id="nav-sec-profile" class="settings-nav-btn active w-full p-3 rounded-xl bg-[#26272e] text-zinc-100 font-medium text-xs flex items-center justify-between border border-amber-500/30 transition-all">
+                  <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-[20px] text-amber-500">account_circle</span>
+                    <div class="text-left">
+                      <span class="block font-semibold text-sm">Profile & Persona</span>
+                      <span class="block text-[11px] text-zinc-400 font-normal">Identity & PM persona</span>
+                    </div>
+                  </div>
+                </button>
+
+                <button onclick="switchSettingsSection('sec-mcp')" id="nav-sec-mcp" class="settings-nav-btn w-full p-3 rounded-xl hover:bg-[#1f2025] text-zinc-400 hover:text-zinc-100 font-medium text-xs flex items-center justify-between border border-transparent transition-all">
+                  <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-[20px] text-blue-400">hub</span>
+                    <div class="text-left">
+                      <span class="block font-semibold text-sm">MCP Connections</span>
+                      <span class="block text-[11px] text-zinc-500 font-normal">Stitch, Atlassian, Figma, Miro</span>
+                    </div>
+                  </div>
+                </button>
+
+                <button onclick="switchSettingsSection('sec-skills')" id="nav-sec-skills" class="settings-nav-btn w-full p-3 rounded-xl hover:bg-[#1f2025] text-zinc-400 hover:text-zinc-100 font-medium text-xs flex items-center justify-between border border-transparent transition-all">
+                  <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-[20px] text-teal-400">auto_awesome</span>
+                    <div class="text-left">
+                      <span class="block font-semibold text-sm">Skill Defaults</span>
+                      <span class="block text-[11px] text-zinc-500 font-normal">PRD modes, INVEST criteria</span>
+                    </div>
+                  </div>
+                </button>
+
+                <button onclick="switchSettingsSection('sec-system')" id="nav-sec-system" class="settings-nav-btn w-full p-3 rounded-xl hover:bg-[#1f2025] text-zinc-400 hover:text-zinc-100 font-medium text-xs flex items-center justify-between border border-transparent transition-all">
+                  <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-[20px] text-purple-400">dns</span>
+                    <div class="text-left">
+                      <span class="block font-semibold text-sm">Server & Security</span>
+                      <span class="block text-[11px] text-zinc-500 font-normal">Port 3000, Localhost, Privacy</span>
+                    </div>
+                  </div>
+                </button>
+
+                <div class="mt-6 p-4 rounded-xl bg-[#18191d] border border-[#2a2b30] space-y-2">
+                  <div class="flex items-center gap-2 text-emerald-400 text-xs font-semibold">
+                    <span class="material-symbols-outlined text-[16px]">verified_user</span> 100% Localhost Privacy
+                  </div>
+                  <p class="text-[11px] text-zinc-400 leading-relaxed">Your API keys and settings are saved to `.env` on your local machine.</p>
+                </div>
+              </aside>
+
+              <!-- RIGHT CONTENT SECTION -->
+              <div class="lg:col-span-9 bg-[#18191d] border border-[#2a2b30] rounded-2xl p-6 space-y-6">
+
+                <!-- SECTION 1: PROFILE -->
+                <div id="sec-profile" class="settings-section space-y-6">
+                  <div>
+                    <h3 class="font-headline text-base font-bold text-zinc-100 flex items-center gap-2">
+                      <span class="material-symbols-outlined text-amber-500 text-[20px]">account_circle</span> User Identity & PM Persona
+                    </h3>
+                    <p class="text-xs text-zinc-400 mt-0.5">Customize your displayed PM identity and AI prompt persona.</p>
+                  </div>
+
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="sm:col-span-2 flex items-center gap-4 p-4 rounded-xl bg-[#1f2025] border border-[#2a2b30]">
+                      <div id="settings-avatar-badge" class="w-14 h-14 rounded-2xl bg-amber-600/20 border border-amber-500/40 flex items-center justify-center text-amber-400 font-headline font-bold text-xl shadow-sm">
+                        M
+                      </div>
+                      <div class="space-y-0.5">
+                        <h4 id="settings-profile-title" class="font-semibold text-zinc-100 text-sm">Marcin</h4>
+                        <p id="settings-profile-sub" class="text-xs font-mono text-zinc-400">marcinromanczuk87@gmail.com • Workspace Owner</p>
+                        <span class="inline-block px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 text-[10px] font-mono border border-amber-500/20 uppercase font-semibold">Active Primary Persona</span>
+                      </div>
+                    </div>
+
+                    <div class="space-y-1.5">
+                      <label class="block text-xs font-medium text-zinc-300">Display Name</label>
+                      <input type="text" id="setting-user-name" value="Marcin" class="w-full px-3 py-2 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-xs focus:outline-none focus:border-amber-500"/>
+                    </div>
+
+                    <div class="space-y-1.5">
+                      <label class="block text-xs font-medium text-zinc-300">Work Email Address</label>
+                      <input type="email" id="setting-user-email" value="marcinromanczuk87@gmail.com" class="w-full px-3 py-2 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-xs focus:outline-none focus:border-amber-500"/>
+                    </div>
+
+                    <div class="sm:col-span-2 space-y-1.5">
+                      <label class="block text-xs font-medium text-zinc-300">AI Prompt Generator Persona</label>
+                      <select id="setting-persona-select" class="w-full px-3 py-2 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-xs focus:outline-none focus:border-amber-500">
+                        <option value="paula">Lead PM — Balances business goals, user impact, and technical feasibility</option>
+                        <option value="sam">Startup Founder — Aggressive prioritization, speed-to-market, MVP focus</option>
+                        <option value="alex">Technical PM — Deep architectural specs, API contracts, edge case focus</option>
+                        <option value="elena">Enterprise PM — Strict compliance, SLA standards, security review focus</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- SECTION 2: MCP CONNECTIONS -->
+                <div id="sec-mcp" class="settings-section hidden space-y-6">
+                  <div>
+                    <h3 class="font-headline text-base font-bold text-zinc-100 flex items-center gap-2">
+                      <span class="material-symbols-outlined text-blue-400 text-[20px]">hub</span> MCP Credentials & Tool Integrations
+                    </h3>
+                  </div>
+
+                  <div class="space-y-4">
+                    <div class="p-4 rounded-xl bg-[#1f2025] border border-[#2a2b30] space-y-3">
+                      <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2.5">
+                          <span class="material-symbols-outlined text-indigo-400 text-[18px]">palette</span>
+                          <span class="font-semibold text-zinc-100 text-xs">Google Stitch MCP</span>
+                        </div>
+                        <span id="badge-stitch-status-native" class="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px] font-mono font-semibold">Active Connection (5 Projects)</span>
+                      </div>
+                      <div class="space-y-1">
+                        <label class="block text-[11px] font-mono text-zinc-400">STITCH_API_KEY</label>
+                        <input type="password" id="input-stitch-token" value="stitch_live_9f81a74e..." class="w-full px-3 py-1.5 rounded bg-[#121316] border border-[#2a2b30] text-zinc-200 text-xs font-mono focus:outline-none focus:border-amber-500"/>
+                      </div>
+                    </div>
+
+                    <div class="p-4 rounded-xl bg-[#1f2025] border border-[#2a2b30] space-y-3">
+                      <div class="flex items-center justify-between">
+                        <span class="font-semibold text-zinc-100 text-xs flex items-center gap-2">
+                          <span class="material-symbols-outlined text-blue-400 text-[18px]">sync_alt</span> Atlassian (Jira & Confluence)
+                        </span>
+                        <span class="text-[10px] text-amber-400 font-mono">Optional</span>
+                      </div>
+                      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <input type="text" id="input-atlassian-host" placeholder="https://domain.atlassian.net" class="px-3 py-1.5 rounded bg-[#121316] border border-[#2a2b30] text-zinc-200 text-xs font-mono"/>
+                        <input type="email" id="input-atlassian-email" placeholder="user@company.com" class="px-3 py-1.5 rounded bg-[#121316] border border-[#2a2b30] text-zinc-200 text-xs font-mono"/>
+                        <input type="password" id="input-atlassian-token" placeholder="ATATT3xFfGF0..." class="sm:col-span-2 px-3 py-1.5 rounded bg-[#121316] border border-[#2a2b30] text-zinc-200 text-xs font-mono"/>
+                      </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div class="p-4 rounded-xl bg-[#1f2025] border border-[#2a2b30] space-y-1.5">
+                        <span class="font-semibold text-zinc-100 text-xs block">Figma Access Token</span>
+                        <input type="password" id="input-figma-token" placeholder="figd_..." class="w-full px-3 py-1.5 rounded bg-[#121316] border border-[#2a2b30] text-zinc-200 text-xs font-mono"/>
+                      </div>
+                      <div class="p-4 rounded-xl bg-[#1f2025] border border-[#2a2b30] space-y-1.5">
+                        <span class="font-semibold text-zinc-100 text-xs block">Miro Access Token</span>
+                        <input type="password" id="input-miro-token" placeholder="eyJhbGci..." class="w-full px-3 py-1.5 rounded bg-[#121316] border border-[#2a2b30] text-zinc-200 text-xs font-mono"/>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- SECTION 3: SKILL DEFAULTS -->
+                <div id="sec-skills" class="settings-section hidden space-y-6">
+                  <div>
+                    <h3 class="font-headline text-base font-bold text-zinc-100 flex items-center gap-2">
+                      <span class="material-symbols-outlined text-teal-400 text-[20px]">auto_awesome</span> Skill Execution Defaults
+                    </h3>
+                  </div>
+
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="space-y-1.5">
+                      <label class="block text-xs font-medium text-zinc-300">Default PRD Execution Mode</label>
+                      <select id="setting-prd-mode" class="w-full px-3 py-2 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-xs">
+                        <option value="standard">Standard Agile (Growth / Mid-size)</option>
+                        <option value="lean">Lean Startup / MVP Mode</option>
+                        <option value="enterprise">Enterprise Compliance & Scale</option>
+                      </select>
+                    </div>
+
+                    <div class="space-y-1.5">
+                      <label class="block text-xs font-medium text-zinc-300">Acceptance Criteria Format</label>
+                      <select id="setting-ac-format" class="w-full px-3 py-2 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-xs">
+                        <option value="gherkin">Gherkin BDD (Given-When-Then)</option>
+                        <option value="checklist">Bulleted Checklist</option>
+                      </select>
+                    </div>
+
+                    <div class="space-y-1.5">
+                      <label class="block text-xs font-medium text-zinc-300">Story Point Estimation Scale</label>
+                      <select id="setting-points-scale" class="w-full px-3 py-2 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-xs">
+                        <option value="fibonacci">Fibonacci Sequence (1, 2, 3, 5, 8, 13)</option>
+                        <option value="tshirt">T-Shirt Sizing (XS, S, M, L, XL)</option>
+                      </select>
+                    </div>
+
+                    <div class="space-y-1.5">
+                      <label class="block text-xs font-medium text-zinc-300">UI Wireframe Theme</label>
+                      <select id="setting-ui-theme" class="w-full px-3 py-2 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-xs">
+                        <option value="stitch">Google Stitch Indigo & Slate</option>
+                        <option value="amber">PM Sidekick Amber & Zinc</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- SECTION 4: SERVER & SECURITY -->
+                <div id="sec-system" class="settings-section hidden space-y-6">
+                  <div>
+                    <h3 class="font-headline text-base font-bold text-zinc-100 flex items-center gap-2">
+                      <span class="material-symbols-outlined text-purple-400 text-[20px]">dns</span> Server & Workspace Settings
+                    </h3>
+                  </div>
+
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="space-y-1.5">
+                      <label class="block text-xs font-medium text-zinc-300">Local Web Server Port</label>
+                      <input type="number" id="setting-server-port" value="3000" class="w-full px-3 py-2 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-xs font-mono"/>
+                    </div>
+                    <div class="space-y-1.5">
+                      <label class="block text-xs font-medium text-zinc-300">Workspace Root Path</label>
+                      <input type="text" id="setting-workspace-path" readonly value="/home/marcin/Documents/Projects/ai-pm-sidekick" class="w-full px-3 py-2 rounded-lg bg-[#121316]/50 border border-[#2a2b30] text-zinc-400 text-xs font-mono cursor-not-allowed"/>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
           </div>
 
         </div>
@@ -587,11 +884,11 @@
         const info = SKILL_DETAILS[skillId] || { name: skillId, icon: 'star', color: 'text-amber-400' };
         return `
           <div data-skill-id="${skillId}" class="sidebar-skill-item w-full p-2 rounded-lg bg-[#26272e]/60 hover:bg-[#26272e] text-zinc-200 hover:text-zinc-100 flex items-center justify-between transition-colors group cursor-pointer border border-amber-500/20" onclick="triggerSkillFromSidepanel('${skillId}')">
-            <div class="flex items-center gap-2.5 truncate">
+            <div class="sidebar-skill-main flex items-center gap-2.5 min-w-0">
               <span class="material-symbols-outlined text-[18px] ${info.color} shrink-0">${info.icon}</span>
               <span class="text-[13px] font-semibold truncate sidebar-label text-zinc-100">${info.name}</span>
             </div>
-            <button onclick="toggleFavorite('${skillId}', event)" title="Unpin from Favorites" class="p-0.5 text-amber-400 hover:text-red-400">
+            <button onclick="toggleFavorite('${skillId}', event)" title="Unpin from Favorites" class="sidebar-fav p-0.5 text-amber-400 hover:text-red-400">
               <span class="material-symbols-outlined text-[16px]">star</span>
             </button>
           </div>
@@ -620,11 +917,144 @@
       });
     }
 
+    function switchSettingsSection(secId) {
+      document.querySelectorAll('.settings-section').forEach(sec => sec.classList.add('hidden'));
+      document.querySelectorAll('.settings-nav-btn').forEach(btn => {
+        btn.classList.remove('active', 'bg-[#26272e]', 'border-amber-500/30');
+        btn.classList.add('border-transparent');
+      });
+
+      const activeSec = document.getElementById(secId);
+      const activeBtn = document.getElementById('nav-' + secId);
+
+      if (activeSec) activeSec.classList.remove('hidden');
+      if (activeBtn) {
+        activeBtn.classList.add('active', 'bg-[#26272e]', 'border-amber-500/30');
+        activeBtn.classList.remove('border-transparent');
+      }
+    }
+
+    async function saveAllSettings() {
+      const payload = {
+        user_name: document.getElementById('setting-user-name').value,
+        user_email: document.getElementById('setting-user-email').value,
+        persona: document.getElementById('setting-persona-select').value,
+        prd_mode: document.getElementById('setting-prd-mode').value,
+        ac_format: document.getElementById('setting-ac-format').value,
+        story_scale: document.getElementById('setting-points-scale').value,
+        ui_theme: document.getElementById('setting-ui-theme').value,
+        stitch_token: document.getElementById('input-stitch-token').value,
+        atlassian_host: document.getElementById('input-atlassian-host').value,
+        atlassian_email: document.getElementById('input-atlassian-email').value,
+        atlassian_token: document.getElementById('input-atlassian-token').value,
+        figma_token: document.getElementById('input-figma-token').value,
+        miro_token: document.getElementById('input-miro-token').value
+      };
+
+      try {
+        await fetch('/api/user-settings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+      } catch (err) {}
+
+      loadUserSettingsInDashboard();
+
+      const toast = document.getElementById('save-toast');
+      if (toast) {
+        toast.classList.remove('hidden');
+        setTimeout(() => toast.classList.add('hidden'), 4000);
+      }
+    }
+
+    async function loadUserSettingsInDashboard() {
+      try {
+        const res = await fetch('/api/user-settings');
+        if (!res.ok) return;
+        const data = await res.json();
+        
+        if (data.user_name) {
+          const firstName = data.user_name.split(' ')[0];
+          const initial = firstName.charAt(0).toUpperCase();
+
+          const headerName = document.getElementById('header-user-name');
+          const headerAvatar = document.getElementById('header-user-avatar');
+          const welcomeName = document.getElementById('dashboard-welcome-name');
+          const wizardPersona = document.getElementById('wizard-persona');
+
+          const settingsBadge = document.getElementById('settings-avatar-badge');
+          const settingsTitle = document.getElementById('settings-profile-title');
+          const settingsSub = document.getElementById('settings-profile-sub');
+          const settingNameInput = document.getElementById('setting-user-name');
+          const settingEmailInput = document.getElementById('setting-user-email');
+
+          if (headerName) headerName.textContent = firstName;
+          if (headerAvatar) headerAvatar.textContent = initial;
+          if (welcomeName) welcomeName.textContent = `Welcome back, ${firstName}`;
+          if (wizardPersona) wizardPersona.value = data.user_name;
+
+          if (settingsBadge) settingsBadge.textContent = initial;
+          if (settingsTitle) settingsTitle.textContent = data.user_name;
+          if (settingsSub) settingsSub.textContent = `${data.user_email || 'user@company.com'} • Workspace Owner`;
+          if (settingNameInput) settingNameInput.value = data.user_name;
+          if (settingEmailInput && data.user_email) settingEmailInput.value = data.user_email;
+
+          if (data.persona && document.getElementById('setting-persona-select')) document.getElementById('setting-persona-select').value = data.persona;
+          if (data.prd_mode && document.getElementById('setting-prd-mode')) document.getElementById('setting-prd-mode').value = data.prd_mode;
+          if (data.ac_format && document.getElementById('setting-ac-format')) document.getElementById('setting-ac-format').value = data.ac_format;
+          if (data.story_scale && document.getElementById('setting-points-scale')) document.getElementById('setting-points-scale').value = data.story_scale;
+          if (data.ui_theme && document.getElementById('setting-ui-theme')) document.getElementById('setting-ui-theme').value = data.ui_theme;
+          if (data.workspace_path && document.getElementById('setting-workspace-path')) document.getElementById('setting-workspace-path').value = data.workspace_path;
+
+          if (data.atlassian_host && document.getElementById('input-atlassian-host')) document.getElementById('input-atlassian-host').value = data.atlassian_host;
+          if (data.atlassian_email && document.getElementById('input-atlassian-email')) document.getElementById('input-atlassian-email').value = data.atlassian_email;
+        }
+      } catch (err) {
+        console.warn('Could not load user settings in dashboard');
+      }
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
+      loadUserSettingsInDashboard();
       loadArtifactsFromApi();
       renderFavoritesSection();
       updateFavoriteIcons();
+      initSidebarTooltips();
     });
+
+    function initSidebarTooltips() {
+      const sidebar = document.getElementById('main-sidebar');
+      const tip = document.getElementById('sidebar-tooltip');
+      if (!sidebar || !tip) return;
+
+      const hide = () => tip.classList.remove('visible');
+
+      const showFor = (item) => {
+        if (sidebarExpanded || !item) {
+          hide();
+          return;
+        }
+        const label = item.querySelector('.sidebar-label');
+        const text = label ? label.textContent.trim() : '';
+        if (!text) {
+          hide();
+          return;
+        }
+        tip.textContent = text;
+        tip.classList.add('visible');
+        const rect = item.getBoundingClientRect();
+        const tipRect = tip.getBoundingClientRect();
+        tip.style.left = `${Math.round(rect.right + 8)}px`;
+        tip.style.top = `${Math.round(rect.top + (rect.height - tipRect.height) / 2)}px`;
+      };
+
+      sidebar.addEventListener('mouseover', (event) => {
+        showFor(event.target.closest('.sidebar-skill-item'));
+      });
+      sidebar.addEventListener('mouseleave', hide);
+      sidebar.addEventListener('scroll', hide);
+    }
 
     function toggleSidebar() {
       const sidebar = document.getElementById('main-sidebar');
@@ -632,6 +1062,8 @@
       const labels = document.querySelectorAll('.sidebar-label');
 
       sidebarExpanded = !sidebarExpanded;
+      const tip = document.getElementById('sidebar-tooltip');
+      if (tip) tip.classList.remove('visible');
       if (sidebarExpanded) {
         sidebar.classList.remove('w-16');
         sidebar.classList.add('w-64');
@@ -706,6 +1138,7 @@
     }
 
     function switchTab(tabId) {
+      loadUserSettingsInDashboard();
       document.querySelectorAll('.tab-view').forEach(view => view.classList.add('hidden'));
       document.querySelectorAll('.nav-tab').forEach(tab => {
         tab.classList.remove('active', 'bg-[#26272e]', 'text-zinc-100');

@@ -43,20 +43,51 @@ def parse_env_file():
     return env_vars
 
 def write_env_file(data):
+    current = parse_env_file()
+    # Merge existing env with incoming data
+    user_name = data.get('user_name', current.get('USER_NAME', 'Paula (Lead PM)'))
+    user_email = data.get('user_email', current.get('USER_EMAIL', 'paula.pm@company.com'))
+    persona = data.get('persona', current.get('DEFAULT_PERSONA', 'paula'))
+    prd_mode = data.get('prd_mode', current.get('DEFAULT_PRD_MODE', 'standard'))
+    ac_format = data.get('ac_format', current.get('DEFAULT_AC_FORMAT', 'gherkin'))
+    story_scale = data.get('story_scale', current.get('DEFAULT_STORY_SCALE', 'fibonacci'))
+    ui_theme = data.get('ui_theme', current.get('DEFAULT_UI_THEME', 'stitch'))
+
+    atlassian_host = data.get('atlassian_host', current.get('ATLASSIAN_HOST', ''))
+    atlassian_email = data.get('atlassian_email', current.get('ATLASSIAN_EMAIL', ''))
+    atlassian_token = data.get('atlassian_token', current.get('ATLASSIAN_API_TOKEN', ''))
+    figma_token = data.get('figma_token', current.get('FIGMA_ACCESS_TOKEN', ''))
+    miro_token = data.get('miro_token', current.get('MIRO_ACCESS_TOKEN', ''))
+    stitch_token = data.get('stitch_token', current.get('STITCH_API_KEY', ''))
+
     lines = [
-        "# AI PM Sidekick — MCP Integration Credentials",
+        "# AI PM Sidekick — Credentials & User Preferences",
         "# Saved via PM Command Center UI",
         "",
         "# --- Atlassian (Jira & Confluence) ---",
-        f"ATLASSIAN_HOST={data.get('atlassian_host', '')}",
-        f"ATLASSIAN_EMAIL={data.get('atlassian_email', '')}",
-        f"ATLASSIAN_API_TOKEN={data.get('atlassian_token', '')}",
+        f"ATLASSIAN_HOST={atlassian_host}",
+        f"ATLASSIAN_EMAIL={atlassian_email}",
+        f"ATLASSIAN_API_TOKEN={atlassian_token}",
         "",
         "# --- Figma ---",
-        f"FIGMA_ACCESS_TOKEN={data.get('figma_token', '')}",
+        f"FIGMA_ACCESS_TOKEN={figma_token}",
         "",
         "# --- Miro ---",
-        f"MIRO_ACCESS_TOKEN={data.get('miro_token', '')}",
+        f"MIRO_ACCESS_TOKEN={miro_token}",
+        "",
+        "# --- Google Stitch ---",
+        f"STITCH_API_KEY={stitch_token}",
+        "",
+        "# --- User Profile & PM Persona ---",
+        f"USER_NAME={user_name}",
+        f"USER_EMAIL={user_email}",
+        f"DEFAULT_PERSONA={persona}",
+        "",
+        "# --- Skill Execution Defaults ---",
+        f"DEFAULT_PRD_MODE={prd_mode}",
+        f"DEFAULT_AC_FORMAT={ac_format}",
+        f"DEFAULT_STORY_SCALE={story_scale}",
+        f"DEFAULT_UI_THEME={ui_theme}",
         ""
     ]
     with open(ENV_FILE, "w", encoding="utf-8") as f:
@@ -210,10 +241,33 @@ class PMCommandCenterApiHandler(SimpleHTTPRequestHandler):
                     "configured": bool(env_vars.get("MIRO_ACCESS_TOKEN") and "your_miro" not in env_vars.get("MIRO_ACCESS_TOKEN", "")),
                     "has_token": bool(env_vars.get("MIRO_ACCESS_TOKEN"))
                 },
+                "stitch": {
+                    "configured": bool(env_vars.get("STITCH_API_KEY") and "your_stitch" not in env_vars.get("STITCH_API_KEY", "")),
+                    "has_token": bool(env_vars.get("STITCH_API_KEY"))
+                },
                 "local_daemon": {
                     "configured": True,
                     "endpoint": "ws://127.0.0.1:3000/bridge"
                 }
+            })
+
+        if path == "/api/user-settings":
+            env_vars = parse_env_file()
+            return self.send_json({
+                "user_name": env_vars.get("USER_NAME", "Paula (Lead PM)"),
+                "user_email": env_vars.get("USER_EMAIL", "paula.pm@company.com"),
+                "persona": env_vars.get("DEFAULT_PERSONA", "paula"),
+                "prd_mode": env_vars.get("DEFAULT_PRD_MODE", "standard"),
+                "ac_format": env_vars.get("DEFAULT_AC_FORMAT", "gherkin"),
+                "story_scale": env_vars.get("DEFAULT_STORY_SCALE", "fibonacci"),
+                "ui_theme": env_vars.get("DEFAULT_UI_THEME", "stitch"),
+                "workspace_path": str(ROOT_DIR),
+                "atlassian_host": env_vars.get("ATLASSIAN_HOST", ""),
+                "atlassian_email": env_vars.get("ATLASSIAN_EMAIL", ""),
+                "has_atlassian_token": bool(env_vars.get("ATLASSIAN_API_TOKEN")),
+                "has_figma_token": bool(env_vars.get("FIGMA_ACCESS_TOKEN")),
+                "has_miro_token": bool(env_vars.get("MIRO_ACCESS_TOKEN")),
+                "has_stitch_token": bool(env_vars.get("STITCH_API_KEY"))
             })
 
         return super().do_GET()
@@ -229,9 +283,9 @@ class PMCommandCenterApiHandler(SimpleHTTPRequestHandler):
         except Exception:
             data = {}
 
-        if path == "/api/save-credentials":
+        if path in ("/api/save-credentials", "/api/user-settings"):
             write_env_file(data)
-            return self.send_json({"success": True, "message": "Credentials saved to .env!"})
+            return self.send_json({"success": True, "message": "User settings and credentials saved to .env!"})
 
         if path == "/api/test-mcp":
             target = data.get("target", "atlassian")
@@ -242,6 +296,8 @@ class PMCommandCenterApiHandler(SimpleHTTPRequestHandler):
                 has_key = bool(env_vars.get("FIGMA_ACCESS_TOKEN"))
             elif target == "miro":
                 has_key = bool(env_vars.get("MIRO_ACCESS_TOKEN"))
+            elif target == "stitch":
+                has_key = bool(env_vars.get("STITCH_API_KEY"))
             else:
                 has_key = True
 
@@ -252,10 +308,11 @@ class PMCommandCenterApiHandler(SimpleHTTPRequestHandler):
             })
 
         if path == "/api/generate-deliverable":
+            env_vars = parse_env_file()
             skill = data.get("skill", "create-prd")
             feature_name = data.get("feature_name", "New Feature")
             mode = data.get("mode", "standard").lower()
-            persona = data.get("persona", "Paula (Lead PM)")
+            persona = data.get("persona") or env_vars.get("USER_NAME", "Marcin (Lead PM)")
             requirements = data.get("requirements", "High priority feature requirements.")
             today_str = datetime.now().strftime("%Y-%m-%d")
 

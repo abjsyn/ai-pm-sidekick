@@ -1,6 +1,6 @@
 # 🎯 Sidepanel Favorites Navigation — PRD
 
-**Author:** Paula (Lead PM) | **Date:** 2026-09-23 | **Status:** Draft / In Review / Approved | **Mode:** Standard Agile  
+**Author:** Marcin | **Date:** 2026-09-24 | **Status:** Draft / In Review / Approved | **Mode:** Standard Agile  
 **Target Release:** [Sprint / QX] | **Tech Lead:** [Name] | **Design Lead:** [Name]
 
 ---
