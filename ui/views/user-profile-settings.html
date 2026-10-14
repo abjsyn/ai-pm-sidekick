@@ -117,6 +117,17 @@
           <span class="material-symbols-outlined text-[16px] text-zinc-600">chevron_right</span>
         </button>
 
+        <button onclick="switchSettingsSection('sec-ai-engine')" id="nav-sec-ai-engine" class="settings-nav-btn w-full p-3 rounded-xl hover:bg-[#1f2025] text-zinc-400 hover:text-zinc-100 font-medium text-xs flex items-center justify-between border border-transparent transition-all">
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-[20px] text-amber-500">smart_toy</span>
+            <div class="text-left">
+              <span class="block font-semibold text-sm">AI Execution Engine</span>
+              <span class="block text-[11px] text-zinc-500 font-normal">Gemini, Claude, OpenAI</span>
+            </div>
+          </div>
+          <span class="material-symbols-outlined text-[16px] text-zinc-600">chevron_right</span>
+        </button>
+
         <button onclick="switchSettingsSection('sec-skills')" id="nav-sec-skills" class="settings-nav-btn w-full p-3 rounded-xl hover:bg-[#1f2025] text-zinc-400 hover:text-zinc-100 font-medium text-xs flex items-center justify-between border border-transparent transition-all">
           <div class="flex items-center gap-3">
             <span class="material-symbols-outlined text-[20px] text-teal-400">auto_awesome</span>
@@ -442,6 +453,82 @@
           </div>
         </div>
 
+        <!-- SECTION: AI EXECUTION ENGINE -->
+        <div id="sec-ai-engine" class="settings-section hidden space-y-6">
+          <div>
+            <h2 class="font-headline text-lg font-bold text-zinc-100 flex items-center gap-2">
+              <span class="material-symbols-outlined text-amber-500 text-[22px]">smart_toy</span>
+              AI Execution Engine (In-Browser SaaS Mode)
+            </h2>
+            <p class="text-xs text-zinc-400 mt-0.5">Configure your LLM API keys to run Socratic Question Gates and generate artifacts directly in-app without a terminal.</p>
+          </div>
+
+          <!-- Zero Config Fallback Banner -->
+          <div class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-zinc-300 space-y-1">
+            <div class="font-semibold text-amber-400 flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[16px]">info</span> Zero-Config Fallback & Privacy
+            </div>
+            <p class="text-[11px] text-zinc-400 leading-relaxed">Keys are stored exclusively in your local `.env` and sent directly to LLM provider REST endpoints via Python's built-in `urllib.request`. If no keys are configured, the UI smoothly switches to <strong>Smart Prompt Bundle mode</strong> so you can 1-click copy hydrated prompts for Cursor, Claude Code, or Antigravity CLI.</p>
+          </div>
+
+          <div class="space-y-4">
+            <!-- Default Provider Selector -->
+            <div class="space-y-1.5">
+              <label class="block text-xs font-medium text-zinc-300">Default LLM Provider</label>
+              <select id="setting-default-provider" class="w-full px-3 py-2 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-xs focus:outline-none focus:border-amber-500">
+                <option value="gemini">Google Gemini (gemini-2.5-pro / 2.5-flash via Gemini REST API)</option>
+                <option value="anthropic">Anthropic Claude (claude-3-7-sonnet via Messages REST API)</option>
+                <option value="openai">OpenAI (gpt-4o / o3-mini via Chat Completions REST API)</option>
+              </select>
+            </div>
+
+            <!-- Gemini Key -->
+            <div class="p-4 rounded-xl bg-[#1f2025] border border-[#2a2b30] space-y-2">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-blue-400 text-[18px]">bolt</span>
+                  <span class="font-semibold text-zinc-100 text-xs">Google Gemini API Key</span>
+                </div>
+                <span id="badge-gemini-status" class="px-2.5 py-0.5 rounded-full bg-zinc-500/10 text-zinc-400 border border-zinc-500/30 text-[10px] font-mono font-semibold">Unconfigured</span>
+              </div>
+              <div class="flex gap-2">
+                <input type="password" id="input-gemini-key" placeholder="AIzaSy..." class="flex-1 px-3 py-1.5 rounded bg-[#121316] border border-[#2a2b30] text-zinc-200 text-xs font-mono focus:outline-none focus:border-amber-500"/>
+              </div>
+              <p class="text-[10px] text-zinc-500 font-mono" id="preview-gemini-key"></p>
+            </div>
+
+            <!-- Anthropic Key -->
+            <div class="p-4 rounded-xl bg-[#1f2025] border border-[#2a2b30] space-y-2">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-amber-400 text-[18px]">psychology</span>
+                  <span class="font-semibold text-zinc-100 text-xs">Anthropic Claude API Key</span>
+                </div>
+                <span id="badge-anthropic-status" class="px-2.5 py-0.5 rounded-full bg-zinc-500/10 text-zinc-400 border border-zinc-500/30 text-[10px] font-mono font-semibold">Unconfigured</span>
+              </div>
+              <div class="flex gap-2">
+                <input type="password" id="input-anthropic-key" placeholder="sk-ant-api..." class="flex-1 px-3 py-1.5 rounded bg-[#121316] border border-[#2a2b30] text-zinc-200 text-xs font-mono focus:outline-none focus:border-amber-500"/>
+              </div>
+              <p class="text-[10px] text-zinc-500 font-mono" id="preview-anthropic-key"></p>
+            </div>
+
+            <!-- OpenAI Key -->
+            <div class="p-4 rounded-xl bg-[#1f2025] border border-[#2a2b30] space-y-2">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-emerald-400 text-[18px]">memory</span>
+                  <span class="font-semibold text-zinc-100 text-xs">OpenAI API Key</span>
+                </div>
+                <span id="badge-openai-status" class="px-2.5 py-0.5 rounded-full bg-zinc-500/10 text-zinc-400 border border-zinc-500/30 text-[10px] font-mono font-semibold">Unconfigured</span>
+              </div>
+              <div class="flex gap-2">
+                <input type="password" id="input-openai-key" placeholder="sk-proj-..." class="flex-1 px-3 py-1.5 rounded bg-[#121316] border border-[#2a2b30] text-zinc-200 text-xs font-mono focus:outline-none focus:border-amber-500"/>
+              </div>
+              <p class="text-[10px] text-zinc-500 font-mono" id="preview-openai-key"></p>
+            </div>
+          </div>
+        </div>
+
         <!-- SECTION 4: SERVER & SECURITY -->
         <div id="sec-system" class="settings-section hidden space-y-6">
           <div>
@@ -598,6 +685,33 @@
         if (data.github_repo && document.getElementById('input-github-repo')) document.getElementById('input-github-repo').value = data.github_repo;
         if (data.notion_root_page_id && document.getElementById('input-notion-page')) document.getElementById('input-notion-page').value = data.notion_root_page_id;
 
+        // LLM Provider & Keys
+        if (data.default_llm_provider && document.getElementById('setting-default-provider')) {
+          document.getElementById('setting-default-provider').value = data.default_llm_provider;
+        }
+
+        const updateLlmBadge = (badgeId, previewId, keyConfigured, previewText) => {
+          const badge = document.getElementById(badgeId);
+          const preview = document.getElementById(previewId);
+          if (badge) {
+            if (keyConfigured) {
+              badge.className = 'px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px] font-mono font-semibold flex items-center gap-1';
+              badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Active';
+            } else {
+              badge.className = 'px-2.5 py-0.5 rounded-full bg-zinc-500/10 text-zinc-400 border border-zinc-500/30 text-[10px] font-mono font-semibold';
+              badge.textContent = 'Unconfigured';
+            }
+          }
+          if (preview) {
+            preview.textContent = previewText ? `Configured in .env: ${previewText}` : 'No key detected';
+          }
+        };
+
+        const llm = data.llm_status || {};
+        updateLlmBadge('badge-gemini-status', 'preview-gemini-key', llm.gemini?.configured, llm.gemini?.preview);
+        updateLlmBadge('badge-anthropic-status', 'preview-anthropic-key', llm.anthropic?.configured, llm.anthropic?.preview);
+        updateLlmBadge('badge-openai-status', 'preview-openai-key', llm.openai?.configured, llm.openai?.preview);
+
         await updateMcpBadges();
       } catch (err) {
         console.warn('Could not load user settings from API, using default presets.');
@@ -616,6 +730,10 @@
         ac_format: document.getElementById('setting-ac-format').value,
         story_scale: document.getElementById('setting-points-scale').value,
         ui_theme: document.getElementById('setting-ui-theme').value,
+        default_llm_provider: document.getElementById('setting-default-provider')?.value || 'gemini',
+        gemini_api_key: document.getElementById('input-gemini-key')?.value || '',
+        anthropic_api_key: document.getElementById('input-anthropic-key')?.value || '',
+        openai_api_key: document.getElementById('input-openai-key')?.value || '',
         stitch_token: document.getElementById('input-stitch-token')?.value || '',
         atlassian_host: document.getElementById('input-atlassian-host')?.value || '',
         atlassian_email: document.getElementById('input-atlassian-email')?.value || '',

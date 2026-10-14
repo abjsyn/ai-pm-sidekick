@@ -18,6 +18,8 @@ from pathlib import Path
 from datetime import datetime
 from http.server import SimpleHTTPRequestHandler, HTTPServer
 from urllib.parse import parse_qs, urlparse
+from urllib.request import Request, urlopen
+from urllib.error import URLError, HTTPError
 
 ROOT_DIR = Path(__file__).parent.parent.resolve()
 UI_DIR = ROOT_DIR / "ui"
@@ -73,9 +75,20 @@ def write_env_file(data):
     notion_page = data.get('notion_page', current.get('NOTION_ROOT_PAGE_ID', ''))
     stitch_token = data.get('stitch_token', current.get('STITCH_API_KEY', ''))
 
+    gemini_key = data.get('gemini_api_key', current.get('GEMINI_API_KEY', ''))
+    anthropic_key = data.get('anthropic_api_key', current.get('ANTHROPIC_API_KEY', ''))
+    openai_key = data.get('openai_api_key', current.get('OPENAI_API_KEY', ''))
+    default_llm_provider = data.get('default_llm_provider', current.get('DEFAULT_LLM_PROVIDER', 'gemini'))
+
     lines = [
         "# AI PM Sidekick — Credentials & User Preferences",
         "# Saved via PM Command Center UI",
+        "",
+        "# --- AI Execution Engine (Optional In-Browser SaaS Keys) ---",
+        f"GEMINI_API_KEY={gemini_key}",
+        f"ANTHROPIC_API_KEY={anthropic_key}",
+        f"OPENAI_API_KEY={openai_key}",
+        f"DEFAULT_LLM_PROVIDER={default_llm_provider}",
         "",
         "# --- Atlassian (Jira & Confluence) ---",
         f"ATLASSIAN_HOST={atlassian_host}",
@@ -120,8 +133,9 @@ def parse_harness_config():
     config = {
         "mode": "standalone",
         "default_tier": "standard",
-        "favorite_skills": ["create-prd", "create-user-stories", "refine-user-stories", "create-mockup", "sync-jira"],
-        "active_frameworks": ["ost", "wardley", "toc", "rice", "wsjf"],
+        "operating_model": "scrum",
+        "favorite_skills": ["create-prd", "create-user-stories", "refine-user-stories", "create-mockup", "recommend-framework", "sync-jira"],
+        "active_frameworks": ["ost", "wardley", "toc", "rice", "wsjf", "shape-up", "scrum-sprint-delivery", "gist-planning"],
         "mcp_enabled": ["atlassian", "github", "figma", "miro", "notion", "stitch"]
     }
     if not config_file.exists():
@@ -167,18 +181,34 @@ def serialize_harness_config(config):
         "#   - enterprise: Traceability matrix, SOC2/GDPR compliance tags, SLAs, audit logs (Enterprise scale)",
         f"default_tier: {config.get('default_tier', 'standard')}",
         "",
+        "# Operating Model:",
+        "#   - scrum: Iterative sprint planning, user stories, Fibonacci points, sprint velocity (Default)",
+        "#   - shape-up: 6-week cycles, shaped pitches, appetite budgeting, hill charts, no-gos",
+        "#   - kanban: Continuous pull flow, WIP limits, cycle-time optimization, backlog queue",
+        "#   - gist: High-uncertainty iterative planning (Goals, Ideas, Step-projects, Tasks)",
+        f"operating_model: {config.get('operating_model', 'scrum')}",
+        "",
         "# Favorite / Pinned Skills for Quick Launcher in PM Command Center & Sidepanel:",
         "favorite_skills:"
     ]
     for s in config.get("favorite_skills", []):
         lines.append(f"  - {s}")
     lines.append("")
-    lines.append("# Active Product Strategy & Discovery Frameworks:")
-    lines.append("#   - ost: Opportunity Solution Tree (Teresa Torres continuous discovery)")
-    lines.append("#   - wardley: Wardley Value Chain Evolution Mapping")
-    lines.append("#   - toc: Theory of Constraints (Goldratt bottleneck identification)")
-    lines.append("#   - rice: Reach, Impact, Confidence, Effort scoring")
-    lines.append("#   - wsjf: Weighted Shortest Job First (Cost of Delay / Duration)")
+    lines.append("# Active Product Strategy, Discovery, Prioritization, and Operations Frameworks:")
+    lines.append("#   Strategy:")
+    lines.append("#     - wardley: Wardley Value Chain Evolution Mapping")
+    lines.append("#     - toc: Theory of Constraints (Goldratt bottleneck identification)")
+    lines.append("#   Discovery:")
+    lines.append("#     - ost: Opportunity Solution Tree (Teresa Torres continuous discovery)")
+    lines.append("#     - jtbd-and-mom-test: Jobs-to-be-Done & The Mom Test customer interviews")
+    lines.append("#   Prioritization:")
+    lines.append("#     - rice: Reach, Impact, Confidence, Effort scoring")
+    lines.append("#     - wsjf: Weighted Shortest Job First (Cost of Delay / Duration)")
+    lines.append("#     - kano-model: Kano Customer Delight & Hygiene analysis")
+    lines.append("#   Operations:")
+    lines.append("#     - scrum-sprint-delivery: Sprint Goal, INVEST Stories & Velocity Slicing")
+    lines.append("#     - shape-up: Basecamp Shaped Pitches, Appetite Budgeting & Hill Charts")
+    lines.append("#     - gist-planning: Goals, Ideas, Step-projects, Tasks")
     lines.append("active_frameworks:")
     for f in config.get("active_frameworks", []):
         lines.append(f"  - {f}")
@@ -208,6 +238,8 @@ def write_harness_config(updates):
         current["mode"] = updates["mode"]
     if "default_tier" in updates and updates["default_tier"] in ("lean", "standard", "enterprise"):
         current["default_tier"] = updates["default_tier"]
+    if "operating_model" in updates and updates["operating_model"] in ("scrum", "shape-up", "kanban", "gist"):
+        current["operating_model"] = updates["operating_model"]
     if "favorite_skills" in updates and isinstance(updates["favorite_skills"], list):
         current["favorite_skills"] = [str(x) for x in updates["favorite_skills"]]
     if "active_frameworks" in updates and isinstance(updates["active_frameworks"], list):
@@ -403,43 +435,459 @@ def get_all_skills():
 
 def get_all_artifacts():
     artifacts = []
-    scan_paths = [
-        (DOCS_DIR, "PRD"),
-        (MOCKUPS_DIR, "Mockup"),
-        (ROOT_DIR, "Backlog")
-    ]
     
-    for folder, default_type in scan_paths:
-        if not folder.exists():
-            continue
-        if folder == ROOT_DIR:
-            files = [ROOT_DIR / "BACKLOG.md", ROOT_DIR / "README.md"]
-        else:
-            files = list(folder.glob("*.*"))
-            
-        for f in files:
-            if not f.exists() or f.is_dir() or f.name.startswith("."):
+    # 1. Scan docs/**/*.md
+    if DOCS_DIR.exists():
+        for p in sorted(DOCS_DIR.rglob("*")):
+            if p.is_dir() or p.name.startswith(".") or p.name in (".gitkeep", "README.md"):
                 continue
-            if folder in (DOCS_DIR, MOCKUPS_DIR) and f.name == "README.md":
-                continue
-            stat = f.stat()
-            ftype = default_type
-            if f.name.endswith(".html"):
-                ftype = "Mockup"
-            elif "PRD" in f.name:
-                ftype = "PRD"
-            elif f.name.endswith(".md"):
-                ftype = "Spec"
+            if p.suffix in (".md", ".txt", ".json", ".html"):
+                stat = p.stat()
+                rel_path = str(p.relative_to(ROOT_DIR))
                 
+                # Classify type
+                if "prds" in rel_path.lower() or "prd" in p.name.lower():
+                    ftype = "PRD"
+                elif "stories" in rel_path.lower() or "stor" in p.name.lower():
+                    ftype = "User Stories"
+                elif "validation" in rel_path.lower() or "validat" in p.name.lower():
+                    ftype = "Validation"
+                elif p.suffix == ".html":
+                    ftype = "Mockup"
+                else:
+                    ftype = "Product Spec"
+                    
+                artifacts.append({
+                    "filename": p.name,
+                    "path": rel_path,
+                    "size_bytes": stat.st_size,
+                    "size_kb": round(stat.st_size / 1024, 1),
+                    "modified_iso": datetime.fromtimestamp(stat.st_mtime).strftime("%Y-%m-%d %H:%M"),
+                    "type": ftype,
+                    "is_html": p.suffix == ".html"
+                })
+
+    # 2. Scan mockups/**/*.html
+    if MOCKUPS_DIR.exists():
+        for p in sorted(MOCKUPS_DIR.rglob("*.html")):
+            if p.is_dir() or p.name.startswith("."):
+                continue
+            stat = p.stat()
+            rel_path = str(p.relative_to(ROOT_DIR))
             artifacts.append({
-                "filename": f.name,
-                "path": str(f.relative_to(ROOT_DIR)),
+                "filename": p.name,
+                "path": rel_path,
                 "size_bytes": stat.st_size,
                 "size_kb": round(stat.st_size / 1024, 1),
                 "modified_iso": datetime.fromtimestamp(stat.st_mtime).strftime("%Y-%m-%d %H:%M"),
-                "type": ftype
+                "type": "Mockup",
+                "is_html": True
             })
+
+    # 3. BACKLOG.md in root
+    backlog_file = ROOT_DIR / "BACKLOG.md"
+    if backlog_file.exists():
+        stat = backlog_file.stat()
+        artifacts.append({
+            "filename": "BACKLOG.md",
+            "path": "BACKLOG.md",
+            "size_bytes": stat.st_size,
+            "size_kb": round(stat.st_size / 1024, 1),
+            "modified_iso": datetime.fromtimestamp(stat.st_mtime).strftime("%Y-%m-%d %H:%M"),
+            "type": "Backlog",
+            "is_html": False
+        })
+        
+    artifacts.sort(key=lambda x: x["modified_iso"], reverse=True)
     return artifacts
+
+def save_artifact(data):
+    filepath = data.get("path") or data.get("filepath")
+    filename = data.get("filename")
+    content = data.get("content", "")
+    art_type = data.get("type", "Spec")
+
+    if not filepath and filename:
+        if filename.endswith(".html"):
+            filepath = f"mockups/{filename}"
+        elif "prd" in filename.lower():
+            filepath = f"docs/prds/{filename}"
+        elif "stor" in filename.lower():
+            filepath = f"docs/stories/{filename}"
+        elif "validat" in filename.lower():
+            filepath = f"docs/validation/{filename}"
+        else:
+            filepath = f"docs/{filename}"
+
+    if not filepath:
+        raise ValueError("Missing 'path' or 'filename' parameter")
+
+    # Security check: must resolve within ROOT_DIR and not in ui/ or .git/
+    target = (ROOT_DIR / filepath).resolve()
+    if not str(target).startswith(str(ROOT_DIR)):
+        raise PermissionError("Path traversal prohibited")
+    rel = target.relative_to(ROOT_DIR)
+    rel_str = str(rel)
+    if rel_str.startswith("ui/") or rel_str.startswith(".git/"):
+        raise PermissionError("Writing to internal Sidekick UI or git assets is prohibited")
+
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(content, encoding="utf-8")
+    stat = target.stat()
+
+    return {
+        "success": True,
+        "path": rel_str,
+        "filename": target.name,
+        "size_kb": round(stat.st_size / 1024, 1),
+        "type": art_type,
+        "message": f"Saved {rel_str} ({round(stat.st_size / 1024, 1)} KB)"
+    }
+
+def compile_prompt_payload(data):
+    skill_id = data.get("skill_id", "create-prd")
+    user_input = data.get("user_input", "").strip()
+    tier = data.get("tier", "standard").lower()
+    framework_id = data.get("framework_id", "")
+    context_files = data.get("context_files", ["product.md", "conventions.md"])
+    stage = data.get("stage", "generate")  # "clarify" or "generate"
+    answers = data.get("answers", [])  # list of {question, answer}
+
+    # 1. Read Skill
+    skill_file = ROOT_DIR / "skills" / skill_id / "SKILL.md"
+    skill_body = ""
+    skill_name = skill_id
+    if skill_file.exists():
+        skill_text = skill_file.read_text(encoding="utf-8")
+        fm_match = re.match(r"^---\s*\n(.*?)\n---\s*\n(.*)$", skill_text, re.DOTALL)
+        if fm_match:
+            skill_body = fm_match.group(2).strip()
+            name_m = re.search(r"^name:\s*(.+)$", fm_match.group(1), re.MULTILINE)
+            if name_m:
+                skill_name = name_m.group(1).strip()
+        else:
+            skill_body = skill_text.strip()
+    else:
+        skill_body = f"Execute product management skill: {skill_id}"
+
+    # 2. Read Framework (if specified)
+    framework_info = ""
+    if framework_id and framework_id not in ("none", "direct"):
+        fw_matches = list((ROOT_DIR / "frameworks").glob(f"*/{framework_id}.md"))
+        if fw_matches:
+            fw_path = fw_matches[0]
+            fw_text = fw_path.read_text(encoding="utf-8")
+            framework_info = f"\n\n### 🗺️ Active Thinking Lens: Framework `{framework_id}`\n{fw_text}"
+
+    # 3. Read Template Guidelines (if available)
+    template_info = ""
+    tpl_file = ROOT_DIR / "templates" / f"{tier}.md"
+    if not tpl_file.exists():
+        for tpl in (ROOT_DIR / "templates").glob(f"**/{tier}.md"):
+            tpl_file = tpl
+            break
+    if tpl_file.exists():
+        template_info = f"\n\n### 📐 Artifact Tier Template Guidelines (`{tier.upper()}`)\n{tpl_file.read_text(encoding='utf-8')}"
+
+    # 4. Hydrate Context Files
+    hydrated_context_blocks = []
+    context_summary = []
+    if CONTEXT_DIR.exists():
+        harness_cfg_file = CONTEXT_DIR / "harness-config.yaml"
+        if harness_cfg_file.exists():
+            h_text = harness_cfg_file.read_text(encoding="utf-8")
+            hydrated_context_blocks.append(f"#### `.context/harness-config.yaml`\n```yaml\n{h_text}\n```")
+
+        for cf in context_files:
+            if cf == "harness-config.yaml":
+                continue
+            cf_path = CONTEXT_DIR / cf
+            if cf_path.exists():
+                c_text = cf_path.read_text(encoding="utf-8")
+                hydrated_context_blocks.append(f"#### `.context/{cf}`\n{c_text}")
+                context_summary.append({"filename": cf, "words": len(c_text.split()), "lines": len(c_text.splitlines())})
+
+    context_str = "\n\n".join(hydrated_context_blocks)
+
+    # 5. Build System Prompt & User Prompt
+    system_prompt = f"""You are AI PM Sidekick, an elite principal product management AI partner.
+You operate within a local product repository with strict context isolation.
+
+### 🧭 Operating Directives
+1. Hydrate Grounded Reality: Strictly reference real product personas, constraints, and architecture provided in context. Never hallucinate fake enterprise constraints when real ones exist.
+2. Zero Context Contamination: Internal UI files in ui/ are quarantined. Only generate user-facing product deliverables for docs/ or mockups/.
+3. Tier Adherence: Produce deliverables strictly matching the active tier ({tier.upper()}).
+4. INVEST & Gherkin Standard: User stories must satisfy INVEST criteria and include Gherkin Given-When-Then BDD scenarios.
+
+### 🛠️ Active Skill Instructions: `{skill_name}`
+{skill_body}
+{framework_info}
+{template_info}"""
+
+    if stage == "clarify":
+        user_prompt = f"""## 🎯 Product Task Briefing
+{user_input if user_input else f"Execute {skill_id} based on active product context."}
+
+---
+
+## 🏛️ Grounding Product Context (.context/)
+{context_str}
+
+---
+
+## 🛑 Socratic Clarifying Gate Execution
+Analyze the task briefing and the product context above.
+Identify 2 to 4 critical missing requirements, unvalidated assumptions, or architecture ambiguities.
+Output them as a JSON array of questions, formatted exactly as:
+```json
+[
+  {{
+    "id": 1,
+    "question": "Specific, actionable question for the PM",
+    "why_it_matters": "Why this decision impacts scope, architecture, or customer value"
+  }}
+]
+```
+If requirements are completely clear with no missing gaps, return an empty array `[]`."""
+    else:  # stage == "generate"
+        answers_str = ""
+        if answers:
+            answers_str = "### 💬 Clarifications & Decisions from PM:\n"
+            for idx, a in enumerate(answers, 1):
+                q = a.get("question", f"Question {idx}")
+                ans = a.get("answer", "Assumed default")
+                answers_str += f"- **Q**: {q}\n  **A**: {ans}\n"
+            answers_str += "\n"
+
+        user_prompt = f"""## 🎯 Product Task Briefing
+{user_input if user_input else f"Execute {skill_id} based on active product context."}
+
+{answers_str}---
+
+## 🏛️ Grounding Product Context (.context/)
+{context_str}
+
+---
+
+## 🚀 Execution Instructions
+Generate the complete, production-grade deliverable adhering strictly to the {tier.upper()} tier format.
+Adhere to INVEST criteria, Gherkin BDD scenarios, and concrete acceptance criteria.
+
+At the very end of your response, output a distinct section formatted as:
+---
+## 🧠 Proposed Compounding Knowledge Write-Back
+- **New Decision**: (Specific decision to record in `.context/decisions.md`)
+- **Discovery Insight**: (Customer or market discovery to record in `.context/discovery.md`)
+- **Architecture Rule**: (Technical constraint to record in `.context/architecture.md`)
+"""
+
+    full_bundle = f"""# 🚀 AI PM Sidekick Hydrated Prompt Bundle
+# Skill: {skill_name} | Tier: {tier.upper()} | Stage: {stage.upper()}
+
+## System Instructions
+{system_prompt}
+
+---
+
+## Task & Grounded Context
+{user_prompt}
+"""
+
+    return {
+        "success": True,
+        "skill_id": skill_id,
+        "skill_name": skill_name,
+        "tier": tier,
+        "framework_id": framework_id,
+        "stage": stage,
+        "system_prompt": system_prompt,
+        "user_prompt": user_prompt,
+        "full_bundle": full_bundle,
+        "context_summary": context_summary
+    }
+
+def execute_ai_call(data):
+    payload = compile_prompt_payload(data)
+    stage = data.get("stage", "generate")
+    provider = data.get("provider")
+    
+    env_vars = parse_env_file()
+    gemini_key = env_vars.get("GEMINI_API_KEY") or os.environ.get("GEMINI_API_KEY")
+    anthropic_key = env_vars.get("ANTHROPIC_API_KEY") or os.environ.get("ANTHROPIC_API_KEY")
+    openai_key = env_vars.get("OPENAI_API_KEY") or os.environ.get("OPENAI_API_KEY")
+
+    active_provider = None
+    if provider == "gemini" and gemini_key: active_provider = "gemini"
+    elif provider == "anthropic" and anthropic_key: active_provider = "anthropic"
+    elif provider == "openai" and openai_key: active_provider = "openai"
+    elif gemini_key: active_provider = "gemini"
+    elif anthropic_key: active_provider = "anthropic"
+    elif openai_key: active_provider = "openai"
+
+    if not active_provider:
+        return {
+            "mode": "bundle_only",
+            "message": "No API key configured in .env. Switch to Smart Prompt Bundle mode.",
+            "bundle": payload["full_bundle"],
+            "system_prompt": payload["system_prompt"],
+            "user_prompt": payload["user_prompt"],
+            "payload": payload
+        }
+
+    system_prompt = payload["system_prompt"]
+    user_prompt = payload["user_prompt"]
+
+    try:
+        response_text = ""
+        if active_provider == "gemini":
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={gemini_key}"
+            req_body = {
+                "contents": [{"role": "user", "parts": [{"text": user_prompt}]}],
+                "systemInstruction": {"parts": [{"text": system_prompt}]},
+                "generationConfig": {"temperature": 0.4, "maxOutputTokens": 8192}
+            }
+            req = Request(url, data=json.dumps(req_body).encode("utf-8"), headers={"Content-Type": "application/json"}, method="POST")
+            with urlopen(req, timeout=60) as res:
+                res_data = json.loads(res.read().decode("utf-8"))
+                candidates = res_data.get("candidates", [])
+                if candidates and "content" in candidates[0]:
+                    parts = candidates[0]["content"].get("parts", [])
+                    response_text = "".join(p.get("text", "") for p in parts)
+                    
+        elif active_provider == "openai":
+            url = "https://api.openai.com/v1/chat/completions"
+            req_body = {
+                "model": "gpt-4o",
+                "messages": [
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_prompt}
+                ],
+                "temperature": 0.4
+            }
+            req = Request(url, data=json.dumps(req_body).encode("utf-8"), headers={
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {openai_key}"
+            }, method="POST")
+            with urlopen(req, timeout=60) as res:
+                res_data = json.loads(res.read().decode("utf-8"))
+                response_text = res_data["choices"][0]["message"]["content"]
+
+        elif active_provider == "anthropic":
+            url = "https://api.anthropic.com/v1/messages"
+            req_body = {
+                "model": "claude-3-5-sonnet-20241022",
+                "max_tokens": 4096,
+                "system": system_prompt,
+                "messages": [{"role": "user", "content": user_prompt}],
+                "temperature": 0.4
+            }
+            req = Request(url, data=json.dumps(req_body).encode("utf-8"), headers={
+                "Content-Type": "application/json",
+                "x-api-key": anthropic_key,
+                "anthropic-version": "2023-06-01"
+            }, method="POST")
+            with urlopen(req, timeout=60) as res:
+                res_data = json.loads(res.read().decode("utf-8"))
+                response_text = "".join(b.get("text", "") for b in res_data.get("content", []))
+
+        if stage == "clarify":
+            questions = []
+            json_m = re.search(r"```(?:json)?\s*(\[\s*\{.*?\}\s*\])\s*```", response_text, re.DOTALL)
+            if json_m:
+                try:
+                    questions = json.loads(json_m.group(1))
+                except Exception:
+                    pass
+            if not questions:
+                q_matches = re.findall(r"(?:^|\n)\s*(?:\d+[\.\)]|\-|\*)\s*(.+?)(?=\n\s*(?:\d+[\.\)]|\-|\*)|\Z)", response_text, re.DOTALL)
+                for idx, qm in enumerate(q_matches[:4], 1):
+                    clean_q = qm.strip().split("\n")[0]
+                    questions.append({"id": idx, "question": clean_q, "why_it_matters": "Clarifies scope before execution"})
+                    
+            return {
+                "mode": "ai_executed",
+                "stage": "clarify",
+                "provider": active_provider,
+                "questions": questions,
+                "raw_text": response_text
+            }
+        else:
+            artifact_content = response_text
+            write_back_snippet = ""
+            wb_match = re.search(r"(?:---|\n)\s*##\s*🧠\s*Proposed Compounding Knowledge Write-Back\s*\n(.*)$", response_text, re.DOTALL | re.IGNORECASE)
+            if wb_match:
+                write_back_snippet = wb_match.group(1).strip()
+                artifact_content = response_text[:wb_match.start()].strip()
+                
+            return {
+                "mode": "ai_executed",
+                "stage": "generate",
+                "provider": active_provider,
+                "artifact_content": artifact_content,
+                "write_back_snippet": write_back_snippet,
+                "raw_text": response_text
+            }
+
+    except Exception as e:
+        return {
+            "mode": "bundle_only",
+            "error": str(e),
+            "message": f"AI call failed ({active_provider}): {e}. Switched to Smart Prompt Bundle mode.",
+            "bundle": payload["full_bundle"],
+            "system_prompt": payload["system_prompt"],
+            "user_prompt": payload["user_prompt"],
+            "payload": payload
+        }
+
+def get_env_status():
+    env_vars = parse_env_file()
+    def mask_key(k):
+        v = env_vars.get(k, "") or os.environ.get(k, "")
+        if not v:
+            return ""
+        if len(v) <= 8:
+            return "••••••••"
+        return v[:4] + "••••" + v[-4:]
+
+    return {
+        "llm": {
+            "gemini": {
+                "configured": bool(env_vars.get("GEMINI_API_KEY") or os.environ.get("GEMINI_API_KEY")),
+                "preview": mask_key("GEMINI_API_KEY")
+            },
+            "anthropic": {
+                "configured": bool(env_vars.get("ANTHROPIC_API_KEY") or os.environ.get("ANTHROPIC_API_KEY")),
+                "preview": mask_key("ANTHROPIC_API_KEY")
+            },
+            "openai": {
+                "configured": bool(env_vars.get("OPENAI_API_KEY") or os.environ.get("OPENAI_API_KEY")),
+                "preview": mask_key("OPENAI_API_KEY")
+            },
+            "default_provider": env_vars.get("DEFAULT_LLM_PROVIDER", "gemini")
+        },
+        "mcp": get_mcp_status()
+    }
+
+def append_context_entry(data):
+    target_file = data.get("target_file", "decisions.md")
+    entry = data.get("entry", "").strip()
+    if not entry:
+        return {"error": "Entry content cannot be empty"}
+    if target_file not in ("decisions.md", "discovery.md", "strategy-and-constraints.md"):
+        return {"error": "Target file must be decisions.md, discovery.md, or strategy-and-constraints.md"}
+    
+    tf = CONTEXT_DIR / target_file
+    now_str = datetime.now().strftime("%Y-%m-%d %H:%M")
+    header = f"\n\n### 💡 Session Entry ({now_str})\n"
+    new_text = header + entry + "\n"
+    
+    if tf.exists():
+        existing = tf.read_text(encoding="utf-8")
+        tf.write_text(existing.rstrip() + new_text, encoding="utf-8")
+    else:
+        tf.write_text(f"# {target_file}\n" + new_text, encoding="utf-8")
+        
+    return {"success": True, "message": f"Successfully appended entry to .context/{target_file}"}
 
 class PMCommandCenterApiHandler(SimpleHTTPRequestHandler):
     def send_json(self, data, status=200):
@@ -540,9 +988,16 @@ class PMCommandCenterApiHandler(SimpleHTTPRequestHandler):
         if path == "/api/mcp-status":
             return self.send_json(get_mcp_status())
 
+        if path in ("/api/env-status", "/api/env"):
+            return self.send_json(get_env_status())
+
+        if path in ("/api/context-health", "/api/context-overview"):
+            return self.send_json(get_context_overview())
+
         if path == "/api/user-settings":
             env_vars = parse_env_file()
             cfg = parse_harness_config()
+            env_status = get_env_status()
             return self.send_json({
                 "user_name": env_vars.get("USER_NAME", "Paula (Lead PM)"),
                 "user_email": env_vars.get("USER_EMAIL", "paula.pm@company.com"),
@@ -553,9 +1008,15 @@ class PMCommandCenterApiHandler(SimpleHTTPRequestHandler):
                 "ui_theme": env_vars.get("DEFAULT_UI_THEME", "stitch"),
                 "mode": cfg.get("mode", "standalone"),
                 "default_tier": cfg.get("default_tier", "standard"),
+                "operating_model": cfg.get("operating_model", "scrum"),
                 "favorite_skills": cfg.get("favorite_skills", []),
                 "active_frameworks": cfg.get("active_frameworks", []),
                 "workspace_path": str(ROOT_DIR),
+                "llm_status": env_status["llm"],
+                "gemini_api_key": env_status["llm"]["gemini"]["preview"],
+                "anthropic_api_key": env_status["llm"]["anthropic"]["preview"],
+                "openai_api_key": env_status["llm"]["openai"]["preview"],
+                "default_llm_provider": env_vars.get("DEFAULT_LLM_PROVIDER", "gemini"),
                 "atlassian_host": env_vars.get("ATLASSIAN_HOST", ""),
                 "atlassian_email": env_vars.get("ATLASSIAN_EMAIL", ""),
                 "has_atlassian_token": bool(env_vars.get("ATLASSIAN_API_TOKEN")),
@@ -571,6 +1032,13 @@ class PMCommandCenterApiHandler(SimpleHTTPRequestHandler):
 
         return super().do_GET()
 
+    def do_OPTIONS(self):
+        self.send_response(200)
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type, Authorization")
+        self.end_headers()
+
     def do_POST(self):
         parsed = urlparse(self.path)
         path = parsed.path
@@ -582,9 +1050,45 @@ class PMCommandCenterApiHandler(SimpleHTTPRequestHandler):
         except Exception:
             data = {}
 
+        if path in ("/api/artifacts", "/api/save-artifact"):
+            try:
+                res = save_artifact(data)
+                return self.send_json(res)
+            except Exception as e:
+                return self.send_json({"error": str(e)}, status=400)
+
+        if path == "/api/compile-prompt":
+            try:
+                res = compile_prompt_payload(data)
+                return self.send_json(res)
+            except Exception as e:
+                return self.send_json({"error": str(e)}, status=500)
+
+        if path == "/api/execute-ai":
+            try:
+                res = execute_ai_call(data)
+                return self.send_json(res)
+            except Exception as e:
+                return self.send_json({"error": str(e)}, status=500)
+
+        if path in ("/api/env-config", "/api/save-credentials", "/api/user-settings"):
+            write_env_file(data)
+            write_harness_config(data)
+            return self.send_json({
+                "success": True,
+                "message": "User settings and credentials saved to .env & harness-config.yaml!",
+                "env_status": get_env_status()
+            })
+
+        if path == "/api/context-append":
+            try:
+                res = append_context_entry(data)
+                return self.send_json(res)
+            except Exception as e:
+                return self.send_json({"error": str(e)}, status=500)
+
         if path in ("/api/config", "/api/harness-config"):
             updated_cfg = write_harness_config(data)
-            # Sync user profile fields to .env if supplied
             if any(k in data for k in ("user_name", "user_email", "persona", "prd_mode", "ac_format", "story_scale", "ui_theme")):
                 write_env_file(data)
             return self.send_json({
@@ -609,12 +1113,6 @@ class PMCommandCenterApiHandler(SimpleHTTPRequestHandler):
                 "words": words,
                 "message": f"Successfully updated .context/{filename} ({lines} lines, {words} words)."
             })
-
-        if path in ("/api/save-credentials", "/api/user-settings"):
-            write_env_file(data)
-            # If default_tier or mode or favorite_skills supplied, also update harness-config.yaml
-            write_harness_config(data)
-            return self.send_json({"success": True, "message": "User settings and credentials saved to .env & harness-config.yaml!"})
 
         if path == "/api/test-mcp":
             target = data.get("target", "atlassian")
@@ -670,11 +1168,9 @@ class PMCommandCenterApiHandler(SimpleHTTPRequestHandler):
             content = content.replace("[YYYY-MM-DD]", today_str)
             content = content.replace("[Primary Persona]", persona)
             
-            # Inject actual requirements into problem/context section
             if "Problem Statement" in content or "Executive Summary" in content:
                 content = content.replace("Detailed description of the problem backed by data, user feedback, or research quotes.", requirements)
 
-            # Save generated file to docs/
             safe_name = re.sub(r"[^\w\-_]", "_", feature_name.lower().replace(" ", "_"))
             filename = f"{safe_name}_{skill.replace('-', '_')}.md"
             output_file = DOCS_DIR / filename
