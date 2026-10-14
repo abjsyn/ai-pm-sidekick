@@ -1,3 +1,25 @@
+---
+id: wsjf-cost-of-delay
+name: Weighted Shortest Job First (WSJF) & Cost of Delay
+category: prioritization
+problem_signatures:
+  - "Slow-moving massive initiatives block fast, high-impact tactical releases"
+  - "Time-sensitive market opportunities or regulatory deadlines missed due to poor sequencing"
+  - "Engineering lacks economic rationale for slicing large epics into high-value chunks"
+best_for_stage:
+  - scale
+  - enterprise
+data_maturity_required: high
+when_not_to_use:
+  - "Early-stage startups with fluid roadmaps where time-to-learn dominates cost-of-delay"
+  - "Backlogs where job sizing cannot be reliably estimated in story points"
+paired_skills:
+  - create-user-stories
+  - refine-user-stories
+  - sync-jira
+write_back_target: .context/strategy-and-constraints.md
+---
+
 # ⏱️ Prioritization Framework: Weighted Shortest Job First (WSJF) & Cost of Delay
 
 ## 1. 🧠 Mental Model & Trigger Conditions

@@ -1,3 +1,26 @@
+---
+id: rice
+name: RICE Scoring Matrix
+category: prioritization
+problem_signatures:
+  - "Backlog is prioritized by who speaks the loudest or highest-paid person's opinion (HiPPO)"
+  - "Low-impact pet projects consistently displace high-reach core features"
+  - "Teams lack an objective numerical basis to resolve stakeholder feature debates"
+best_for_stage:
+  - growth
+  - scale
+  - enterprise
+data_maturity_required: medium
+when_not_to_use:
+  - "Early 0-to-1 discovery where Reach and Impact numbers are completely speculative"
+  - "Hard-deadline regulatory or compliance mandates that must be built regardless of reach"
+paired_skills:
+  - refine-user-stories
+  - create-prd
+  - sync-jira
+write_back_target: .context/discovery.md
+---
+
 # ⚖️ Prioritization Framework: RICE Scoring Matrix
 
 ## 1. 🧠 Mental Model & Trigger Conditions

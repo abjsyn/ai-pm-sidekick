@@ -15,19 +15,41 @@ frameworks/
 ├── discovery/                     # Continuous discovery, user pains, and customer validation
 │   ├── opportunity-solution-tree.md # Outcome -> Opportunity -> Solution -> Test hierarchy
 │   └── jtbd-and-mom-test.md       # Jobs to Be Done & non-leading interview synthesis
-└── prioritization/                # Quantitative & qualitative trade-off scoring
-    ├── rice.md                    # Reach, Impact, Confidence (anti-gaming), Effort
-    ├── wsjf-cost-of-delay.md      # Weighted Shortest Job First economic scheduling
-    └── kano-model.md              # Must-be, Performance, and Delighter categorization
+├── prioritization/                # Quantitative & qualitative trade-off scoring
+│   ├── rice.md                    # Reach, Impact, Confidence (anti-gaming), Effort
+│   ├── wsjf-cost-of-delay.md      # Weighted Shortest Job First economic scheduling
+│   └── kano-model.md              # Must-be, Performance, and Delighter categorization
+└── operations/                    # Delivery execution, cadence, and operational models
+    ├── shape-up.md                # Shaped Pitches, Appetite, Rabbit Holes, Hill Charts
+    ├── scrum-sprint-delivery.md   # Sprint Goal, INVEST Stories, Gherkin ACs, Velocity slicing
+    └── gist-planning.md           # Goals, Ideas, Step-projects, Tasks
 ```
 
 ---
 
-## 📋 Standard 5-Part Framework Specification Schema
+## 📋 Standard Diagnostic Frontmatter & 5-Part Specification Schema
 
-Every framework file in this directory **must strictly implement** the following 5-part schema to ensure deterministic execution by AI agents and seamless bidirectional synchronization with the `.context/` Product Knowledge Core:
+Every framework file in this directory **must strictly implement** the following YAML frontmatter and 5-part body schema to ensure deterministic execution by AI agents and seamless bidirectional synchronization with the `.context/` Product Knowledge Core:
 
 ```markdown
+---
+id: [framework-id]
+name: [Human Readable Name]
+category: [strategy | discovery | prioritization | operations]
+problem_signatures:
+  - "[Signature 1: Real-world pain point]"
+  - "[Signature 2: Real-world pain point]"
+best_for_stage:
+  - [0-to-1 | growth | scale | enterprise]
+data_maturity_required: [low | medium | high]
+when_not_to_use:
+  - "[Anti-pattern 1: Where this framework fails]"
+  - "[Anti-pattern 2: Where this framework fails]"
+paired_skills:
+  - [skill-1]
+  - [skill-2]
+write_back_target: [.context/target-file.md]
+---
 # [Framework Name]
 
 ## 1. 🧠 Mental Model & Trigger Conditions

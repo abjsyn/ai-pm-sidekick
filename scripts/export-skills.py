@@ -96,6 +96,13 @@ SKILL_CONFIG = {
         "color": "text-indigo-400",
         "required_context_files": [".context/harness-config.yaml", ".context/discovery.md", ".context/strategy-and-constraints.md"]
     },
+    "recommend-framework": {
+        "name": "Framework Dispatcher",
+        "category": "knowledge",
+        "icon": "auto_awesome",
+        "color": "text-emerald-400",
+        "required_context_files": [".context/harness-config.yaml", ".context/product.md"]
+    },
     "connect-mcp": {
         "name": "MCP Integration Manager",
         "category": "sync",
@@ -234,6 +241,46 @@ def parse_skill_file(skill_path):
         "full_content": content
     }
 
+def parse_yaml_frontmatter(text):
+    """Parses simple YAML frontmatter without external dependencies."""
+    match = re.match(r"^---\s*\n(.*?)\n---\s*\n?(.*)$", text, re.DOTALL)
+    if not match:
+        return {}, text
+    yaml_text, body = match.groups()
+    data = {}
+    current_key = None
+    
+    for line in yaml_text.splitlines():
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#"):
+            continue
+        list_match = re.match(r"^\s*-\s*(.+)$", line)
+        if list_match and current_key:
+            val = list_match.group(1).strip()
+            if val.startswith(('"', "'")) and val.endswith(('"', "'")) and len(val) >= 2:
+                val = val[1:-1]
+            if not isinstance(data.get(current_key), list):
+                data[current_key] = []
+            data[current_key].append(val)
+            continue
+            
+        kv_match = re.match(r"^([a-zA-Z0-9_-]+):\s*(.*)$", line)
+        if kv_match:
+            current_key = kv_match.group(1).strip()
+            val = kv_match.group(2).strip()
+            if val:
+                if val.startswith("[") and val.endswith("]"):
+                    items = [x.strip().strip("'\"") for x in val[1:-1].split(",") if x.strip()]
+                    data[current_key] = items
+                else:
+                    if val.startswith(('"', "'")) and val.endswith(('"', "'")) and len(val) >= 2:
+                        val = val[1:-1]
+                    data[current_key] = val
+            else:
+                data[current_key] = []
+                
+    return data, body
+
 def parse_frameworks():
     frameworks = []
     if not FRAMEWORKS_DIR.exists():
@@ -243,24 +290,32 @@ def parse_frameworks():
             continue
         content = fw_path.read_text(encoding="utf-8")
         fid = fw_path.stem
-        category = fw_path.parent.name  # strategy | discovery | prioritization
+        category = fw_path.parent.name
         
-        # Parse title from H1
-        title_match = re.search(r"^#\s*(?:[^\w\s]+\s*)?(?:[A-Za-z]+\s+Framework:\s*)?(.+)$", content, re.MULTILINE)
-        name = title_match.group(1).strip() if title_match else fid.replace("-", " ").title()
+        fm, body = parse_yaml_frontmatter(content)
         
-        # Parse description from Primary Purpose or Theoretical Foundation
-        desc_match = re.search(r"###\s*Primary Purpose\s*\n+(.+?)(?=\n\n|\n###|\Z)", content, re.DOTALL)
+        name = fm.get("name")
+        if not name:
+            title_match = re.search(r"^#\s*(?:[^\w\s]+\s*)?(?:[A-Za-z]+\s+Framework:\s*)?(.+)$", body, re.MULTILINE)
+            name = title_match.group(1).strip() if title_match else fid.replace("-", " ").title()
+            
+        desc_match = re.search(r"###\s*Primary Purpose\s*\n+(.+?)(?=\n\n|\n###|\Z)", body, re.DOTALL)
         if not desc_match:
-            desc_match = re.search(r"###\s*Theoretical Foundation\s*\n+(.+?)(?=\n\n|\n###|\Z)", content, re.DOTALL)
+            desc_match = re.search(r"###\s*Theoretical Foundation\s*\n+(.+?)(?=\n\n|\n###|\Z)", body, re.DOTALL)
         desc = desc_match.group(1).strip().replace("\n", " ") if desc_match else f"{name} framework."
         desc = re.sub(r"\s+", " ", desc)
         
         frameworks.append({
-            "id": fid,
+            "id": fm.get("id", fid),
             "name": name,
-            "category": category,
+            "category": fm.get("category", category),
             "description": desc,
+            "problem_signatures": fm.get("problem_signatures", []),
+            "best_for_stage": fm.get("best_for_stage", []),
+            "data_maturity_required": fm.get("data_maturity_required", "medium"),
+            "when_not_to_use": fm.get("when_not_to_use", []),
+            "paired_skills": fm.get("paired_skills", []),
+            "write_back_target": fm.get("write_back_target", ".context/product.md"),
             "path": str(fw_path.relative_to(ROOT_DIR))
         })
     return frameworks
@@ -423,6 +478,7 @@ Before generating full specifications:
 - `/brainstorm`: Structured feature ideation with SCAMPER, HMW, and 6 Hats.
 - `/validate-idea`: Idea validation via Strategyzer 4-Risk, Mom Test, and Pre-mortem.
 - `/apply-framework`: Runs frameworks from `frameworks/` over ideas or PRDs.
+- `/recommend-framework`: Diagnoses PM bottlenecks and prescribes best-fit frameworks and lightweight alternatives.
 - `/ingest-context`: Ingests unstructured notes/transcripts and updates `.context/`.
 - `/connect-mcp`: Configures MCP integrations for Jira, Confluence, GitHub, Figma, Miro, Notion.
 - `/sync-jira`: Syncs epics and user stories directly to Jira.
@@ -539,6 +595,7 @@ When assisting product managers, technical PMs, or engineering leads, always fol
 | `/brainstorm` | SCAMPER, HMW, 6 Hats feature ideation |
 | `/validate-idea` | Strategyzer 4-Risk & Mom Test validation |
 | `/apply-framework` | Execute framework from `frameworks/` |
+| `/recommend-framework` | Diagnose PM bottleneck & prescribe best-fit framework |
 | `/ingest-context` | Ingest notes/interviews into `.context/` |
 | `/connect-mcp` | Configure Jira, Confluence, GitHub, Figma, Miro, Notion |
 | `/sync-jira` | Export stories and epics to Jira |
@@ -553,7 +610,7 @@ When assisting product managers, technical PMs, or engineering leads, always fol
 
 - **Python Scripts**: Standard library only (Python 3.10+). No external dependencies.
 - **Manifest**: Live metadata is in `dist/harness-manifest.json`.
-- **Frameworks**: Located in `frameworks/strategy/`, `frameworks/discovery/`, and `frameworks/prioritization/`.
+- **Frameworks**: Located in `frameworks/strategy/`, `frameworks/discovery/`, `frameworks/prioritization/`, and `frameworks/operations/`.
 """
     claude_md_path.write_text(claude_md_content.strip() + "\n", encoding="utf-8")
     print(f"✅ Generated Claude Code guide: {claude_md_path}")
@@ -587,12 +644,150 @@ def export_manifest(skills, frameworks, context_files):
     }
     
     manifest_path.write_text(json.dumps(manifest_data, indent=2) + "\n", encoding="utf-8")
-    print(f"✅ Generated harness manifest: {manifest_path} (18 skills, {len(frameworks)} frameworks, {len(context_files)} context files)")
+    print(f"✅ Generated harness manifest: {manifest_path} ({len(skills)} skills, {len(frameworks)} frameworks, {len(context_files)} context files)")
+
+def validate_all():
+    """Validates YAML frontmatter and required sections for all skills and frameworks."""
+    print("=" * 70)
+    print("🔍 AI PM Sidekick — Diagnostic Schema & Frontmatter Linter")
+    print("=" * 70)
+    
+    errors = []
+    
+    # 1. Validate Skills in skills/*/SKILL.md
+    print("\n📦 Checking Canonical Skills (skills/*/SKILL.md)...")
+    if not SKILLS_DIR.exists():
+        errors.append(f"Missing skills directory: {SKILLS_DIR}")
+    else:
+        skill_files = sorted(SKILLS_DIR.glob("*/SKILL.md"))
+        if not skill_files:
+            errors.append(f"No skill files found in {SKILLS_DIR}")
+        for sf in skill_files:
+            folder_name = sf.parent.name
+            content = sf.read_text(encoding="utf-8")
+            fm_match = re.match(r"^---\s*\n(.*?)\n---\s*\n(.*)$", content, re.DOTALL)
+            if not fm_match:
+                errors.append(f"❌ Skill '{folder_name}' ({sf}): Missing YAML frontmatter enclosed in '---'.")
+                continue
+            
+            yaml_text, body = fm_match.groups()
+            name_match = re.search(r"^name:\s*(.+)$", yaml_text, re.MULTILINE)
+            desc_match = re.search(r"^description:\s*(?:>[-+]?|\|[-+]?)\s*\n(.*?)(?=\n[a-zA-Z0-9_-]+:|\Z)", yaml_text, re.DOTALL | re.MULTILINE)
+            if not desc_match:
+                desc_match = re.search(r"^description:\s*(.+)$", yaml_text, re.MULTILINE)
+            
+            if not name_match or not name_match.group(1).strip():
+                errors.append(f"❌ Skill '{folder_name}': Missing or empty 'name' in YAML frontmatter.")
+            elif name_match.group(1).strip() != folder_name:
+                errors.append(f"⚠️ Skill '{folder_name}': Frontmatter name '{name_match.group(1).strip()}' differs from folder name '{folder_name}'.")
+                
+            if not desc_match or not desc_match.group(1).strip():
+                errors.append(f"❌ Skill '{folder_name}': Missing or empty 'description' in YAML frontmatter.")
+                
+            if not re.search(r"^#\s+.+", body, re.MULTILINE):
+                errors.append(f"❌ Skill '{folder_name}': Missing H1 title in body.")
+                
+            print(f"  ✓ skill: {folder_name}")
+
+    # 2. Validate Frameworks in frameworks/*/*.md
+    print("\n🗺️  Checking Modular Frameworks (frameworks/*/*.md)...")
+    valid_categories = {"strategy", "discovery", "prioritization", "operations"}
+    valid_maturities = {"low", "medium", "high"}
+    required_sections = [
+        ("## 1.", "Mental Model & Trigger Conditions"),
+        ("## 2.", "Required .context/ Inputs & Socratic Questions"),
+        ("## 3.", "Step-by-Step Execution & Scoring Rubric"),
+        ("## 4.", "Output Format"),
+        ("## 5.", ".context/ Write-Back Target"),
+    ]
+    
+    if not FRAMEWORKS_DIR.exists():
+        errors.append(f"Missing frameworks directory: {FRAMEWORKS_DIR}")
+    else:
+        fw_files = [f for f in sorted(FRAMEWORKS_DIR.glob("*/*.md")) if f.name != "README.md"]
+        if not fw_files:
+            errors.append(f"No framework files found in {FRAMEWORKS_DIR}")
+        for fw in fw_files:
+            rel_path = fw.relative_to(ROOT_DIR)
+            content = fw.read_text(encoding="utf-8")
+            fm_match = re.match(r"^---\s*\n(.*?)\n---\s*\n(.*)$", content, re.DOTALL)
+            if not fm_match:
+                errors.append(f"❌ Framework {rel_path}: Missing YAML frontmatter enclosed in '---'.")
+                continue
+                
+            fm, body = parse_yaml_frontmatter(content)
+            
+            if not fm.get("id"):
+                errors.append(f"❌ Framework {rel_path}: Missing required frontmatter key 'id'.")
+            elif fm.get("id") != fw.stem:
+                errors.append(f"❌ Framework {rel_path}: Frontmatter id '{fm.get('id')}' does not match filename stem '{fw.stem}'.")
+                
+            if not fm.get("name"):
+                errors.append(f"❌ Framework {rel_path}: Missing required frontmatter key 'name'.")
+                
+            cat = fm.get("category")
+            if not cat or cat not in valid_categories:
+                errors.append(f"❌ Framework {rel_path}: 'category' must be one of {sorted(valid_categories)}, got '{cat}'.")
+                
+            sigs = fm.get("problem_signatures")
+            if not sigs or not isinstance(sigs, list) or len(sigs) < 2:
+                errors.append(f"❌ Framework {rel_path}: 'problem_signatures' must be a list with at least 2 items.")
+                
+            stages = fm.get("best_for_stage")
+            if not stages or not isinstance(stages, list) or len(stages) < 1:
+                errors.append(f"❌ Framework {rel_path}: 'best_for_stage' must be a non-empty list.")
+                
+            maturity = fm.get("data_maturity_required")
+            if not maturity or maturity not in valid_maturities:
+                errors.append(f"❌ Framework {rel_path}: 'data_maturity_required' must be one of {sorted(valid_maturities)}, got '{maturity}'.")
+                
+            when_not = fm.get("when_not_to_use")
+            if not when_not or not isinstance(when_not, list) or len(when_not) < 1:
+                errors.append(f"❌ Framework {rel_path}: 'when_not_to_use' must be a non-empty list of anti-patterns.")
+                
+            skills_p = fm.get("paired_skills")
+            if not skills_p or not isinstance(skills_p, list) or len(skills_p) < 1:
+                errors.append(f"❌ Framework {rel_path}: 'paired_skills' must be a non-empty list.")
+                
+            wb = fm.get("write_back_target")
+            if not wb or not isinstance(wb, str) or not wb.startswith(".context/"):
+                errors.append(f"❌ Framework {rel_path}: 'write_back_target' must point to a file in '.context/' (got '{wb}').")
+                
+            for prefix, desc in required_sections:
+                if prefix not in body:
+                    errors.append(f"❌ Framework {rel_path}: Missing standard section '{prefix} {desc}'.")
+                    
+            print(f"  ✓ framework: {fw.parent.name}/{fw.name} ({fm.get('name', fw.stem)})")
+
+    print("\n" + "-" * 70)
+    if errors:
+        print(f"❌ Found {len(errors)} validation error(s):")
+        for err in errors:
+            print(f"  {err}")
+        print("-" * 70)
+        return False
+    else:
+        print("✅ PASS: All skills and frameworks strictly conform to diagnostic schemas!")
+        print("-" * 70)
+        return True
 
 def main():
+    import sys
+    is_validate_only = "--validate" in sys.argv
+    
+    # Run validation automatically before export
+    success = validate_all()
+    if not success:
+        print("\n❌ Schema validation failed. Exiting.")
+        sys.exit(1)
+        
+    if is_validate_only:
+        print("\n✨ Schema validation completed successfully. All artifacts are compliant.")
+        sys.exit(0)
+
     if not SKILLS_DIR.exists():
         print(f"Error: Skills directory not found at {SKILLS_DIR}")
-        return
+        sys.exit(1)
     
     skills = []
     for skill_file in sorted(SKILLS_DIR.glob("*/SKILL.md")):
@@ -601,7 +796,7 @@ def main():
     frameworks = parse_frameworks()
     context_files = parse_context_files()
     
-    print(f"Found {len(skills)} canonical skills, {len(frameworks)} frameworks, and {len(context_files)} context files.")
+    print(f"\nFound {len(skills)} canonical skills, {len(frameworks)} frameworks, and {len(context_files)} context files.")
     export_to_agy(skills)
     export_to_cursor(skills)
     export_to_claude(skills)

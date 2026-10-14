@@ -61,6 +61,7 @@ Before generating full specifications:
 - `/brainstorm`: Structured feature ideation with SCAMPER, HMW, and 6 Hats.
 - `/validate-idea`: Idea validation via Strategyzer 4-Risk, Mom Test, and Pre-mortem.
 - `/apply-framework`: Runs frameworks from `frameworks/` over ideas or PRDs.
+- `/recommend-framework`: Diagnoses PM bottlenecks and prescribes best-fit frameworks and lightweight alternatives.
 - `/ingest-context`: Ingests unstructured notes/transcripts and updates `.context/`.
 - `/connect-mcp`: Configures MCP integrations for Jira, Confluence, GitHub, Figma, Miro, Notion.
 - `/sync-jira`: Syncs epics and user stories directly to Jira.

@@ -14,6 +14,13 @@ mode: standalone
 #   - enterprise: Traceability matrix, SOC2/GDPR compliance tags, SLAs, audit logs (Enterprise scale)
 default_tier: standard
 
+# Operating Model:
+#   - scrum: Iterative sprint planning, user stories, Fibonacci points, sprint velocity (Default)
+#   - shape-up: 6-week cycles, shaped pitches, appetite budgeting, hill charts, no-gos
+#   - kanban: Continuous pull flow, WIP limits, cycle-time optimization, backlog queue
+#   - gist: High-uncertainty iterative planning (Goals, Ideas, Step-projects, Tasks)
+operating_model: scrum
+
 # Favorite / Pinned Skills for Quick Launcher in PM Command Center & Sidepanel:
 favorite_skills:
   - create-prd

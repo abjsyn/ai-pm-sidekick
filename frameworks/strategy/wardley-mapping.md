@@ -1,3 +1,26 @@
+---
+id: wardley-mapping
+name: Wardley Value Chain Evolution Mapping
+category: strategy
+problem_signatures:
+  - "Team debates custom-building infrastructure vs buying SaaS or using cloud utilities"
+  - "Unclear where durable competitive advantage lies in the technology architecture"
+  - "Risk of investing heavily in capabilities about to be commoditized by vendors"
+best_for_stage:
+  - growth
+  - scale
+  - enterprise
+data_maturity_required: low
+when_not_to_use:
+  - "Simple tactical UI bug fixes or single-screen user story refinement"
+  - "Teams without access to or understanding of overall technology architecture"
+paired_skills:
+  - create-prd
+  - validate-idea
+  - create-documentation
+write_back_target: .context/strategy-and-constraints.md
+---
+
 # 🗺️ Strategic Framework: Wardley Value Chain Mapping
 
 ## 1. 🧠 Mental Model & Trigger Conditions

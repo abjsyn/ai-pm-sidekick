@@ -1,3 +1,27 @@
+---
+id: jtbd-and-mom-test
+name: Jobs-to-be-Done (JTBD) & The Mom Test
+category: discovery
+problem_signatures:
+  - "Customers give polite compliments in interviews but never buy, activate, or retain"
+  - "Feature specifications anchor on opinions and generic hypothetical promises"
+  - "Team cannot articulate the functional, emotional, and social struggle driving adoption"
+best_for_stage:
+  - 0-to-1
+  - growth
+  - scale
+data_maturity_required: low
+when_not_to_use:
+  - "Optimizing high-traffic checkout funnels where A/B testing statistical data is available"
+  - "Internal infrastructural refactoring with no user-facing behavioral component"
+paired_skills:
+  - validate-idea
+  - ingest-context
+  - create-prd
+  - brainstorm
+write_back_target: .context/discovery.md
+---
+
 # 🗣️ Discovery Framework: Jobs-to-be-Done (JTBD) & The Mom Test
 
 ## 1. 🧠 Mental Model & Trigger Conditions

@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "version": "1.0.0",
-  "generated_at": "2026-10-14T13:20:18.398259",
+  "generated_at": "2026-10-14T14:02:41.969262",
   "skills": [
     {
       "id": "apply-framework",
@@ -139,6 +139,19 @@
       "color": "text-purple-400"
     },
     {
+      "id": "recommend-framework",
+      "name": "Framework Dispatcher",
+      "category": "knowledge",
+      "description": "Diagnoses PM bottlenecks, uncertainty, or prioritization challenges, recommends the optimal framework & skill with a lightweight alternative and anti-pattern warning, and guides execution.",
+      "required_context_files": [
+        ".context/harness-config.yaml",
+        ".context/product.md"
+      ],
+      "command_trigger": "/recommend-framework",
+      "icon": "auto_awesome",
+      "color": "text-emerald-400"
+    },
+    {
       "id": "refine-user-stories",
       "name": "Story Refinement & SPIDR",
       "category": "specification",
@@ -256,6 +269,28 @@
       "name": "Jobs-to-be-Done (JTBD) & The Mom Test",
       "category": "discovery",
       "description": "To uncover genuine customer demand by systematically filtering out false validation, identifying real customer struggle, and structuring value propositions around the forces that drive adoption.",
+      "problem_signatures": [
+        "Customers give polite compliments in interviews but never buy, activate, or retain",
+        "Feature specifications anchor on opinions and generic hypothetical promises",
+        "Team cannot articulate the functional, emotional, and social struggle driving adoption"
+      ],
+      "best_for_stage": [
+        "0-to-1",
+        "growth",
+        "scale"
+      ],
+      "data_maturity_required": "low",
+      "when_not_to_use": [
+        "Optimizing high-traffic checkout funnels where A/B testing statistical data is available",
+        "Internal infrastructural refactoring with no user-facing behavioral component"
+      ],
+      "paired_skills": [
+        "validate-idea",
+        "ingest-context",
+        "create-prd",
+        "brainstorm"
+      ],
+      "write_back_target": ".context/discovery.md",
       "path": "frameworks/discovery/jtbd-and-mom-test.md"
     },
     {
@@ -263,13 +298,143 @@
       "name": "Opportunity Solution Tree (OST)",
       "category": "discovery",
       "description": "To break the \"feature factory\" anti-pattern by ensuring teams explore the problem space thoroughly, evaluate multiple competing solutions for each customer pain point, and test assumptions before committing engineering resources.",
+      "problem_signatures": [
+        "Team operates as a feature factory shipping random stakeholder solution requests",
+        "Features lack direct traceability to measurable business outcomes",
+        "Engineers jump to building the first idea without considering alternative solutions"
+      ],
+      "best_for_stage": [
+        "0-to-1",
+        "growth",
+        "scale",
+        "enterprise"
+      ],
+      "data_maturity_required": "medium",
+      "when_not_to_use": [
+        "Immediate production outage triage or critical regulatory compliance deadlines",
+        "Teams where executive leadership mandates fixed Gantt-chart feature lists"
+      ],
+      "paired_skills": [
+        "validate-idea",
+        "brainstorm",
+        "create-prd",
+        "sync-miro"
+      ],
+      "write_back_target": ".context/discovery.md",
       "path": "frameworks/discovery/opportunity-solution-tree.md"
+    },
+    {
+      "id": "gist-planning",
+      "name": "GIST Planning (Goals, Ideas, Step-projects, Tasks)",
+      "category": "operations",
+      "description": "To drastically reduce product waste by testing ideas through tiny step-projects before committing full engineering squads to building multi-month feature implementations.",
+      "problem_signatures": [
+        "Annual or quarterly roadmaps become obsolete within weeks of leadership sign-off",
+        "Teams commit to multi-month solutions before validating whether the core concept works",
+        "Disconnect between high-level company OKRs and daily sprint execution tasks"
+      ],
+      "best_for_stage": [
+        "0-to-1",
+        "growth",
+        "scale"
+      ],
+      "data_maturity_required": "low",
+      "when_not_to_use": [
+        "Strict contractual or outsourced development with rigid upfront milestone specifications",
+        "Hardware or physical manufacturing pipelines where step-projects cannot ship iteratively"
+      ],
+      "paired_skills": [
+        "create-prd",
+        "validate-idea",
+        "brainstorm",
+        "apply-framework"
+      ],
+      "write_back_target": ".context/product.md",
+      "path": "frameworks/operations/gist-planning.md"
+    },
+    {
+      "id": "scrum-sprint-delivery",
+      "name": "Scrum Sprint Delivery & INVEST Execution",
+      "category": "operations",
+      "description": "To provide predictable, sustainable, cross-functional engineering throughput with continuous delivery of shippable software increments.",
+      "problem_signatures": [
+        "Sprints fail repeatedly because stories are too large, ambiguous, or unestimated",
+        "Engineers build literal ticket text rather than solving the real customer need",
+        "Lack of clear Definition of Ready (DoR) causes continuous mid-sprint scope churn"
+      ],
+      "best_for_stage": [
+        "growth",
+        "scale",
+        "enterprise"
+      ],
+      "data_maturity_required": "medium",
+      "when_not_to_use": [
+        "Tiny 1-2 person exploratory teams where meeting ceremonies create pure overhead",
+        "High-uncertainty innovation spikes where scope cannot be estimated into 2-week commitments"
+      ],
+      "paired_skills": [
+        "create-user-stories",
+        "refine-user-stories",
+        "sync-jira",
+        "sync-github-issues"
+      ],
+      "write_back_target": ".context/conventions.md",
+      "path": "frameworks/operations/scrum-sprint-delivery.md"
+    },
+    {
+      "id": "shape-up",
+      "name": "Shape Up (Basecamp Product Development)",
+      "category": "operations",
+      "description": "To eliminate endless scope creep, eliminate backlog grooming debt, and empower autonomous cross-functional teams to deliver complete, polished features within bounded timeboxes.",
+      "problem_signatures": [
+        "Projects drag on indefinitely with continuous sprint rollovers and creeping scope",
+        "Engineers receive UI wireframes that are too rigid or PRDs that are too vague",
+        "Backlog grooming has degraded into an endless backlog management chore"
+      ],
+      "best_for_stage": [
+        "0-to-1",
+        "growth",
+        "scale"
+      ],
+      "data_maturity_required": "low",
+      "when_not_to_use": [
+        "Fixed-scope enterprise contractual deliverables with strict external deadlines",
+        "Pure maintenance, continuous firefighting, or infrastructure incident response teams"
+      ],
+      "paired_skills": [
+        "create-prd",
+        "create-design-brief",
+        "create-mockup"
+      ],
+      "write_back_target": ".context/conventions.md",
+      "path": "frameworks/operations/shape-up.md"
     },
     {
       "id": "kano-model",
       "name": "The Kano Model & Customer Delight",
       "category": "prioritization",
       "description": "To construct balanced product releases that satisfy table-stakes baseline requirements, compete effectively on performance, and incorporate distinct delighters while aggressively pruning indifferent bloat.",
+      "problem_signatures": [
+        "MVP scope suffers from feature creep and lacks differentiation from competitors",
+        "Unclear distinction between table-stakes basic features and true delighters",
+        "Customer feedback surveys show mixed signals on what features to build next"
+      ],
+      "best_for_stage": [
+        "0-to-1",
+        "growth",
+        "scale"
+      ],
+      "data_maturity_required": "medium",
+      "when_not_to_use": [
+        "Internal architectural refactors or purely operational workflow optimizations",
+        "Scenarios where functional and dysfunctional survey data cannot be collected"
+      ],
+      "paired_skills": [
+        "validate-idea",
+        "create-prd",
+        "create-user-stories"
+      ],
+      "write_back_target": ".context/discovery.md",
       "path": "frameworks/prioritization/kano-model.md"
     },
     {
@@ -277,6 +442,27 @@
       "name": "RICE Scoring Matrix",
       "category": "prioritization",
       "description": "To eliminate cognitive bias, loud-stakeholder lobbying, and \"pet project\" syndrome by anchoring prioritization to empirical reach, measurable business impact, defensible confidence, and engineering effort.",
+      "problem_signatures": [
+        "Backlog is prioritized by who speaks the loudest or highest-paid person's opinion (HiPPO)",
+        "Low-impact pet projects consistently displace high-reach core features",
+        "Teams lack an objective numerical basis to resolve stakeholder feature debates"
+      ],
+      "best_for_stage": [
+        "growth",
+        "scale",
+        "enterprise"
+      ],
+      "data_maturity_required": "medium",
+      "when_not_to_use": [
+        "Early 0-to-1 discovery where Reach and Impact numbers are completely speculative",
+        "Hard-deadline regulatory or compliance mandates that must be built regardless of reach"
+      ],
+      "paired_skills": [
+        "refine-user-stories",
+        "create-prd",
+        "sync-jira"
+      ],
+      "write_back_target": ".context/discovery.md",
       "path": "frameworks/prioritization/rice.md"
     },
     {
@@ -284,6 +470,26 @@
       "name": "Weighted Shortest Job First (WSJF) & Cost of Delay",
       "category": "prioritization",
       "description": "To maximize economic flow by scheduling high-value, time-critical, risk-reducing features that can be delivered quickly, preventing the common failure mode of tying up engineering squads on monolithic, slow-moving projects.",
+      "problem_signatures": [
+        "Slow-moving massive initiatives block fast, high-impact tactical releases",
+        "Time-sensitive market opportunities or regulatory deadlines missed due to poor sequencing",
+        "Engineering lacks economic rationale for slicing large epics into high-value chunks"
+      ],
+      "best_for_stage": [
+        "scale",
+        "enterprise"
+      ],
+      "data_maturity_required": "high",
+      "when_not_to_use": [
+        "Early-stage startups with fluid roadmaps where time-to-learn dominates cost-of-delay",
+        "Backlogs where job sizing cannot be reliably estimated in story points"
+      ],
+      "paired_skills": [
+        "create-user-stories",
+        "refine-user-stories",
+        "sync-jira"
+      ],
+      "write_back_target": ".context/strategy-and-constraints.md",
       "path": "frameworks/prioritization/wsjf-cost-of-delay.md"
     },
     {
@@ -291,13 +497,55 @@
       "name": "Theory of Constraints (ToC) & CRT Mapping",
       "category": "strategy",
       "description": "To pinpoint the operational bottleneck choking product delivery, maximize throughput at that specific point, and align all upstream discovery and downstream execution to eliminate waste.",
+      "problem_signatures": [
+        "Engineering delivery velocity stalls despite adding headcount or running more syncs",
+        "Backlog grows exponentially while deployment throughput remains completely flat",
+        "Upstream requirements or downstream QA continually starves engineering flow"
+      ],
+      "best_for_stage": [
+        "growth",
+        "scale",
+        "enterprise"
+      ],
+      "data_maturity_required": "medium",
+      "when_not_to_use": [
+        "Early 0-to-1 discovery where product-market fit has not been established",
+        "Environments with no measurable workflow stages or cycle-time metrics"
+      ],
+      "paired_skills": [
+        "refine-user-stories",
+        "create-prd",
+        "project-harness"
+      ],
+      "write_back_target": ".context/strategy-and-constraints.md",
       "path": "frameworks/strategy/theory-of-constraints.md"
     },
     {
       "id": "wardley-mapping",
-      "name": "Wardley Value Chain Mapping",
+      "name": "Wardley Value Chain Evolution Mapping",
       "category": "strategy",
       "description": "To prevent catastrophic resource misallocation (e.g., custom-building commoditized components) and explicitly identify where a product's true competitive differentiation resides.",
+      "problem_signatures": [
+        "Team debates custom-building infrastructure vs buying SaaS or using cloud utilities",
+        "Unclear where durable competitive advantage lies in the technology architecture",
+        "Risk of investing heavily in capabilities about to be commoditized by vendors"
+      ],
+      "best_for_stage": [
+        "growth",
+        "scale",
+        "enterprise"
+      ],
+      "data_maturity_required": "low",
+      "when_not_to_use": [
+        "Simple tactical UI bug fixes or single-screen user story refinement",
+        "Teams without access to or understanding of overall technology architecture"
+      ],
+      "paired_skills": [
+        "create-prd",
+        "validate-idea",
+        "create-documentation"
+      ],
+      "write_back_target": ".context/strategy-and-constraints.md",
       "path": "frameworks/strategy/wardley-mapping.md"
     }
   ],
