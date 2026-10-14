@@ -1,31 +1,32 @@
 ---
-description: >-
+description: Validates product ideas, feature concepts, and business hypotheses using Strategyzer 4-Risk Analysis, The Mom Test customer interview framework, TAM/SAM/SOM market sizing, and Pre-mortem risk identification.
 globs: "*"
 ---
 # 🧪 Idea & Hypothesis Validation Skill
 
 ## Overview
-The `validate-idea` skill evaluates raw product ideas, market opportunities, or feature requests. It guides the Product Manager through structured hypothesis testing, identifies high-risk assumptions, calculates market opportunity, and outputs an actionable Go/Pivot/No-Go validation report.
+The `validate-idea` skill evaluates raw product ideas, market opportunities, or feature requests. It guides the Product Manager through structured hypothesis testing, identifies high-risk assumptions, calculates market opportunity, and outputs an actionable Go/Pivot/No-Go validation report grounded in `.context/`.
 
 ---
 
 ## 🎯 When to Use
 Use this skill when:
-- Evaluating a new product concept or startup idea.
-- Deciding whether to invest engineering effort into a proposed feature.
+- Evaluating a new product concept, startup idea, or unvetted feature request.
+- Deciding whether to invest engineering effort into a proposed opportunity from `.context/discovery.md`.
 - Preparing for executive pitch meetings or investment committee reviews.
-- Identifying critical assumptions that need customer validation.
+- Identifying critical assumptions that require fast, empirical customer validation.
 
 ---
 
 ## 📋 Best Practices & Frameworks Applied
 1. **Strategyzer 4-Risk Framework**:
-   - **Desirability Risk**: Do customers actually want this?
-   - **Feasibility Risk**: Can we build and scale this technically?
+   - **Desirability Risk**: Do customers actually want this? Will they change habits?
+   - **Feasibility Risk**: Can we build and scale this within our architecture?
    - **Viability Risk**: Is the unit economics / financial model sustainable?
    - **Usability Risk**: Can users intuitively navigate and adopt the solution?
 2. **The Mom Test (Rob Fitzpatrick)**:
    - Formulating non-leading questions focused on past behaviors rather than hypothetical opinions.
+   - Filtering out compliments and false positives using `frameworks/discovery/jtbd-and-mom-test.md`.
 3. **Pre-Mortem Analysis**:
    - Projecting 12 months into the future assuming project failure, identifying failure modes early.
 4. **TAM / SAM / SOM Market Estimation**:
@@ -33,24 +34,51 @@ Use this skill when:
 
 ---
 
-## 🛠️ Step-by-Step Execution Workflow
+## 🛠️ Standardized 4-Stage Execution Protocol
 
-1. **Information Gathering**:
-   - Ask the user for the raw idea, target audience, key problem, and existing workarounds (if known).
-2. **Risk Scoring**:
-   - Grade each risk dimension (1-5 for Severity, 1-5 for Uncertainty).
-   - Flag any assumption with a Risk Score >= 15 as a "Dealbreaker Assumption".
-3. **Experiment Blueprinting**:
-   - Suggest 2-3 fast, low-cost validation experiments (e.g. Smoke test page, Concierge MVP, Wizard of Oz).
-4. **Signal Generation**:
-   - Provide a clear **GO**, **PIVOT**, or **NO-GO** signal with detailed rationale.
-5. **Next Step Prompting (Flow Handling)**:
-   - Conclude response with proactive recommendations for the next PM stage.
+### Stage 1: Context Hydration
+Before evaluating the idea, actively ingest the workspace context:
+1. **Read Core Context**:
+   - Ingest `.context/harness-config.yaml` to detect operating mode (`standalone` vs `embedded`) and `default_tier`.
+   - Ingest `.context/product.md` to ground the evaluation in target personas, core value loops, and North Star metrics.
+   - Ingest `.context/conventions.md` to align with organizational risk thresholds and tier standards.
+   - Ingest `.context/discovery.md` (Active Outcomes & past Mom Test interview logs) and `.context/strategy-and-constraints.md` (Hard business/market constraints & Wardley evolution stage).
+2. **Embedded Codebase Inspection** *(if `mode: embedded`)*:
+   - Read `.context/architecture.md` and inspect key repo directories to verify technical feasibility against real stack capabilities.
+
+### Stage 2: Socratic Clarifying Gate
+Evaluate whether the input idea contains critical ambiguities or missing dimensions:
+1. **Gap Audit**: Check if the problem statement, primary persona, trigger situation, or existing customer workarounds are vague or unsubstantiated.
+2. **Socratic Inquiry**: If critical gaps exist, **STOP** and ask the user **2 to 4 sharp, concrete clarifying questions** before generating the full document:
+   - *"What specific observable past behavior or customer struggle prompted this idea?"*
+   - *"What are target customers currently doing or spending (workarounds/hacks) to address this today?"*
+   - *"Which dimension represents the greatest fatal risk: customer desirability or technical feasibility?"*
+3. **Fast-Draft Escape Hatch**: If the user responds with *"proceed with assumptions"* (or requests an instant draft), proceed immediately to Stage 3 and explicitly document all working assumptions under a dedicated `## Documented Assumptions` section.
+
+### Stage 3: Grounded Generation
+Produce the comprehensive validation report using the tier specified in `.context/conventions.md` (`lean`, `standard`, or `enterprise`):
+1. **Apply Framework Lenses**:
+   - Ingest and execute `frameworks/discovery/jtbd-and-mom-test.md` to evaluate customer struggle vs compliments.
+   - Score risks across Desirability, Feasibility, Viability, and Usability (1–5 scale). Flag scores $\ge 15$ as "Dealbreaker Assumptions".
+2. **Formulate Experiment Blueprints**:
+   - Design 2–3 fast, low-cost assumption tests (smoke test page, concierge MVP, customer interview batch).
+3. **Issue Strategic Signal**:
+   - Conclude with a decisive **GO**, **PIVOT**, or **NO-GO** recommendation backed by evidence.
+4. **Persist Artifact**:
+   - Write the completed report to `docs/<feature-name>_idea_validation.md`.
+
+### Stage 4: Knowledge Compounding (Write-Back)
+Conclude the session by synthesizing newly derived truths to keep workspace memory fresh:
+1. **Propose Write-Back Updates**:
+   - Present a concise summary of newly validated/killed assumptions, interview insights, or pivot vectors.
+2. **Prompt for Permission**:
+   - *"Would you like me to record these insights in `.context/discovery.md` (Mom Test & OST) and log a Go/Pivot decision in `.context/decisions.md`?"*
+3. **Persist on Approval**: Update the targeted `.context/` files upon user confirmation.
 
 ---
 
 ## 🔄 Flow Handling & Suggested Next Skills
-At the end of generating the validation report, ALWAYS recommend the logical next step:
-- **If GO**: "Would you like to brainstorm solution variations using `brainstorm` or draft a PRD using `create-prd`?"
-- **If PIVOT**: "Would you like to run `brainstorm` to explore alternative angles for this problem?"
-- **If NO-GO**: "Would you like to archive this hypothesis and validate a different concept?"
+At the end of generating the validation report, ALWAYS recommend the logical next steps:
+- **If GO**: "Would you like to explore alternative solution angles using `brainstorm` or draft a full PRD using `create-prd`?"
+- **If PIVOT**: "Would you like to run `brainstorm` to explore alternative angles for this problem, or evaluate value chain shifts with `apply-framework` (Wardley Mapping)?"
+- **If NO-GO**: "Would you like to archive this hypothesis in `.context/decisions.md` and evaluate another opportunity from `.context/discovery.md`?"

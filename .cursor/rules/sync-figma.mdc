@@ -1,5 +1,5 @@
 ---
-description: >-
+description: Inspects Figma design files, imports component details, and posts design feedback/brief specifications directly to Figma nodes via Figma MCP.
 globs: "*"
 ---
 # 🎨 Figma Design Sync Skill

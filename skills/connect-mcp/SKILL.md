@@ -2,71 +2,104 @@
 name: connect-mcp
 description: >-
   Establishes, tests, and manages Model Context Protocol (MCP) integrations for external PM tools:
-  Atlassian (Jira & Confluence), Figma, and Miro across AGY, Claude Code, and Cursor IDEs.
+  Atlassian (Jira & Confluence), GitHub Issues, Figma, Miro, Notion, and Google Stitch across AGY, Claude Code, and Cursor IDEs.
 ---
 
 # 🔌 MCP External Tool Connection Skill
 
 ## Overview
-The `connect-mcp` skill guides users through establishing live MCP (Model Context Protocol) integrations with key product management tools: **Atlassian (Jira & Confluence)**, **Figma**, and **Miro**. 
+The `connect-mcp` skill guides users through establishing and testing live MCP (Model Context Protocol) integrations with all 6 core product management ecosystems:
+1. **Atlassian (Jira & Confluence)**
+2. **GitHub (Issues & Milestones)**
+3. **Figma (Design & Components)**
+4. **Miro (Visual Whiteboards)**
+5. **Notion (Product Wikis & Databases)**
+6. **Google Stitch (Atelier Workspace)**
 
-It provides automated credential management, server registration, readiness checks, and tool capability verification.
+It automates credential management in `.env`, generates target IDE configuration files, runs readiness diagnostics, and validates tool execution.
 
 ---
 
 ## ⚙️ Supported Tool Integrations
 
-| Integration | Primary MCP Server | Environment Variables Required | Key Capabilities Exposed |
-| :--- | :--- | :--- | :--- |
-| **Atlassian (Jira)** | `@modelcontextprotocol/server-atlassian` | `ATLASSIAN_HOST`, `ATLASSIAN_EMAIL`, `ATLASSIAN_API_TOKEN` | Create issue, update issue, search issues, assign sprint |
-| **Atlassian (Confluence)** | `@modelcontextprotocol/server-atlassian` | `ATLASSIAN_HOST`, `ATLASSIAN_EMAIL`, `ATLASSIAN_API_TOKEN` | Create page, update page, search space, attach specs |
-| **Figma** | `@figma/mcp` | `FIGMA_ACCESS_TOKEN` | Inspect file node tree, read component specs, post comments |
-| **Miro** | `mcp-server-miro` | `MIRO_ACCESS_TOKEN` | Create board, create sticky notes, build visual frames/cards |
+| Integration | Primary MCP Server | Environment Variables Required | Key Capabilities Exposed | Primary Sync Skill |
+| :--- | :--- | :--- | :--- | :--- |
+| **Atlassian (Jira)** | `@modelcontextprotocol/server-atlassian` | `ATLASSIAN_HOST`, `ATLASSIAN_EMAIL`, `ATLASSIAN_API_TOKEN` | Create issue, update issue, search backlog, sprint assignment | [`sync-jira`](../sync-jira/SKILL.md) |
+| **Atlassian (Confluence)** | `@modelcontextprotocol/server-atlassian` | `ATLASSIAN_HOST`, `ATLASSIAN_EMAIL`, `ATLASSIAN_API_TOKEN` | Create page, update page, search space, attach specs | [`sync-confluence`](../sync-confluence/SKILL.md) |
+| **GitHub Issues** | `@modelcontextprotocol/server-github` | `GITHUB_PERSONAL_ACCESS_TOKEN`, `GITHUB_OWNER`, `GITHUB_REPO` | Pull issues/bugs, create user story issues, link milestones, labels | [`sync-github-issues`](../sync-github-issues/SKILL.md) |
+| **Figma** | `@figma/mcp` | `FIGMA_ACCESS_TOKEN` | Inspect node tree, extract component specs, post comments | [`sync-figma`](../sync-figma/SKILL.md) |
+| **Miro** | `mcp-server-miro` | `MIRO_ACCESS_TOKEN` | Create boards, export SCAMPER sticky notes, 2x2 matrices | [`sync-miro`](../sync-miro/SKILL.md) |
+| **Notion** | `@notionhq/notion-mcp-server` | `NOTION_API_TOKEN`, `NOTION_ROOT_PAGE_ID` | Ingest research wikis into `.context/`, publish PRDs & PDRs | [`sync-notion`](../sync-notion/SKILL.md) |
+| **Google Stitch** | `@_davideast/stitch-mcp` | `STITCH_API_KEY` | Atelier workspace UI generation, design token streaming | `gui-run` / PM Command Center |
 
 ---
 
 ## 🛠️ Step-by-Step Connection Workflow
 
-### Step 1: Run the Automated Configuration Script
+### Step 1: Run the Interactive Setup Wizard
 Execute the connection helper in your terminal:
 ```bash
-# Run interactive wizard to input API tokens
+# Run interactive wizard to input API tokens for any tool:
 python3 scripts/setup-mcp.py --interactive
 
-# Or export config for all tools across AGY, Claude Code, and Cursor:
+# Or target a specific integration only:
+python3 scripts/setup-mcp.py --tool github --interactive
+python3 scripts/setup-mcp.py --tool notion --interactive
+python3 scripts/setup-mcp.py --tool atlassian --interactive
+
+# Or export configuration files across all platforms (AGY, Claude Code, Cursor, root):
 python3 scripts/setup-mcp.py --target all
 ```
 
-### Step 2: Verify Connection Readiness
-Run the verification check:
+### Step 2: Verify Connection Readiness & Environment
+Run the verification check to audit Node.js, NPX, and credential completeness:
 ```bash
 python3 scripts/setup-mcp.py --check
 ```
 
-### Step 3: Populate Credentials (`.env`)
-Ensure your credentials are provided in `.env`:
+### Step 3: Inspect Credentials (`.env`)
+Ensure your credentials in `.env` are populated (see `.env.example` for reference):
 ```env
-ATLASSIAN_HOST=https://your-company.atlassian.net
+# Atlassian (Jira & Confluence)
+ATLASSIAN_HOST=https://your-domain.atlassian.net
 ATLASSIAN_EMAIL=pm@company.com
-ATLASSIAN_API_TOKEN=ATATT3xFfGF0...
-FIGMA_ACCESS_TOKEN=figd_...
-MIRO_ACCESS_TOKEN=eyJhbGci...
+ATLASSIAN_API_TOKEN=your_token
+
+# GitHub Issues
+GITHUB_PERSONAL_ACCESS_TOKEN=ghp_your_token
+GITHUB_OWNER=your_org_or_username
+GITHUB_REPO=your_repo
+
+# Figma
+FIGMA_ACCESS_TOKEN=figd_your_token
+
+# Miro
+MIRO_ACCESS_TOKEN=eyJhbGci_your_token
+
+# Notion
+NOTION_API_TOKEN=secret_your_token
+NOTION_ROOT_PAGE_ID=your_page_or_database_id
+
+# Google Stitch
+STITCH_API_KEY=stitch_live_your_key
 ```
 
 ---
 
-## ⚡ Target IDE Config Locations
-
-The script automatically manages configuration files across platforms:
+## ⚡ Target Platform Config Locations
+The setup utility automatically synchronizes configuration across all supported environments:
 - **AGY / Antigravity**: `.agents/mcp.json`
 - **Claude Code**: `.claude/mcp.json`
 - **Cursor IDE**: `.cursor/mcp.json`
+- **Workspace Root**: `mcp.json`
 
 ---
 
 ## 🔄 Flow Handling & Suggested Next Skills
-Once MCP connections are established, prompt the user with active integration skills:
-- **Jira Integration**: "Would you like to export stories to Jira using `sync-jira`?"
-- **Confluence Integration**: "Would you like to publish your PRD to Confluence using `sync-confluence`?"
+Once MCP connections are verified, recommend the relevant operational sync skills:
+- **GitHub Integration**: "Would you like to pull issues or export stories to GitHub using `sync-github-issues`?"
+- **Notion Integration**: "Would you like to pull product research or publish PRDs to Notion using `sync-notion`?"
+- **Jira Integration**: "Would you like to sync sprint stories to Jira using `sync-jira`?"
+- **Confluence Integration**: "Would you like to publish specs to Confluence using `sync-confluence`?"
 - **Figma Integration**: "Would you like to inspect design components using `sync-figma`?"
 - **Miro Integration**: "Would you like to export brainstorm sticky notes to Miro using `sync-miro`?"

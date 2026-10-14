@@ -1,6 +1,6 @@
 # Command: /sync-figma
 
->-
+Inspects Figma design files, imports component details, and posts design feedback/brief specifications directly to Figma nodes via Figma MCP.
 
 # 🎨 Figma Design Sync Skill
 

@@ -8,46 +8,74 @@ description: >-
 # 📖 User Story Generation Skill
 
 ## Overview
-The `create-user-stories` skill breaks down PRDs, features, or epics into well-structured, actionable user stories. Every generated story strictly respects industry best practices to ensure engineering readiness.
+The `create-user-stories` skill breaks down PRDs, feature specs, or epics into actionable, engineering-ready user stories. Every generated story strictly enforces INVEST criteria and Gherkin BDD test scenarios, grounded in `.context/`.
 
 ---
 
 ## ⚙️ Supported Operational Modes
+Select or inherit the operational mode from `.context/harness-config.yaml`:
 1. **⚡ Lean Mode (`lean`)**:
-   - Short narrative + simple bullet-point acceptance criteria.
+   - Short narrative + concise bullet-point acceptance criteria.
    - Template: `templates/user-stories/lean.md`
 2. **🎯 Standard Agile Mode (`standard`)** *(Default)*:
-   - Full INVEST criteria check + Gherkin (`Given/When/Then`) Acceptance Criteria + Fibonacci Story Points (1, 2, 3, 5, 8, 13) + Definition of Done.
+   - Full INVEST criteria validation + Gherkin (`Given/When/Then`) Acceptance Criteria + Fibonacci Story Points ($1, 2, 3, 5, 8$) + Definition of Done checklist.
    - Template: `templates/user-stories/standard.md`
 3. **🏢 Enterprise Mode (`enterprise`)**:
-   - Gherkin BDD + Security assertions (RBAC/OIDC) + Compliance tags (`[SOC2]`, `[GDPR]`) + Telemetry event payload + Audit log requirements.
+   - Gherkin BDD + Security assertions (RBAC, OIDC) + Compliance tags (`[SOC2]`, `[GDPR]`) + Telemetry event payload + Audit log specifications.
    - Template: `templates/user-stories/enterprise.md`
 
 ---
 
 ## 📋 Best Practices & Standards Enforced
-
-1. **INVEST Criteria Validation**:
-   - **I**ndependent, **N**egotiable, **V**aluable, **E**stimable, **S**mall, **T**estable.
-2. **Gherkin BDD Syntax**:
-   - Every scenario MUST use `Given... When... Then... And...`.
-3. **Multi-Scenario Coverage**:
-   - Mandatory Happy Path, Validation Error, and Edge Case/System Failure scenarios.
+- **INVEST Criteria Validation**: Independent, Negotiable, Valuable, Estimable, Small ($\le 5$ points), Testable.
+- **Strict Gherkin BDD Syntax**: Every scenario must use explicit `Given [Context], When [Action], Then [Expected Result]`.
+- **Mandatory 4-Way Scenario Coverage**:
+  1. Happy Path (Nominal execution).
+  2. Boundary Conditions (Zero-state, empty collections, maximum inputs).
+  3. Negative / Error States (Validation errors, timeout, network failure, 4xx/5xx).
+  4. Asynchronous & Loading States (Disabled triggers, progress indicators).
 
 ---
 
-## 🛠️ Step-by-Step Execution Workflow
+## 🛠️ Standardized 4-Stage Execution Protocol
 
-1. **Input Intake**:
-   - Accept epic description, feature specification, or PRD text.
-2. **Epic Breakdown**:
-   - Identify sub-features and group them into logical stories.
-3. **Story Generation**:
-   - For each story, construct the standard Concur statement (`As a... I want to... So that...`).
-   - Write Gherkin BDD acceptance criteria for happy path, validation errors, and system edge cases.
-4. **Output Verification & Flow Handling**:
-   - Ensure all stories pass the INVEST criteria check.
-   - Conclude response with proactive recommendations for the next PM stage.
+### Stage 1: Context Hydration
+Before breaking down epics, ground the agent in system and process conventions:
+1. **Read Core Context**:
+   - Ingest `.context/harness-config.yaml` to detect `default_tier` and active mode.
+   - Ingest `.context/conventions.md` to load the exact Definition of Ready (DoR), Gherkin rules, and Fibonacci estimation guidelines.
+   - Ingest `.context/product.md` to verify persona roles and user journey alignment.
+   - Ingest `.context/architecture.md` to understand existing data models, API endpoints, and authentication patterns.
+2. **Embedded Codebase Inspection** *(if `mode: embedded`)*:
+   - Check repository directories (e.g. `src/components/`, `src/services/`, database migrations) to ensure technical tasks in stories map to real codebase structures.
+
+### Stage 2: Socratic Clarifying Gate
+Evaluate whether the input epic or PRD text is sufficiently detailed for story decomposition:
+1. **Ambiguity Audit**: Check if user roles, permission tiers, business logic edge cases, or external error behaviors are unspecified.
+2. **Socratic Inquiry**: If critical inputs are missing, **STOP** and ask the user **2 to 4 sharp, concrete clarifying questions**:
+   - *"What specific error message and UI recovery state should occur when an invalid input or system timeout happens?"*
+   - *"Are there multiple permission roles (e.g., Admin vs Viewer) with different access boundaries for this feature?"*
+   - *"What is the expected empty state when a first-time user encounters this view?"*
+3. **Fast-Draft Escape Hatch**: If the user replies *"proceed with assumptions"* (or requests immediate tickets), proceed directly to Stage 3, explicitly enumerating assumed error behaviors and default states inside the acceptance criteria.
+
+### Stage 3: Grounded Generation
+Decompose the feature into INVEST-compliant user stories using the active tier:
+1. **Construct Concur Statement**:
+   - Formulate: `As a [specific persona from product.md], I want to [action], So that I can [measurable outcome]`.
+2. **Draft Exhaustive Gherkin Acceptance Criteria**:
+   - Write concrete `Given/When/Then` scenarios covering happy path, validation errors, and boundary conditions without placeholder text.
+3. **Estimate & Verify**:
+   - Assign Fibonacci story points ($1, 2, 3, 5, 8$). If points $> 8$, split the story using the SPIDR framework (`frameworks/discovery/` and `refine-user-stories`).
+4. **Persist Deliverable**:
+   - Save the user stories file to `docs/<feature-name>_user_stories.md`.
+
+### Stage 4: Knowledge Compounding (Write-Back)
+Capture newly established technical and operational conventions back into `.context/`:
+1. **Propose Write-Back Updates**:
+   - Summarize newly resolved API interfaces, data entities, or permission rules defined during story drafting.
+2. **Prompt for Permission**:
+   - *"Would you like me to update `.context/architecture.md` with these newly defined API endpoints/data models and log a record in `.context/decisions.md`?"*
+3. **Persist on Approval**: Update the targeted `.context/` files upon user confirmation.
 
 ---
 

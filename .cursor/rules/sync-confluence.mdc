@@ -1,5 +1,5 @@
 ---
-description: >-
+description: Publishes PRDs, Technical Specs, Design Briefs, and User Manuals directly into Confluence spaces using Atlassian MCP integration.
 globs: "*"
 ---
 # 📄 Confluence Documentation Sync Skill

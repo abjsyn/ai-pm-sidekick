@@ -1,6 +1,6 @@
 # Command: /sync-miro
 
->-
+Exports SCAMPER, HMW, 6 Thinking Hats brainstorm sessions, and outcome roadmaps directly to Miro visual whiteboards via Miro MCP integration.
 
 # 🧠 Miro Whiteboard Sync Skill
 

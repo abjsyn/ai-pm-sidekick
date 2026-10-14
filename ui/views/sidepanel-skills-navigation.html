@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html class="dark h-full" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>AI PM Sidekick — SaaS Left Sidepanel Navigation & Favorites</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
+  <!-- Marked.js -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            surface: "#121316",
+            "surface-container-low": "#18191d",
+            "surface-container": "#1f2025",
+            "surface-container-high": "#26272e",
+            outline-variant: "#2a2b30",
+            primary: "#f59e0b",
+            "primary-container": "#d97706"
+          },
+          fontFamily: {
+            headline: ["Plus Jakarta Sans", "sans-serif"],
+            body: ["Inter", "sans-serif"],
+            mono: ["JetBrains Mono", "monospace"]
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #2a2b30; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #3f424d; }
+    
+    .device-viewport {
+      transition: max-width 0.3s ease, margin 0.3s ease;
+      margin: 0 auto;
+    }
+
+    .sidebar-transition {
+      transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+  </style>
+</head>
+<body class="bg-[#121316] text-[#f4f4f5] font-body antialiased min-h-screen flex flex-col justify-between selection:bg-amber-600 selection:text-white">
+
+  <div id="viewport-wrapper" class="w-full flex-1 flex flex-col device-viewport min-h-screen">
+
+    <!-- ================= TOP APPLICATION HEADER ================= -->
+    <header class="h-14 bg-[#18191d] border-b border-[#2a2b30] px-4 flex items-center justify-between shrink-0 z-40">
+      <div class="flex items-center gap-3">
+        <!-- Sidebar Collapse Toggle Button -->
+        <button onclick="toggleSidebar()" title="Toggle Side Panel" class="p-1.5 rounded-lg bg-[#26272e] hover:bg-[#31323a] text-zinc-300 transition-colors">
+          <span class="material-symbols-outlined text-[20px]" id="sidebar-toggle-icon">menu_open</span>
+        </button>
+
+        <div class="flex items-center gap-2">
+          <div class="h-7 w-7 rounded bg-amber-600/10 border border-amber-600/30 flex items-center justify-center text-amber-500 font-bold">
+            <span class="material-symbols-outlined text-[18px]">star</span>
+          </div>
+          <span class="font-headline font-bold text-zinc-100 text-base">PM Command Center</span>
+          <span class="px-1.5 py-0.5 rounded bg-[#26272e] text-amber-400 font-mono text-[10px] border border-amber-500/20">⭐ Pinned Navigation</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2 pl-2 border-l border-[#2a2b30]">
+          <div class="w-7 h-7 rounded-full bg-amber-600/20 border border-amber-500/40 flex items-center justify-center text-amber-400 font-bold text-xs">P</div>
+          <span class="text-xs text-zinc-200 font-medium hidden md:inline">Paula</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- ================= MAIN APP LAYOUT (SIDEBAR + WORKSPACE) ================= -->
+    <div class="flex-1 flex overflow-hidden">
+
+      <!-- ================= LEFT SAAS SIDE PANEL WITH PINNED FAVORITES ================= -->
+      <aside id="main-sidebar" class="sidebar-transition w-64 bg-[#18191d] border-r border-[#2a2b30] flex flex-col justify-between shrink-0 overflow-y-auto z-30">
+        
+        <div class="p-3 space-y-4">
+
+          <!-- Search in Sidepanel -->
+          <div class="px-1 sidebar-label">
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-zinc-500 text-[14px]">search</span>
+              <input type="text" id="sidepanel-search" onkeyup="filterSidebarSkills()" placeholder="Search sidepanel skills..." class="w-full py-1 pl-7 pr-2 rounded bg-[#121316] border border-[#2a2b30] text-zinc-100 text-[11px] focus:outline-none focus:border-amber-500"/>
+            </div>
+          </div>
+
+          <!-- ⭐ PINNED FAVORITES SECTION -->
+          <div class="space-y-1" id="sidepanel-favorites-section">
+            <div class="px-2 text-[10px] font-mono text-amber-400 uppercase tracking-wider font-bold sidebar-label flex items-center gap-1">
+              <span class="material-symbols-outlined text-[13px] text-amber-400">star</span> Pinned Favorites
+            </div>
+            <div id="favorites-list" class="space-y-1">
+              <!-- Dynamically populated from localStorage -->
+            </div>
+          </div>
+
+          <hr class="border-[#2a2b30] my-2 sidebar-label"/>
+
+          <!-- DYNAMIC SKILL CATEGORIES (Hydrated from dist/harness-manifest.json) -->
+          <div id="dynamic-categories-container" class="space-y-4">
+            <div class="px-2 py-4 text-center text-xs text-zinc-500 font-mono flex items-center justify-center gap-2">
+              <span class="w-3 h-3 border-2 border-amber-500/30 border-t-amber-500 rounded-full animate-spin"></span>
+              <span>Loading skills manifest...</span>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="p-3 border-t border-[#2a2b30] bg-[#121316]/50">
+          <div class="flex items-center gap-2 font-mono text-[10px] text-zinc-400 sidebar-label">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span>Local Daemon Listening</span>
+          </div>
+        </div>
+
+      </aside>
+
+      <!-- ================= MAIN CANVAS WORKSPACE ================= -->
+      <main class="flex-1 bg-[#121316] p-6 overflow-y-auto flex flex-col justify-between">
+        
+        <div class="space-y-6 max-w-5xl mx-auto w-full">
+
+          <!-- Dynamic Skill Launcher Panel -->
+          <section class="rounded-2xl bg-[#18191d] p-6 border border-[#2a2b30] shadow-sm">
+            <div class="flex items-center justify-between pb-4 mb-4 border-b border-[#2a2b30]">
+              <div>
+                <span class="px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 font-mono text-[10px] uppercase font-bold tracking-wider" id="active-skill-tag">CREATE-PRD</span>
+                <h1 class="font-headline text-2xl text-zinc-100 font-bold mt-1" id="active-skill-title">Interactive PRD Generator</h1>
+                <p class="text-xs text-zinc-400 mt-0.5" id="active-skill-desc">Triggered directly from the pinned SaaS sidepanel.</p>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                <span class="font-mono text-xs text-zinc-300">Ready to execute</span>
+              </div>
+            </div>
+
+            <!-- Execution Form -->
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-5">
+              
+              <div class="md:col-span-5 space-y-4">
+                <div>
+                  <label class="block text-xs font-mono uppercase text-zinc-400 mb-1">Feature Name / Subject</label>
+                  <input type="text" id="input-feature-name" value="Sidepanel Favorites Navigation" class="w-full py-2 px-3 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-xs focus:outline-none focus:border-amber-500"/>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-xs font-mono uppercase text-zinc-400 mb-1">Agile Mode</label>
+                    <select id="input-mode" class="w-full py-2 px-3 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-xs focus:outline-none focus:border-amber-500">
+                      <option value="standard">Standard Agile</option>
+                      <option value="lean">Lean MVP</option>
+                      <option value="enterprise">Enterprise Scale</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-mono uppercase text-zinc-400 mb-1">Persona</label>
+                    <input type="text" id="input-persona" value="Paula (Lead PM)" class="w-full py-2 px-3 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-xs focus:outline-none focus:border-amber-500"/>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-mono uppercase text-zinc-400 mb-1">Key Requirements & Specs</label>
+                  <textarea id="input-requirements" rows="4" class="w-full py-2 px-3 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-xs focus:outline-none focus:border-amber-500">Pin favorite skills with ⭐ in left sidepanel for instant 1-click execution.</textarea>
+                </div>
+
+                <button onclick="runSidepanelSkill()" id="btn-sidepanel-run" class="w-full py-2.5 rounded-lg bg-amber-600 hover:bg-amber-500 text-white font-semibold text-xs transition-colors flex items-center justify-center gap-2 shadow-sm">
+                  <span class="material-symbols-outlined text-[18px]">play_arrow</span>
+                  Execute Skill via Sidepanel Trigger
+                </button>
+              </div>
+
+              <!-- Live Render Preview -->
+              <div class="md:col-span-7 flex flex-col h-[460px] rounded-xl bg-[#121316] border border-[#2a2b30] overflow-hidden">
+                <div class="h-9 bg-[#18191d] border-b border-[#2a2b30] px-3 flex items-center justify-between text-xs font-mono text-zinc-400">
+                  <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                    <span id="sidepanel-preview-filename">SIDEPANEL_PRD.md</span>
+                  </div>
+                  <span class="text-zinc-500 text-[10px]">Live Render</span>
+                </div>
+
+                <div id="sidepanel-preview-body" class="p-4 flex-1 overflow-y-auto font-sans text-xs text-zinc-300 space-y-3 prose prose-invert max-w-none">
+                  <p class="text-zinc-500 italic">Click any skill in the left SaaS sidepanel to immediately trigger output generation here.</p>
+                </div>
+              </div>
+
+            </div>
+          </section>
+
+          <!-- Toast Alert Notification -->
+          <div id="toast-notification" class="hidden p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono flex items-center gap-2">
+            <span class="material-symbols-outlined text-[18px]">check_circle</span>
+            <span id="toast-msg">Skill triggered from sidepanel successfully!</span>
+          </div>
+
+        </div>
+
+      </main>
+
+    </div>
+
+  </div>
+
+  <!-- JAVASCRIPT LOGIC WITH FAVORITES SYSTEM -->
+  <script>
+    let currentSkillId = 'create-prd';
+    let sidebarExpanded = true;
+
+    // Populated dynamically from dist/harness-manifest.json or fallback catalog
+    let SKILL_DETAILS = {
+      'create-prd': { name: 'PRD Generator', icon: 'description', color: 'text-amber-500', category: 'specification', description: 'Generates comprehensive PRDs across Lean, Agile, and Enterprise tiers.' },
+      'create-user-stories': { name: 'INVEST User Stories', icon: 'splitscreen', color: 'text-blue-400', category: 'specification', description: 'Generates INVEST user stories with Gherkin BDD criteria.' },
+      'refine-user-stories': { name: 'Story Refinement & SPIDR', icon: 'tune', color: 'text-blue-400', category: 'specification', description: 'Refines user stories, applies SPIDR splitting, and calculates readiness score.' },
+      'create-mockup': { name: 'HTML Wireframe & Prototype', icon: 'web', color: 'text-teal-400', category: 'specification', description: 'Generates interactive UI wireframes and prototypes.' },
+      'create-design-brief': { name: 'UI/UX Design Brief', icon: 'palette', color: 'text-teal-400', category: 'specification', description: 'Creates UI/UX design briefs with WCAG accessibility guidelines.' },
+      'create-documentation': { name: 'Technical & User Docs', icon: 'menu_book', color: 'text-zinc-400', category: 'specification', description: 'Generates OpenAPI specs, Mermaid diagrams, and user guides.' },
+      'brainstorm': { name: 'Opportunity Brainstorm', icon: 'psychology_alt', color: 'text-amber-500', category: 'ideation', description: 'Structured brainstorming with SCAMPER, HMW, and 6 Hats.' },
+      'validate-idea': { name: 'Idea & Hypothesis Validator', icon: 'fact_check', color: 'text-red-400', category: 'ideation', description: 'Validates product ideas with Strategyzer 4-Risk and Mom Test.' },
+      'ingest-context': { name: 'Context Ingestion Router', icon: 'input', color: 'text-purple-400', category: 'knowledge', description: 'Ingests raw notes and routes structured facts to .context/.' },
+      'apply-framework': { name: 'Modular Framework Runner', icon: 'hub', color: 'text-indigo-400', category: 'knowledge', description: 'Runs strategic, discovery, and prioritization frameworks.' },
+      'connect-mcp': { name: 'MCP Integration Manager', icon: 'cable', color: 'text-emerald-400', category: 'sync', description: 'Manages MCP connections across PM tools.' },
+      'sync-jira': { name: 'Jira Epics & Stories Sync', icon: 'task_alt', color: 'text-blue-500', category: 'sync', description: 'Syncs epics and user stories directly to Jira.' },
+      'sync-confluence': { name: 'Confluence Wiki Sync', icon: 'library_books', color: 'text-blue-400', category: 'sync', description: 'Publishes PRDs and specs directly to Confluence.' },
+      'sync-github-issues': { name: 'GitHub Issues Sync', icon: 'code', color: 'text-zinc-200', category: 'sync', description: 'Bi-directionally syncs GitHub Issues and milestones.' },
+      'sync-figma': { name: 'Figma Specs Sync', icon: 'design_services', color: 'text-violet-400', category: 'sync', description: 'Pushes specs and comments to Figma canvases.' },
+      'sync-miro': { name: 'Miro Whiteboards Sync', icon: 'dashboard_customize', color: 'text-yellow-400', category: 'sync', description: 'Exports brainstorms and roadmaps to Miro boards.' },
+      'sync-notion': { name: 'Notion Databases Sync', icon: 'sticky_note_2', color: 'text-orange-400', category: 'sync', description: 'Syncs product wikis, research databases, and PRDs.' },
+      'gui-run': { name: 'PM Command Center GUI', icon: 'open_in_browser', color: 'text-amber-500', category: 'gui', description: 'Launches the local PM Command Center web GUI.' }
+    };
+
+    const CATEGORY_META = {
+      'ideation': { title: 'Ideation & Validation', order: 1 },
+      'specification': { title: 'Specifications & Delivery', order: 2 },
+      'knowledge': { title: 'Knowledge & Context', order: 3 },
+      'sync': { title: 'External Sync (MCP)', order: 4 },
+      'gui': { title: 'GUI & Workspace', order: 5 }
+    };
+
+    async function loadHarnessManifest() {
+      try {
+        let manifest = null;
+        for (const url of ['/dist/harness-manifest.json', '/api/manifest', '../../dist/harness-manifest.json', 'dist/harness-manifest.json']) {
+          try {
+            const res = await fetch(url);
+            if (res.ok) {
+              manifest = await res.json();
+              break;
+            }
+          } catch (e) {}
+        }
+
+        if (manifest && Array.isArray(manifest.skills) && manifest.skills.length > 0) {
+          SKILL_DETAILS = {};
+          manifest.skills.forEach(s => {
+            SKILL_DETAILS[s.id] = {
+              name: s.name,
+              icon: s.icon || 'extension',
+              color: s.color || 'text-zinc-400',
+              category: s.category || 'knowledge',
+              description: s.description || '',
+              required_context_files: s.required_context_files || [],
+              command: s.command_trigger || `/${s.id}`
+            };
+          });
+        }
+      } catch (err) {
+        console.warn('Could not load dynamic manifest, using built-in catalog', err);
+      }
+
+      try {
+        const cfgRes = await fetch('/api/context');
+        if (cfgRes.ok) {
+          const ctxData = await cfgRes.json();
+          if (ctxData.config && Array.isArray(ctxData.config.favorite_skills)) {
+            localStorage.setItem('pm_favorite_skills', JSON.stringify(ctxData.config.favorite_skills));
+          }
+        }
+      } catch (e) {}
+
+      renderSkillCategories();
+      renderFavoritesSection();
+      updateFavoriteIcons();
+    }
+
+    function renderSkillCategories() {
+      const container = document.getElementById('dynamic-categories-container');
+      if (!container) return;
+
+      const grouped = {};
+      Object.keys(CATEGORY_META).forEach(cat => { grouped[cat] = []; });
+
+      Object.entries(SKILL_DETAILS).forEach(([id, skill]) => {
+        const cat = skill.category || 'knowledge';
+        if (!grouped[cat]) grouped[cat] = [];
+        grouped[cat].push({ id, ...skill });
+      });
+
+      let html = '';
+      Object.keys(CATEGORY_META).forEach(cat => {
+        const skillsInCat = grouped[cat] || [];
+        if (skillsInCat.length === 0) return;
+
+        const catInfo = CATEGORY_META[cat];
+        html += `
+          <div class="space-y-1">
+            <div class="px-2 text-[10px] font-mono text-zinc-500 uppercase tracking-wider font-semibold sidebar-label">${catInfo.title}</div>
+            ${skillsInCat.map(s => `
+              <div data-skill-id="${s.id}" class="sidebar-skill-item w-full p-2 rounded-lg hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center justify-between transition-colors group cursor-pointer" onclick="triggerSkillFromSidepanel('${s.id}', '${s.name.replace(/'/g, "\\'")}')">
+                <div class="flex items-center gap-2.5 truncate">
+                  <span class="material-symbols-outlined text-[18px] ${s.color} shrink-0">${s.icon}</span>
+                  <span class="text-[13px] font-medium truncate sidebar-label">${s.name}</span>
+                </div>
+                <button onclick="toggleFavorite('${s.id}', event)" title="Pin to Favorites" class="opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
+                  <span class="material-symbols-outlined text-[16px]" id="fav-icon-${s.id}">star_outline</span>
+                </button>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    function getFavoriteSkills() {
+      try {
+        const stored = localStorage.getItem('pm_favorite_skills');
+        return stored ? JSON.parse(stored) : ['create-prd', 'create-user-stories', 'create-mockup'];
+      } catch (e) {
+        return ['create-prd', 'create-user-stories', 'create-mockup'];
+      }
+    }
+
+    function saveFavoriteSkills(favs) {
+      localStorage.setItem('pm_favorite_skills', JSON.stringify(favs));
+      renderFavoritesSection();
+      updateFavoriteIcons();
+      fetch('/api/config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ favorite_skills: favs })
+      }).catch(e => console.warn('Could not sync favorites to /api/config', e));
+    }
+
+    function toggleFavorite(skillId, event) {
+      if (event) event.stopPropagation();
+      let favs = getFavoriteSkills();
+      if (favs.includes(skillId)) favs = favs.filter(id => id !== skillId);
+      else favs.push(skillId);
+      saveFavoriteSkills(favs);
+    }
+
+    function renderFavoritesSection() {
+      const favs = getFavoriteSkills();
+      const container = document.getElementById('favorites-list');
+      if (!container) return;
+      if (favs.length === 0) {
+        container.innerHTML = `<div class="px-2 py-1 text-[11px] text-zinc-500 italic sidebar-label">No pinned skills. Click ⭐ to pin.</div>`;
+        return;
+      }
+      container.innerHTML = favs.map(skillId => {
+        const info = SKILL_DETAILS[skillId] || { name: skillId, icon: 'star', color: 'text-amber-400' };
+        return `
+          <div data-skill-id="${skillId}" class="sidebar-skill-item w-full p-2 rounded-lg bg-[#26272e]/60 hover:bg-[#26272e] text-zinc-200 flex items-center justify-between transition-colors cursor-pointer border border-amber-500/20" onclick="triggerSkillFromSidepanel('${skillId}', '${info.name.replace(/'/g, "\\'")}')">
+            <div class="flex items-center gap-2.5 truncate">
+              <span class="material-symbols-outlined text-[18px] ${info.color} shrink-0">${info.icon}</span>
+              <span class="text-[13px] font-semibold truncate sidebar-label text-zinc-100">${info.name}</span>
+            </div>
+            <button onclick="toggleFavorite('${skillId}', event)" class="p-0.5 text-amber-400 hover:text-red-400">
+              <span class="material-symbols-outlined text-[16px]">star</span>
+            </button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function updateFavoriteIcons() {
+      const favs = getFavoriteSkills();
+      Object.keys(SKILL_DETAILS).forEach(skillId => {
+        const sideIcon = document.getElementById(`fav-icon-${skillId}`);
+        const isFav = favs.includes(skillId);
+        if (sideIcon) {
+          sideIcon.textContent = isFav ? 'star' : 'star_outline';
+          if (isFav) sideIcon.classList.add('text-amber-400');
+          else sideIcon.classList.remove('text-amber-400');
+        }
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadHarnessManifest();
+    });
+
+    function toggleSidebar() {
+      const sidebar = document.getElementById('main-sidebar');
+      const toggleIcon = document.getElementById('sidebar-toggle-icon');
+      const labels = document.querySelectorAll('.sidebar-label');
+
+      sidebarExpanded = !sidebarExpanded;
+      if (sidebarExpanded) {
+        sidebar.classList.remove('w-16');
+        sidebar.classList.add('w-64');
+        labels.forEach(l => l.classList.remove('hidden'));
+        if (toggleIcon) toggleIcon.textContent = 'menu_open';
+      } else {
+        sidebar.classList.remove('w-64');
+        sidebar.classList.add('w-16');
+        labels.forEach(l => l.classList.add('hidden'));
+        if (toggleIcon) toggleIcon.textContent = 'menu';
+      }
+    }
+
+    function triggerSkillFromSidepanel(skillId, skillTitle) {
+      currentSkillId = skillId;
+      const skill = SKILL_DETAILS[skillId] || {};
+      document.getElementById('active-skill-tag').textContent = skillId.toUpperCase();
+      document.getElementById('active-skill-title').textContent = skillTitle || skill.name || skillId;
+      if (skill.description) {
+        document.getElementById('active-skill-desc').textContent = skill.description;
+      }
+      document.getElementById('sidepanel-preview-filename').textContent = `${skillId.toUpperCase()}_OUTPUT.md`;
+
+      showToast(`Triggered skill '${skillTitle || skill.name || skillId}' from sidepanel`);
+      runSidepanelSkill();
+    }
+
+    async function runSidepanelSkill() {
+      const featureName = document.getElementById('input-feature-name').value || 'Sidepanel Navigation';
+      const mode = document.getElementById('input-mode').value;
+      const persona = document.getElementById('input-persona').value;
+      const requirements = document.getElementById('input-requirements').value;
+      const preview = document.getElementById('sidepanel-preview-body');
+
+      preview.innerHTML = `<div class="text-amber-500 font-mono text-xs py-4">Executing ${currentSkillId}...</div>`;
+
+      try {
+        const res = await fetch('/api/generate-deliverable', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ skill: currentSkillId, feature_name: featureName, mode, persona, requirements })
+        });
+        const data = await res.json();
+        if (typeof marked !== 'undefined' && data.content) {
+          preview.innerHTML = marked.parse(data.content);
+        } else {
+          preview.innerHTML = `<pre class="font-mono text-xs text-zinc-300">${data.content || 'Output'}</pre>`;
+        }
+      } catch (err) {
+        preview.innerHTML = `<div class="text-red-400 text-xs">Error: ${err.message}</div>`;
+      }
+    }
+
+    function setViewport(device) {
+      const wrapper = document.getElementById('viewport-wrapper');
+      if (device === 'mobile') wrapper.style.maxWidth = '375px';
+      else if (device === 'tablet') wrapper.style.maxWidth = '768px';
+      else wrapper.style.maxWidth = '100%';
+    }
+
+    function filterSidebarSkills() {
+      const q = document.getElementById('sidepanel-search').value.toLowerCase().trim();
+      const items = document.querySelectorAll('.sidebar-skill-item');
+      items.forEach(item => {
+        const text = item.innerText.toLowerCase();
+        item.style.display = text.includes(q) ? 'flex' : 'none';
+      });
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast-notification');
+      const toastMsg = document.getElementById('toast-msg');
+      if (toast && toastMsg) {
+        toastMsg.textContent = msg;
+        toast.classList.remove('hidden');
+        setTimeout(() => toast.classList.add('hidden'), 3000);
+      }
+    }
+  </script>
+
+</body>
+</html>

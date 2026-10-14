@@ -1,6 +1,6 @@
 # Command: /sync-jira
 
->-
+Syncs user stories, acceptance criteria (Gherkin BDD), story points, and epics directly to Jira via Atlassian MCP integration.
 
 # 🎟️ Jira Backlog Sync Skill
 
