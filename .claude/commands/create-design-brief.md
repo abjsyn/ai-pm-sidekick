@@ -5,41 +5,65 @@
 # 🎨 UI/UX Design Brief Skill
 
 ## Overview
-The `create-design-brief` skill bridges the gap between Product Management and Product Design. It converts PRD specs into designer-friendly project briefs that clearly define user emotions, key screen flows, design system alignment, and accessibility standards.
+The `create-design-brief` skill bridges the gap between Product Management and Product Design. It converts PRD specs and user stories into designer-friendly project briefs that define user emotional context, UX flows, accessibility standards, and Figma handoff criteria, grounded in `.context/`.
 
 ---
 
 ## 🎯 Key Elements Included
-
-1. **User Context & Emotion**:
-   - Defining the user's environment, mindset, and urgency during the feature interaction.
+1. **User Context & Emotional Mindset**:
+   - Defining the user's physical environment, stress levels, and urgency during the feature interaction.
 2. **Step-by-Step UX Flows**:
-   - Visualizing entry points, primary CTAs, loading states, and exit paths.
+   - Visualizing entry points, primary CTAs, branching paths, loading states, and exit moments.
 3. **Accessibility (WCAG 2.1 AA Checklist)**:
-   - Color contrast requirements (4.5:1 minimum).
-   - Touch target sizing (minimum 44x44px).
-   - Screen reader ARIA roles and keyboard focus indicator guidelines.
+   - Color contrast standards (minimum 4.5:1 for normal text).
+   - Touch target dimensions (minimum 44x44px).
+   - Screen reader ARIA roles and keyboard focus indicator requirements.
 4. **Figma Handoff Criteria**:
-   - Specification of required UI states (Empty, Loading, Error, Hover, Active, Disabled).
+   - Mandatory UI states: Default, Hover, Active, Disabled, Loading, Empty, and Error.
 
 ---
 
-## 🛠️ Step-by-Step Execution Workflow
+## 🛠️ Standardized 4-Stage Execution Protocol
 
-1. **Gather Design Scope**:
-   - Review PRD or feature requirement text.
-2. **Draft Brief**:
-   - Populate sections using template `templates/design/design-brief.md`.
-3. **Audit Accessibility Specs**:
-   - Verify WCAG 2.1 AA requirements are explicitly stated.
-4. **Deliver Brief & Flow Handling**:
-   - Present markdown document ready for design handoff in Figma / Notion.
-   - Suggest next skills in the pipeline.
+### Stage 1: Context Hydration
+Before drafting the design brief, absorb the visual and user context:
+1. **Read Core Context**:
+   - Ingest `.context/product.md` for target personas, emotional drivers, and core value loops.
+   - Ingest `.context/conventions.md` to review accessibility requirements and deliverable tier standards.
+   - Ingest `.context/architecture.md` to identify existing frontend component libraries, styling systems (Tailwind CSS, design tokens), and responsive constraints.
+2. **Embedded Codebase Inspection** *(if `mode: embedded`)*:
+   - Inspect `ui/stitch/` or the existing frontend design system in the repository.
+
+### Stage 2: Socratic Clarifying Gate
+Evaluate whether the input feature requirements provide sufficient visual and interaction clarity:
+1. **Design Scope Audit**: Check if key screen states (empty state, error toasts, skeleton loaders), responsive breakpoints, or navigation entry points are missing.
+2. **Socratic Inquiry**: If critical inputs are missing, **STOP** and ask the user **2 to 4 sharp, concrete clarifying questions**:
+   - *"What is the user's primary emotional mindset when landing on this screen (e.g., hurried, anxious, exploratory)?"*
+   - *"What should the interface display when zero items exist (the empty state CTA)?"*
+   - *"Are there specific mobile vs. desktop responsive behavioral differences we must specify for the designer?"*
+3. **Fast-Draft Escape Hatch**: If the user replies *"proceed with assumptions"* (or requests an immediate draft), proceed directly to Stage 3, documenting all assumed visual states and UX defaults under `## Design Assumptions`.
+
+### Stage 3: Grounded Generation
+Generate the complete UI/UX Design Brief using `templates/design/design-brief.md`:
+1. **Populate Design Specifications**:
+   - Document Design Objectives, Target Persona & Context, and Step-by-Step User Flows.
+   - Detail explicit WCAG 2.1 AA accessibility checklists and touch target rules.
+   - Define all required Figma component states (Empty, Loading, Error, Hover, Active, Disabled).
+2. **Persist Deliverable**:
+   - Save the design brief to `docs/<feature-name>_design_brief.md` (leaving `ui/specs/` clean).
+
+### Stage 4: Knowledge Compounding (Write-Back)
+Capture newly established UI patterns and design conventions back into `.context/`:
+1. **Propose Write-Back Updates**:
+   - Summarize reusable component patterns, modal interaction standards, or color token rules defined in the brief.
+2. **Prompt for Permission**:
+   - *"Would you like me to update `.context/architecture.md` with these newly defined UI component specifications and record the design handoff in `.context/decisions.md`?"*
+3. **Persist on Approval**: Update the targeted `.context/` files upon user confirmation.
 
 ---
 
 ## 🔄 Flow Handling & Suggested Next Skills
 At the end of generating a design brief, ALWAYS recommend the logical next steps:
 - **Next Step 1 (Sync with Figma via MCP)**: "Would you like to sync or inspect components in Figma using `sync-figma`?"
-- **Next Step 2 (Clickable Wireframe)**: "Would you like to build an interactive HTML wireframe prototype from this brief using `create-mockup`?"
-- **Next Step 3 (User Stories)**: "Would you like to write engineering user stories for these design components using `create-user-stories`?"
+- **Next Step 2 (Interactive Prototype)**: "Would you like to build an interactive HTML wireframe prototype from this brief using `create-mockup`?"
+- **Next Step 3 (Engineering Stories)**: "Would you like to write engineering user stories for these design components using `create-user-stories`?"

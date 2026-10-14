@@ -62,8 +62,13 @@ def write_env_file(data):
     atlassian_host = data.get('atlassian_host', current.get('ATLASSIAN_HOST', ''))
     atlassian_email = data.get('atlassian_email', current.get('ATLASSIAN_EMAIL', ''))
     atlassian_token = data.get('atlassian_token', current.get('ATLASSIAN_API_TOKEN', ''))
+    github_token = data.get('github_token', current.get('GITHUB_PERSONAL_ACCESS_TOKEN', ''))
+    github_owner = data.get('github_owner', current.get('GITHUB_OWNER', ''))
+    github_repo = data.get('github_repo', current.get('GITHUB_REPO', ''))
     figma_token = data.get('figma_token', current.get('FIGMA_ACCESS_TOKEN', ''))
     miro_token = data.get('miro_token', current.get('MIRO_ACCESS_TOKEN', ''))
+    notion_token = data.get('notion_token', current.get('NOTION_API_TOKEN', ''))
+    notion_page = data.get('notion_page', current.get('NOTION_ROOT_PAGE_ID', ''))
     stitch_token = data.get('stitch_token', current.get('STITCH_API_KEY', ''))
 
     lines = [
@@ -75,11 +80,20 @@ def write_env_file(data):
         f"ATLASSIAN_EMAIL={atlassian_email}",
         f"ATLASSIAN_API_TOKEN={atlassian_token}",
         "",
+        "# --- GitHub Issues & Milestones ---",
+        f"GITHUB_PERSONAL_ACCESS_TOKEN={github_token}",
+        f"GITHUB_OWNER={github_owner}",
+        f"GITHUB_REPO={github_repo}",
+        "",
         "# --- Figma ---",
         f"FIGMA_ACCESS_TOKEN={figma_token}",
         "",
         "# --- Miro ---",
         f"MIRO_ACCESS_TOKEN={miro_token}",
+        "",
+        "# --- Notion (Product Wiki & Databases) ---",
+        f"NOTION_API_TOKEN={notion_token}",
+        f"NOTION_ROOT_PAGE_ID={notion_page}",
         "",
         "# --- Google Stitch ---",
         f"STITCH_API_KEY={stitch_token}",
@@ -112,9 +126,14 @@ def get_all_skills():
         "validate-idea": "strategy",
         "sync-jira": "mcp",
         "sync-confluence": "mcp",
+        "sync-github-issues": "mcp",
         "sync-figma": "mcp",
         "sync-miro": "mcp",
-        "connect-mcp": "mcp"
+        "sync-notion": "mcp",
+        "connect-mcp": "mcp",
+        "gui-run": "gui",
+        "ingest-context": "context",
+        "apply-framework": "strategy"
     }
     
     if SKILLS_DIR.exists():
@@ -257,6 +276,12 @@ class PMCommandCenterApiHandler(SimpleHTTPRequestHandler):
                     "email": env_vars.get("ATLASSIAN_EMAIL", "Not configured"),
                     "has_token": bool(env_vars.get("ATLASSIAN_API_TOKEN"))
                 },
+                "github": {
+                    "configured": bool(env_vars.get("GITHUB_PERSONAL_ACCESS_TOKEN") and "your_github" not in env_vars.get("GITHUB_PERSONAL_ACCESS_TOKEN", "")),
+                    "has_token": bool(env_vars.get("GITHUB_PERSONAL_ACCESS_TOKEN")),
+                    "owner": env_vars.get("GITHUB_OWNER", ""),
+                    "repo": env_vars.get("GITHUB_REPO", "")
+                },
                 "figma": {
                     "configured": bool(env_vars.get("FIGMA_ACCESS_TOKEN") and "your_figma" not in env_vars.get("FIGMA_ACCESS_TOKEN", "")),
                     "has_token": bool(env_vars.get("FIGMA_ACCESS_TOKEN"))
@@ -264,6 +289,11 @@ class PMCommandCenterApiHandler(SimpleHTTPRequestHandler):
                 "miro": {
                     "configured": bool(env_vars.get("MIRO_ACCESS_TOKEN") and "your_miro" not in env_vars.get("MIRO_ACCESS_TOKEN", "")),
                     "has_token": bool(env_vars.get("MIRO_ACCESS_TOKEN"))
+                },
+                "notion": {
+                    "configured": bool(env_vars.get("NOTION_API_TOKEN") and "your_notion" not in env_vars.get("NOTION_API_TOKEN", "")),
+                    "has_token": bool(env_vars.get("NOTION_API_TOKEN")),
+                    "root_page_id": env_vars.get("NOTION_ROOT_PAGE_ID", "")
                 },
                 "stitch": {
                     "configured": bool(env_vars.get("STITCH_API_KEY") and "your_stitch" not in env_vars.get("STITCH_API_KEY", "")),
@@ -289,8 +319,13 @@ class PMCommandCenterApiHandler(SimpleHTTPRequestHandler):
                 "atlassian_host": env_vars.get("ATLASSIAN_HOST", ""),
                 "atlassian_email": env_vars.get("ATLASSIAN_EMAIL", ""),
                 "has_atlassian_token": bool(env_vars.get("ATLASSIAN_API_TOKEN")),
+                "has_github_token": bool(env_vars.get("GITHUB_PERSONAL_ACCESS_TOKEN")),
+                "github_owner": env_vars.get("GITHUB_OWNER", ""),
+                "github_repo": env_vars.get("GITHUB_REPO", ""),
                 "has_figma_token": bool(env_vars.get("FIGMA_ACCESS_TOKEN")),
                 "has_miro_token": bool(env_vars.get("MIRO_ACCESS_TOKEN")),
+                "has_notion_token": bool(env_vars.get("NOTION_API_TOKEN")),
+                "notion_root_page_id": env_vars.get("NOTION_ROOT_PAGE_ID", ""),
                 "has_stitch_token": bool(env_vars.get("STITCH_API_KEY"))
             })
 
@@ -316,10 +351,14 @@ class PMCommandCenterApiHandler(SimpleHTTPRequestHandler):
             env_vars = parse_env_file()
             if target == "atlassian":
                 has_key = bool(env_vars.get("ATLASSIAN_HOST") and env_vars.get("ATLASSIAN_API_TOKEN"))
+            elif target == "github":
+                has_key = bool(env_vars.get("GITHUB_PERSONAL_ACCESS_TOKEN"))
             elif target == "figma":
                 has_key = bool(env_vars.get("FIGMA_ACCESS_TOKEN"))
             elif target == "miro":
                 has_key = bool(env_vars.get("MIRO_ACCESS_TOKEN"))
+            elif target == "notion":
+                has_key = bool(env_vars.get("NOTION_API_TOKEN"))
             elif target == "stitch":
                 has_key = bool(env_vars.get("STITCH_API_KEY"))
             else:

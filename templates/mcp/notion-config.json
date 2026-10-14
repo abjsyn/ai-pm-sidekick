@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "notion": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@notionhq/notion-mcp-server"
+      ],
+      "env": {
+        "NOTION_API_TOKEN": "your_notion_api_token_here",
+        "NOTION_ROOT_PAGE_ID": "your_notion_root_page_id_here"
+      }
+    }
+  }
+}

@@ -9,7 +9,19 @@
       "env": {
         "ATLASSIAN_HOST": "https://your-domain.atlassian.net",
         "ATLASSIAN_EMAIL": "user@company.com",
-        "ATLASSIAN_API_TOKEN": "your_atlassian_api_token_here"
+        "ATLASSIAN_API_TOKEN": ""
+      }
+    },
+    "github": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}",
+        "GITHUB_OWNER": "${GITHUB_OWNER}",
+        "GITHUB_REPO": "${GITHUB_REPO}"
       }
     },
     "figma": {
@@ -19,7 +31,7 @@
         "@figma/mcp"
       ],
       "env": {
-        "FIGMA_ACCESS_TOKEN": "your_figma_personal_access_token_here"
+        "FIGMA_ACCESS_TOKEN": ""
       }
     },
     "miro": {
@@ -29,7 +41,18 @@
         "mcp-server-miro"
       ],
       "env": {
-        "MIRO_ACCESS_TOKEN": "your_miro_access_token_here"
+        "MIRO_ACCESS_TOKEN": ""
+      }
+    },
+    "notion": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@notionhq/notion-mcp-server"
+      ],
+      "env": {
+        "NOTION_API_TOKEN": "${NOTION_API_TOKEN}",
+        "NOTION_ROOT_PAGE_ID": "${NOTION_ROOT_PAGE_ID}"
       }
     },
     "stitch": {
@@ -40,7 +63,7 @@
         "proxy"
       ],
       "env": {
-        "STITCH_API_KEY": "AQ.Ab8RN6J9Sk_gsJOw08ktqLB6fwr-r8CPJU5sXr8H5kIQJRvAAg"
+        "STITCH_API_KEY": "stitch_live_9f81a74e..."
       }
     }
   }

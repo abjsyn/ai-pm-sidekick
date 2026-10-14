@@ -1,0 +1,70 @@
+---
+description: >-
+globs: "*"
+---
+# 📓 Notion Product Wiki & Database Sync Skill
+
+## Overview
+The `sync-notion` skill integrates AI PM Sidekick directly with your team's Notion workspace via Model Context Protocol (MCP) using `@notionhq/notion-mcp-server`. It enables true bi-directional synchronization between Notion product databases/wikis and the `.context/` Product Knowledge Core, PRDs, and decision logs.
+
+---
+
+## ⚙️ Prerequisites & MCP Credentials
+Ensure credentials are configured in `.env` (or via `python3 scripts/setup-mcp.py --tool notion --interactive`):
+```env
+NOTION_API_TOKEN=secret_your_notion_integration_token_here
+NOTION_ROOT_PAGE_ID=your_notion_root_page_or_database_id_here
+```
+Active MCP Server: `notion` (`@notionhq/notion-mcp-server`).
+
+---
+
+## 🔄 Dual Bi-Directional Synchronization Flows
+
+### Flow 1: PULL (Notion ➔ PM Workspace)
+Pulls research, strategic wikis, and customer feedback from Notion into `.context/`:
+1. **User Research & Interviews**: Queries Notion customer feedback databases and extracts Tier 1 behavioral evidence into [`.context/discovery.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/.context/discovery.md) using **The Mom Test** filter.
+2. **Company OKRs & Strategy Wikis**: Ingests high-level company roadmaps and OKRs from Notion pages into [`.context/product.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/.context/product.md).
+3. **Engineering Specs & Schemas**: Imports technical architecture notes into [`.context/architecture.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/.context/architecture.md).
+
+### Flow 2: PUSH (PM Workspace ➔ Notion)
+Publishes generated PM deliverables into structured Notion pages and databases:
+1. **PRD Publishing**: Converts markdown PRDs in `docs/` (`templates/prd/`) into beautifully structured Notion nested pages with status callouts, requirement tables, and user flow toggles.
+2. **Design Brief Sync**: Publishes UI/UX Design Briefs (`docs/*_design_brief.md`) to a Notion Product Design database.
+3. **Product Decision Log (PDR)**: Synchronizes append-only decision records from [`.context/decisions.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/.context/decisions.md) into a Notion Decision Log database table with date, status, deciders, and consequences.
+
+---
+
+## 🛠️ Step-by-Step Execution Workflow
+
+### Step 1: Verify MCP Connection Readiness
+- Check if Notion MCP tools are available (`notion_create_page`, `notion_get_page`, `notion_update_page`, `notion_search`, `notion_query_database`).
+- Validate `NOTION_API_TOKEN` and `NOTION_ROOT_PAGE_ID`.
+
+### Step 2: Select Sync Direction & Scope
+Prompt the user for the desired operation:
+> *"What Notion operation would you like to run?*
+> 1. **Pull**: Ingest customer research or strategy wikis from Notion into `.context/`.
+> 2. **Push PRD**: Publish `docs/<feature>_prd.md` to your Notion Product Specs page.
+> 3. **Push Decisions**: Sync new PDR entries from `.context/decisions.md` to your Notion Decision Log.
+> 4. **Search**: Search your Notion workspace for relevant pages or database IDs."*
+
+### Step 3: Payload Transformation & Preview
+- For **Pull**: Display extracted text and show target sections in `.context/*.md`.
+- For **Push**: Convert markdown elements into Notion block structures (headings, bulleted lists, callouts, tables) and display target parent page ID.
+
+### Step 4: User Confirmation Gate
+- **STOP** and ask for confirmation before writing to Notion or workspace files:
+  > *"Review the Notion payload above. Would you like me to proceed with publishing/pulling this content?"*
+
+### Step 5: Execute MCP Tool Calls & Return URLs
+- Invoke `notion_create_page` or `notion_get_page` via MCP.
+- Return the live Notion page URL with confirmation details.
+
+---
+
+## 🔄 Flow Handling & Next Skill Suggestions
+At the end of synchronizing with Notion, ALWAYS recommend the logical next steps:
+- **Next Step 1 (PRD Generation)**: "Would you like to draft a PRD incorporating these newly pulled Notion insights using `create-prd`?"
+- **Next Step 2 (Confluence Sync)**: "Would you like to cross-publish this spec to Confluence Cloud using `sync-confluence`?"
+- **Next Step 3 (Backlog Decomposition)**: "Would you like to break down this published spec into INVEST user stories using `create-user-stories`?"

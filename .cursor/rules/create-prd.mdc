@@ -5,19 +5,19 @@ globs: "*"
 # 📝 Product Requirements Document (PRD) Skill
 
 ## Overview
-The `create-prd` skill creates industry-standard PRDs adapted to the user's specific operational context. It translates raw ideas and requirements into clear, unambiguous product specifications that align stakeholders, designers, and engineering teams.
+The `create-prd` skill creates industry-standard Product Requirements Documents (PRDs) adapted to the user's specific operational context. It translates raw ideas and discovery findings into unambiguous product specifications that align stakeholders, designers, and engineering teams while maintaining complete grounding in `.context/`.
 
 ---
 
 ## ⚙️ Supported Operational Modes
-When initiating this skill, prompt the user or detect their mode choice:
+When initiating this skill, detect the mode from `.context/harness-config.yaml` or user override:
 1. **⚡ Lean Mode (`lean`)**:
    - Best for startup MVPs, hackathons, or fast spikes.
    - Output: 1-page PRD focusing on problem, persona, key features, and metrics.
    - Template: `templates/prd/lean.md`
 2. **🎯 Standard Agile Mode (`standard`)** *(Default)*:
    - Best for mid-size teams, growth products, and standard sprints.
-   - Output: Full PRD with OKRs, End-to-End flows, Functional Reqs, Non-Functional Reqs, and Edge Cases.
+   - Output: Full PRD with OKRs, End-to-End flows, Functional Reqs (`FR-XX`), Non-Functional Reqs, and Edge Cases.
    - Template: `templates/prd/standard.md`
 3. **🏢 Enterprise Mode (`enterprise`)**:
    - Best for regulated industries, SOC2/GDPR compliance, enterprise software.
@@ -26,25 +26,51 @@ When initiating this skill, prompt the user or detect their mode choice:
 
 ---
 
-## 📋 Best Practices Applied
-- **Unambiguous Functional Requirements**: Every requirement is numbered (`FR-01`, `EFR-01`) and assigned a priority (Must/Should/Could).
-- **Measurable Goals**: All success metrics include baseline, target, and measurement tool.
-- **Edge Case Rigor**: Explicit inclusion of error states, network disconnects, empty states, and invalid input handling.
+## 📋 Best Practices & Standards Enforced
+- **Unambiguous Functional Requirements**: Every requirement is uniquely numbered (`FR-01`, `FR-02`), assigned a priority (Must/Should/Could), and maps directly to user problems.
+- **Measurable Goals**: All success metrics define baseline, target, and measurement instrument linked to `.context/product.md` OKRs.
+- **Edge Case Rigor**: Mandatory error recovery, network timeouts, zero/empty states, and boundary conditions.
+- **Strict Asset Isolation**: Generated product PRDs are saved to `docs/`, keeping `ui/specs/` uncontaminated.
 
 ---
 
-## 🛠️ Step-by-Step Execution Workflow
+## 🛠️ Standardized 4-Stage Execution Protocol
 
-1. **Mode Selection & Inputs**:
-   - Ask user for: Feature Name, Target Mode (`lean`, `standard`, `enterprise`), Core Goal, Target Persona, Key Features.
-2. **Drafting PRD**:
-   - Load the corresponding template from `templates/prd/<mode>.md`.
-   - Populating sections thoroughly without placeholders where user information is provided.
-3. **Quality & Completeness Audit**:
-   - Verify that all functional requirements have priority tags and out-of-scope boundaries are crystal clear.
-4. **Final Deliverable & Flow Handling**:
-   - Deliver clean Markdown PRD formatted for GitHub/Notion/Confluence.
-   - Prompt the user with recommended next skills in the product pipeline.
+### Stage 1: Context Hydration
+Before drafting the specification, ground the agent in the workspace knowledge base:
+1. **Read Core Context**:
+   - Ingest `.context/harness-config.yaml` to retrieve `default_tier` and `active_frameworks`.
+   - Ingest `.context/product.md` for target personas, core value loops, North Star metric, and quarterly OKRs.
+   - Ingest `.context/conventions.md` to identify the Definition of Ready (DoR) and tier rules.
+   - Ingest `.context/discovery.md` (Active Outcomes, OST, Mom Test quotes) and `.context/strategy-and-constraints.md` (ToC bottleneck, Wardley value chain, business constraints).
+2. **Embedded Codebase Inspection** *(if `mode: embedded`)*:
+   - Ingest `.context/architecture.md` and inspect relevant codebase directories (e.g. `src/`, `api/`, `models/`) to ensure functional requirements align with real schemas, endpoints, and libraries.
+
+### Stage 2: Socratic Clarifying Gate
+Evaluate whether input requirements satisfy the chosen PRD template schema:
+1. **Gap Audit**: Check if user personas, success criteria, primary user journey, out-of-scope boundaries, or non-functional constraints (latency, volume, compliance) are missing or ambiguous.
+2. **Socratic Inquiry**: If critical inputs are missing, **STOP** and ask the user **2 to 4 sharp, concrete clarifying questions**:
+   - *"What specific customer trigger initiates this workflow, and what is the exact primary success state?"*
+   - *"What is explicitly OUT of scope for this release to protect sprint boundaries?"*
+   - *"Are there non-functional performance or data privacy constraints (e.g., $< 200\text{ms}$ latency, GDPR right-to-erasure) required?"*
+3. **Fast-Draft Escape Hatch**: If the user replies *"proceed with assumptions"* or requests an immediate draft, proceed directly to Stage 3, explicitly logging all assumed scope boundaries and defaults in `## Assumptions & Open Questions`.
+
+### Stage 3: Grounded Generation
+Draft the complete PRD using the template specified in `.context/conventions.md` (`templates/prd/<mode>.md`):
+1. **Populate Structural Sections**:
+   - Fill Executive Summary, Problem Statement, Persona, and User Journey without placeholder text.
+   - Assign clear priority tags (Must/Should/Could Have) and traceability IDs (`FR-01`, `FR-02`) to all functional requirements.
+   - Integrate relevant framework matrices (e.g., Kano feature categorization from `frameworks/prioritization/kano-model.md` or Wardley doctrine checks).
+2. **Persist Deliverable**:
+   - Save the completed PRD to `docs/<feature-name>_prd.md` (ensuring `ui/` remains clean).
+
+### Stage 4: Knowledge Compounding (Write-Back)
+Conclude the authoring process by updating the Product Knowledge Core:
+1. **Propose Write-Back Updates**:
+   - Summarize newly established product truths, target metric baselines, or strategic scope decisions.
+2. **Prompt for Permission**:
+   - *"Would you like me to update `.context/product.md` with these newly defined metrics and append a Product Decision Record (PDR) to `.context/decisions.md`?"*
+3. **Persist on Approval**: Update the designated `.context/` files upon user confirmation.
 
 ---
 
@@ -52,5 +78,5 @@ When initiating this skill, prompt the user or detect their mode choice:
 At the end of generating the PRD, ALWAYS recommend the logical next steps:
 - **Next Step 1 (Publish to Confluence via MCP)**: "Would you like to publish this PRD to Confluence using `sync-confluence`?"
 - **Next Step 2 (Backlog & Jira Sync)**: "Would you like me to break down these requirements into INVEST User Stories using `create-user-stories` or push to Jira via `sync-jira`?"
-- **Next Step 3 (Design Specification & Figma)**: "Would you like to draft a UI/UX Design Brief using `create-design-brief` or sync with Figma via `sync-figma`?"
+- **Next Step 3 (Design Specification & Figma)**: "Would you like to draft a UI/UX Design Brief using `create-design-brief` or inspect Figma nodes via `sync-figma`?"
 - **Next Step 4 (Interactive Prototype)**: "Would you like to build an interactive HTML wireframe mockup using `create-mockup`?"

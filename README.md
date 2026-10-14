@@ -17,15 +17,19 @@
 | **User Stories** | `/create-user-stories` | Creates engineering-ready user stories | INVEST, Gherkin BDD (`Given/When/Then`), Fibonacci Points, DoD | `sync-jira`, `refine-user-stories` |
 | **Story Grooming** | `/refine-user-stories` | Refines & splits stories with Readiness Score | SPIDR Splitting framework, Grooming Score (0-100%) | `sync-jira`, `create-documentation` |
 | **Documentation** | `/create-documentation` | Dual tech spec & user guide generator | OpenAPI 3.0, Mermaid sequence diagrams, User manuals | `sync-confluence` |
+| **Context Ingestion** | `/ingest-context` | Distills raw notes, calls, & MCP into `.context/` | Single source of truth, Mom Test filter, Structured PDR | `apply-framework`, `create-prd` |
+| **Apply Framework** | `/apply-framework` | Runs strategic, discovery, & priority models | Wardley Mapping, ToC, OST, JTBD, RICE, WSJF, Kano | `create-prd`, `create-user-stories` |
 | **MCP Setup & Connection** | `/connect-mcp` | Connects & verifies external PM tools | Model Context Protocol (MCP), `.env` credentials | `sync-jira`, `sync-confluence`, `sync-figma`, `sync-miro` |
 | **Jira Backlog Sync** | `/sync-jira` | Exports stories/epics directly to Jira | Atlassian MCP (`jira_create_issue`, `jira_update_issue`) | `sync-confluence`, `refine-user-stories` |
 | **Confluence Doc Sync** | `/sync-confluence` | Publishes PRDs/specs to Confluence | Atlassian MCP (`confluence_create_page`) | `sync-jira` |
+| **GitHub Issues Sync** | `/sync-github-issues` | Bi-directional GitHub Issues & milestone sync | GitHub MCP (`create_issue`, `list_issues`) | `refine-user-stories`, `sync-jira` |
 | **Figma Design Sync** | `/sync-figma` | Inspects components & posts Figma comments | Figma MCP (`figma_get_file`, `figma_post_comment`) | `create-mockup`, `create-user-stories` |
 | **Miro Whiteboard Sync** | `/sync-miro` | Exports sticky notes & matrices to Miro | Miro MCP (`miro_create_board`, `miro_create_sticky_note`) | `validate-idea`, `create-prd` |
+| **Notion Product Wiki** | `/sync-notion` | Bi-directional Notion research & PRD sync | Notion MCP (`notion_create_page`, `notion_get_page`) | `create-prd`, `ingest-context` |
 
 ---
 
-## 🔌 Connecting External Tools via MCP (Atlassian, Figma, Miro)
+## 🔌 Connecting External Tools via MCP (Atlassian, GitHub, Figma, Miro, Notion)
 
 You can easily configure and activate live MCP connections to your favorite external tools using the included setup CLI script or slash commands:
 
@@ -73,8 +77,10 @@ In Claude Code, exported commands in `.claude/commands/` are registered natively
 - `/connect-mcp`
 - `/sync-jira`
 - `/sync-confluence`
+- `/sync-github-issues`
 - `/sync-figma`
 - `/sync-miro`
+- `/sync-notion`
 - `/validate-idea`
 - `/brainstorm`
 - `/create-prd`
@@ -83,14 +89,19 @@ In Claude Code, exported commands in `.claude/commands/` are registered natively
 - `/create-mockup`
 - `/create-design-brief`
 - `/create-documentation`
+- `/ingest-context`
+- `/apply-framework`
+- `/gui-run`
 
 ### 2. Antigravity / AGY / Gemini (`/command` & Progressive Skill Activation)
 In AGY, skills stored in `.agents/skills/<skill>/SKILL.md` can be called by typing:
 - `/connect-mcp` or *"Connect external tools via MCP..."*
 - `/sync-jira` or *"Export user stories to Jira..."*
 - `/sync-confluence` or *"Publish PRD to Confluence..."*
+- `/sync-github-issues` or *"Sync GitHub issues and milestones..."*
 - `/sync-figma` or *"Inspect Figma design file..."*
 - `/sync-miro` or *"Export brainstorm sticky notes to Miro..."*
+- `/sync-notion` or *"Sync research and PRDs to Notion..."*
 
 ### 3. Cursor IDE (`@rule` or `/command` Alias)
 In Cursor, skills in `.cursor/rules/*.mdc` are automatically triggered by topic matching, or explicitly invoked via:

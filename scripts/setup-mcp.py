@@ -31,6 +31,15 @@ DEFAULT_CONFIG = {
                 "ATLASSIAN_API_TOKEN": "${ATLASSIAN_API_TOKEN}"
             }
         },
+        "github": {
+            "command": "npx",
+            "args": ["-y", "@modelcontextprotocol/server-github"],
+            "env": {
+                "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}",
+                "GITHUB_OWNER": "${GITHUB_OWNER}",
+                "GITHUB_REPO": "${GITHUB_REPO}"
+            }
+        },
         "figma": {
             "command": "npx",
             "args": ["-y", "@figma/mcp"],
@@ -43,6 +52,14 @@ DEFAULT_CONFIG = {
             "args": ["-y", "mcp-server-miro"],
             "env": {
                 "MIRO_ACCESS_TOKEN": "${MIRO_ACCESS_TOKEN}"
+            }
+        },
+        "notion": {
+            "command": "npx",
+            "args": ["-y", "@notionhq/notion-mcp-server"],
+            "env": {
+                "NOTION_API_TOKEN": "${NOTION_API_TOKEN}",
+                "NOTION_ROOT_PAGE_ID": "${NOTION_ROOT_PAGE_ID}"
             }
         },
         "stitch": {
@@ -63,11 +80,20 @@ ATLASSIAN_HOST=https://your-domain.atlassian.net
 ATLASSIAN_EMAIL=user@company.com
 ATLASSIAN_API_TOKEN=your_atlassian_api_token_here
 
+# --- GitHub Issues & Milestones ---
+GITHUB_PERSONAL_ACCESS_TOKEN=your_github_personal_access_token_here
+GITHUB_OWNER=your_github_username_or_org
+GITHUB_REPO=your_github_repo_name
+
 # --- Figma ---
 FIGMA_ACCESS_TOKEN=your_figma_personal_access_token_here
 
 # --- Miro ---
 MIRO_ACCESS_TOKEN=your_miro_access_token_here
+
+# --- Notion (Product Wiki & Databases) ---
+NOTION_API_TOKEN=your_notion_api_token_here
+NOTION_ROOT_PAGE_ID=your_notion_root_page_id_here
 
 # --- Google Stitch ---
 STITCH_API_KEY=your_stitch_api_key_here
@@ -146,8 +172,10 @@ def check_status():
     
     req_vars = {
         "Atlassian": ["ATLASSIAN_HOST", "ATLASSIAN_EMAIL", "ATLASSIAN_API_TOKEN"],
+        "GitHub": ["GITHUB_PERSONAL_ACCESS_TOKEN", "GITHUB_OWNER", "GITHUB_REPO"],
         "Figma": ["FIGMA_ACCESS_TOKEN"],
         "Miro": ["MIRO_ACCESS_TOKEN"],
+        "Notion": ["NOTION_API_TOKEN"],
         "Google Stitch": ["STITCH_API_KEY"]
     }
     
@@ -160,7 +188,7 @@ def check_status():
             print(f"  • {tool:<14}: ⚠️  Missing or default: {', '.join(missing)}")
             
     print("\n📁 Checking Target Configuration Files:")
-    for p in [ROOT_DIR / ".agents" / "mcp.json", ROOT_DIR / ".claude" / "mcp.json", ROOT_DIR / ".cursor" / "mcp.json"]:
+    for p in [ROOT_DIR / ".agents" / "mcp.json", ROOT_DIR / ".claude" / "mcp.json", ROOT_DIR / ".cursor" / "mcp.json", ROOT_DIR / "mcp.json"]:
         if p.exists():
             print(f"  • {p.relative_to(ROOT_DIR)}: ✅ Present")
         else:
@@ -170,7 +198,7 @@ def main():
     parser = argparse.ArgumentParser(description="Configure MCP integrations for AI PM Sidekick.")
     parser.add_argument("--target", choices=["agy", "claude", "cursor", "root", "all"], default="all",
                         help="Target AI environment configuration file (default: all)")
-    parser.add_argument("--tool", choices=["atlassian", "figma", "miro", "stitch", "all"], default="all",
+    parser.add_argument("--tool", choices=["atlassian", "github", "figma", "miro", "notion", "stitch", "all"], default="all",
                         help="Specific tool integration to enable (default: all)")
     parser.add_argument("--check", action="store_true", help="Check setup readiness and credentials")
     parser.add_argument("--interactive", action="store_true", help="Prompt interactively for credentials")
@@ -198,6 +226,16 @@ def main():
             token = input(f"Atlassian API Token [{env_vars.get('ATLASSIAN_API_TOKEN', '')}]: ").strip()
             if token: env_vars['ATLASSIAN_API_TOKEN'] = token
 
+        # GitHub
+        if args.tool in ("github", "all"):
+            print("\n--- GitHub (Issues & Milestones) Setup ---")
+            gh_token = input(f"GitHub Personal Access Token [{env_vars.get('GITHUB_PERSONAL_ACCESS_TOKEN', '')}]: ").strip()
+            if gh_token: env_vars['GITHUB_PERSONAL_ACCESS_TOKEN'] = gh_token
+            gh_owner = input(f"GitHub Owner/Org [{env_vars.get('GITHUB_OWNER', '')}]: ").strip()
+            if gh_owner: env_vars['GITHUB_OWNER'] = gh_owner
+            gh_repo = input(f"GitHub Repo Name [{env_vars.get('GITHUB_REPO', '')}]: ").strip()
+            if gh_repo: env_vars['GITHUB_REPO'] = gh_repo
+
         # Figma
         if args.tool in ("figma", "all"):
             print("\n--- Figma Setup ---")
@@ -209,6 +247,14 @@ def main():
             print("\n--- Miro Setup ---")
             miro_token = input(f"Miro Access Token [{env_vars.get('MIRO_ACCESS_TOKEN', '')}]: ").strip()
             if miro_token: env_vars['MIRO_ACCESS_TOKEN'] = miro_token
+
+        # Notion
+        if args.tool in ("notion", "all"):
+            print("\n--- Notion (Product Wiki & Databases) Setup ---")
+            notion_token = input(f"Notion Integration Token [{env_vars.get('NOTION_API_TOKEN', '')}]: ").strip()
+            if notion_token: env_vars['NOTION_API_TOKEN'] = notion_token
+            notion_page = input(f"Notion Root Page/Database ID [{env_vars.get('NOTION_ROOT_PAGE_ID', '')}]: ").strip()
+            if notion_page: env_vars['NOTION_ROOT_PAGE_ID'] = notion_page
 
         # Google Stitch
         if args.tool in ("stitch", "all"):
