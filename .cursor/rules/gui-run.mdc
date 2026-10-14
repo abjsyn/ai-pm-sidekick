@@ -29,6 +29,17 @@ The `gui-run` skill starts the AI PM Sidekick PM Command Center local web server
 
 ---
 
+## 🏛️ Architecture & UI Asset Structure
+To prevent context contamination between harness tools and user product artifacts, Sidekick's internal UI files are isolated in `ui/`:
+- **Main View Screen**: `ui/views/pm-command-center.html`
+- **Navigation Panel**: `ui/views/sidepanel-skills-navigation.html`
+- **Settings View**: `ui/views/user-profile-settings.html`
+- **Atelier Design & Stitch Assets**: `ui/stitch/` (design system tokens, reference screen)
+- **Sidekick UI Specifications**: `ui/specs/` (internal UI PRD & component specs)
+- **User Deliverables**: PM-generated PRDs and specs are written to `docs/`; generated interactive prototypes are written to `mockups/`.
+
+---
+
 ## 🔄 Flow Handling & Suggested Next Skills
 Once the GUI is running:
 - **Next Step 1 (PRD Generation)**: Use `create-prd` from the sidepanel or wizard to generate product specs.

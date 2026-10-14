@@ -1,0 +1,43 @@
+# ==============================================================================
+# AI PM Sidekick — Harness Configuration
+# Single Source of Truth for Workspace Context, Operating Mode, and Tooling
+# ==============================================================================
+
+# Operating Mode:
+#   - standalone: Dedicated PM command workspace (isolated product deliverables in docs/ & mockups/)
+#   - embedded: Integrated directly within a software repository / monorepo
+mode: standalone
+
+# Default Artifact Tier for PRDs, User Stories, and Technical Specs:
+#   - lean: Rapid 1-page specs, bullet ACs, MVP focus (Hackathons / Early-stage)
+#   - standard: Full INVEST criteria, Gherkin BDD, Fibonacci points, DoD (Growth / Mid-size Agile)
+#   - enterprise: Traceability matrix, SOC2/GDPR compliance tags, SLAs, audit logs (Enterprise scale)
+default_tier: standard
+
+# Favorite / Pinned Skills for Quick Launcher in PM Command Center & Sidepanel:
+favorite_skills:
+  - create-prd
+  - create-user-stories
+  - refine-user-stories
+  - create-mockup
+  - sync-jira
+
+# Active Product Strategy & Discovery Frameworks:
+#   - ost: Opportunity Solution Tree (Teresa Torres continuous discovery)
+#   - wardley: Wardley Value Chain Evolution Mapping
+#   - toc: Theory of Constraints (Goldratt bottleneck identification)
+#   - rice: Reach, Impact, Confidence, Effort scoring
+#   - wsjf: Weighted Shortest Job First (Cost of Delay / Duration)
+active_frameworks:
+  - ost
+  - wardley
+  - toc
+  - rice
+  - wsjf
+
+# Enabled MCP (Model Context Protocol) Integration Targets:
+mcp_enabled:
+  - atlassian  # Jira & Confluence
+  - figma      # UI design files & comments
+  - miro       # Visual whiteboards & sticky notes
+  - stitch     # Google Stitch Atelier UI

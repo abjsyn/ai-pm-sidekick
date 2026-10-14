@@ -20,11 +20,17 @@ from http.server import SimpleHTTPRequestHandler, HTTPServer
 from urllib.parse import parse_qs, urlparse
 
 ROOT_DIR = Path(__file__).parent.parent.resolve()
-MOCKUP_FILE = ROOT_DIR / "mockups" / "pm-command-center.html"
+UI_DIR = ROOT_DIR / "ui"
+UI_VIEWS_DIR = UI_DIR / "views"
+UI_STITCH_DIR = UI_DIR / "stitch"
+UI_SPECS_DIR = UI_DIR / "specs"
+UI_MAIN_FILE = UI_VIEWS_DIR / "pm-command-center.html"
+MOCKUP_FILE = UI_MAIN_FILE  # Backwards compatibility alias
 SKILLS_DIR = ROOT_DIR / "skills"
 DOCS_DIR = ROOT_DIR / "docs"
 TEMPLATES_DIR = ROOT_DIR / "templates"
 MOCKUPS_DIR = ROOT_DIR / "mockups"
+CONTEXT_DIR = ROOT_DIR / ".context"
 ENV_FILE = ROOT_DIR / ".env"
 ENV_EXAMPLE = ROOT_DIR / ".env.example"
 
@@ -155,6 +161,8 @@ def get_all_artifacts():
         for f in files:
             if not f.exists() or f.is_dir() or f.name.startswith("."):
                 continue
+            if folder in (DOCS_DIR, MOCKUPS_DIR) and f.name == "README.md":
+                continue
             stat = f.stat()
             ftype = default_type
             if f.name.endswith(".html"):
@@ -190,8 +198,24 @@ class PMCommandCenterApiHandler(SimpleHTTPRequestHandler):
         path = parsed.path
         query = parse_qs(parsed.query)
 
-        if path in ('/', '/index.html', '/gui', '/dashboard'):
-            self.path = '/mockups/pm-command-center.html'
+        if path in ('/', '/index.html', '/gui', '/dashboard', '/mockups/pm-command-center.html'):
+            self.path = '/ui/views/pm-command-center.html'
+            return super().do_GET()
+
+        if path == '/sidepanel-skills-navigation.html':
+            self.path = '/ui/views/sidepanel-skills-navigation.html'
+            return super().do_GET()
+
+        if path == '/user-profile-settings.html':
+            self.path = '/ui/views/user-profile-settings.html'
+            return super().do_GET()
+
+        if path.startswith('/stitch/'):
+            self.path = '/ui/stitch/' + path[len('/stitch/'):]
+            return super().do_GET()
+
+        if path.startswith('/mockups/stitch/'):
+            self.path = '/ui/stitch/' + path[len('/mockups/stitch/'):]
             return super().do_GET()
 
         if path == "/api/skills":
@@ -207,8 +231,8 @@ class PMCommandCenterApiHandler(SimpleHTTPRequestHandler):
             
             target_path = (ROOT_DIR / file_param).resolve()
             if not str(target_path).startswith(str(ROOT_DIR)) or not target_path.exists():
-                # try searching in docs/ or mockups/
-                for alt in [DOCS_DIR / file_param, MOCKUPS_DIR / file_param, ROOT_DIR / file_param]:
+                # try searching in docs/, mockups/, ui/specs/, or ui/views/
+                for alt in [DOCS_DIR / file_param, MOCKUPS_DIR / file_param, UI_SPECS_DIR / file_param, UI_VIEWS_DIR / file_param, ROOT_DIR / file_param]:
                     if alt.exists():
                         target_path = alt
                         break
