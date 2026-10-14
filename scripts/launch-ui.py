@@ -114,6 +114,243 @@ def write_env_file(data):
     with open(ENV_FILE, "w", encoding="utf-8") as f:
         f.write("\n".join(lines))
 
+def parse_harness_config():
+    config_file = CONTEXT_DIR / "harness-config.yaml"
+    config = {
+        "mode": "standalone",
+        "default_tier": "standard",
+        "favorite_skills": ["create-prd", "create-user-stories", "refine-user-stories", "create-mockup", "sync-jira"],
+        "active_frameworks": ["ost", "wardley", "toc", "rice", "wsjf"],
+        "mcp_enabled": ["atlassian", "github", "figma", "miro", "notion", "stitch"]
+    }
+    if not config_file.exists():
+        return config
+    
+    content = config_file.read_text(encoding="utf-8")
+    cur_list = None
+    for line in content.splitlines():
+        line = line.strip()
+        if not line or line.startswith("#"):
+            continue
+        if ":" in line and not line.startswith("-"):
+            k, v = line.split(":", 1)
+            k = k.strip()
+            v = v.split("#")[0].strip()
+            if v:
+                config[k] = v
+                cur_list = None
+            else:
+                cur_list = k
+                config[cur_list] = []
+        elif line.startswith("-") and cur_list:
+            item = line[1:].split("#")[0].strip()
+            if item:
+                config[cur_list].append(item)
+    return config
+
+def serialize_harness_config(config):
+    lines = [
+        "# ==============================================================================",
+        "# AI PM Sidekick — Harness Configuration",
+        "# Single Source of Truth for Workspace Context, Operating Mode, and Tooling",
+        "# ==============================================================================",
+        "",
+        "# Operating Mode:",
+        "#   - standalone: Dedicated PM command workspace (isolated product deliverables in docs/ & mockups/)",
+        "#   - embedded: Integrated directly within a software repository / monorepo",
+        f"mode: {config.get('mode', 'standalone')}",
+        "",
+        "# Default Artifact Tier for PRDs, User Stories, and Technical Specs:",
+        "#   - lean: Rapid 1-page specs, bullet ACs, MVP focus (Hackathons / Early-stage)",
+        "#   - standard: Full INVEST criteria, Gherkin BDD, Fibonacci points, DoD (Growth / Mid-size Agile)",
+        "#   - enterprise: Traceability matrix, SOC2/GDPR compliance tags, SLAs, audit logs (Enterprise scale)",
+        f"default_tier: {config.get('default_tier', 'standard')}",
+        "",
+        "# Favorite / Pinned Skills for Quick Launcher in PM Command Center & Sidepanel:",
+        "favorite_skills:"
+    ]
+    for s in config.get("favorite_skills", []):
+        lines.append(f"  - {s}")
+    lines.append("")
+    lines.append("# Active Product Strategy & Discovery Frameworks:")
+    lines.append("#   - ost: Opportunity Solution Tree (Teresa Torres continuous discovery)")
+    lines.append("#   - wardley: Wardley Value Chain Evolution Mapping")
+    lines.append("#   - toc: Theory of Constraints (Goldratt bottleneck identification)")
+    lines.append("#   - rice: Reach, Impact, Confidence, Effort scoring")
+    lines.append("#   - wsjf: Weighted Shortest Job First (Cost of Delay / Duration)")
+    lines.append("active_frameworks:")
+    for f in config.get("active_frameworks", []):
+        lines.append(f"  - {f}")
+    lines.append("")
+    lines.append("# Enabled MCP (Model Context Protocol) Integration Targets:")
+    lines.append("mcp_enabled:")
+    mcp_comments = {
+        "atlassian": "Jira & Confluence",
+        "github": "GitHub Issues, PRs, & Milestones",
+        "figma": "UI design files & comments",
+        "miro": "Visual whiteboards & sticky notes",
+        "notion": "Product wikis & database sync",
+        "stitch": "Google Stitch Atelier UI"
+    }
+    for m in config.get("mcp_enabled", []):
+        comment = mcp_comments.get(m, "")
+        if comment:
+            lines.append(f"  - {m}  # {comment}")
+        else:
+            lines.append(f"  - {m}")
+    lines.append("")
+    return "\n".join(lines)
+
+def write_harness_config(updates):
+    current = parse_harness_config()
+    if "mode" in updates and updates["mode"] in ("standalone", "embedded"):
+        current["mode"] = updates["mode"]
+    if "default_tier" in updates and updates["default_tier"] in ("lean", "standard", "enterprise"):
+        current["default_tier"] = updates["default_tier"]
+    if "favorite_skills" in updates and isinstance(updates["favorite_skills"], list):
+        current["favorite_skills"] = [str(x) for x in updates["favorite_skills"]]
+    if "active_frameworks" in updates and isinstance(updates["active_frameworks"], list):
+        current["active_frameworks"] = [str(x) for x in updates["active_frameworks"]]
+    if "mcp_enabled" in updates and isinstance(updates["mcp_enabled"], list):
+        current["mcp_enabled"] = [str(x) for x in updates["mcp_enabled"]]
+        
+    yaml_text = serialize_harness_config(current)
+    config_file = CONTEXT_DIR / "harness-config.yaml"
+    config_file.write_text(yaml_text, encoding="utf-8")
+    return current
+
+def get_mcp_status():
+    env_vars = parse_env_file()
+    mcp_file = ROOT_DIR / "mcp.json"
+    mcp_servers = {}
+    if mcp_file.exists():
+        try:
+            mcp_data = json.loads(mcp_file.read_text(encoding="utf-8"))
+            mcp_servers = mcp_data.get("mcpServers", {})
+        except Exception:
+            pass
+            
+    return {
+        "atlassian": {
+            "configured": bool(env_vars.get("ATLASSIAN_HOST") and "your-domain" not in env_vars.get("ATLASSIAN_HOST", "") and env_vars.get("ATLASSIAN_API_TOKEN")),
+            "host": env_vars.get("ATLASSIAN_HOST", "Not configured"),
+            "email": env_vars.get("ATLASSIAN_EMAIL", "Not configured"),
+            "has_token": bool(env_vars.get("ATLASSIAN_API_TOKEN")),
+            "in_mcp_json": "atlassian" in mcp_servers
+        },
+        "github": {
+            "configured": bool(env_vars.get("GITHUB_PERSONAL_ACCESS_TOKEN") and "your_github" not in env_vars.get("GITHUB_PERSONAL_ACCESS_TOKEN", "")),
+            "has_token": bool(env_vars.get("GITHUB_PERSONAL_ACCESS_TOKEN")),
+            "owner": env_vars.get("GITHUB_OWNER", ""),
+            "repo": env_vars.get("GITHUB_REPO", ""),
+            "in_mcp_json": "github" in mcp_servers
+        },
+        "figma": {
+            "configured": bool(env_vars.get("FIGMA_ACCESS_TOKEN") and "your_figma" not in env_vars.get("FIGMA_ACCESS_TOKEN", "")),
+            "has_token": bool(env_vars.get("FIGMA_ACCESS_TOKEN")),
+            "in_mcp_json": "figma" in mcp_servers
+        },
+        "miro": {
+            "configured": bool(env_vars.get("MIRO_ACCESS_TOKEN") and "your_miro" not in env_vars.get("MIRO_ACCESS_TOKEN", "")),
+            "has_token": bool(env_vars.get("MIRO_ACCESS_TOKEN")),
+            "in_mcp_json": "miro" in mcp_servers
+        },
+        "notion": {
+            "configured": bool(env_vars.get("NOTION_API_TOKEN") and "your_notion" not in env_vars.get("NOTION_API_TOKEN", "")),
+            "has_token": bool(env_vars.get("NOTION_API_TOKEN")),
+            "root_page_id": env_vars.get("NOTION_ROOT_PAGE_ID", ""),
+            "in_mcp_json": "notion" in mcp_servers
+        },
+        "stitch": {
+            "configured": bool(env_vars.get("STITCH_API_KEY") and "your_stitch" not in env_vars.get("STITCH_API_KEY", "")),
+            "has_token": bool(env_vars.get("STITCH_API_KEY")),
+            "in_mcp_json": "stitch" in mcp_servers
+        },
+        "local_daemon": {
+            "configured": True,
+            "endpoint": "ws://127.0.0.1:3000/bridge"
+        }
+    }
+
+def get_context_overview():
+    config = parse_harness_config()
+    files = {}
+    
+    context_titles = {
+        "product.md": "Product Vision, Personas & OKRs",
+        "discovery.md": "Active Outcomes & Opportunity Solution Tree (OST)",
+        "strategy-and-constraints.md": "Wardley Value Chain & Bottlenecks",
+        "architecture.md": "Architecture, Tech Stack & Data Models",
+        "conventions.md": "Conventions, DoR & Gherkin Standards",
+        "decisions.md": "Product Decision Log (PDR/ADR)",
+        "harness-config.yaml": "Harness Configuration"
+    }
+    
+    cli_prompts = {
+        "product.md": "/ingest-context Ingest product vision, personas, and OKRs into .context/product.md",
+        "discovery.md": "/apply-framework opportunity-solution-tree Map outcomes to customer opportunities",
+        "strategy-and-constraints.md": "/apply-framework wardley-mapping Evaluate build-vs-buy and bottlenecks",
+        "architecture.md": "/ingest-context Ingest database schemas and API boundaries into .context/architecture.md",
+        "conventions.md": "/create-prd Ground PRD with team Definition of Ready and Gherkin BDD criteria",
+        "decisions.md": "/validate-idea Record key product decisions and trade-offs into .context/decisions.md"
+    }
+
+    if CONTEXT_DIR.exists():
+        for p in sorted(CONTEXT_DIR.glob("*")):
+            if p.name.startswith("."):
+                continue
+            content = p.read_text(encoding="utf-8")
+            stat = p.stat()
+            lines = len(content.splitlines())
+            words = len(content.split())
+            
+            if p.suffix == ".md":
+                has_h1 = bool(re.search(r"^#\s+", content, re.MULTILINE))
+                has_h2 = len(re.findall(r"^##\s+", content, re.MULTILINE)) >= 2
+                score = min(100, int((words / 350.0) * 50) + (30 if has_h1 else 0) + (20 if has_h2 else 0))
+                if score >= 80:
+                    status = "Complete"
+                    color = "emerald"
+                elif score >= 50:
+                    status = "In Progress"
+                    color = "amber"
+                else:
+                    status = "Needs Hydration"
+                    color = "red"
+            else:
+                score = 100 if lines > 10 else 50
+                status = "Configured"
+                color = "blue"
+                
+            files[p.name] = {
+                "filename": p.name,
+                "title": context_titles.get(p.name, p.name),
+                "content": content,
+                "lines": lines,
+                "words": words,
+                "bytes": stat.st_size,
+                "modified_iso": datetime.fromtimestamp(stat.st_mtime).strftime("%Y-%m-%d %H:%M"),
+                "score": score,
+                "status": status,
+                "color": color,
+                "cli_prompt": cli_prompts.get(p.name, f"/ingest-context Update .context/{p.name}")
+            }
+            
+    mcp_status = get_mcp_status()
+    
+    return {
+        "config": config,
+        "files": files,
+        "mcp_status": mcp_status,
+        "summary": {
+            "total_files": len(files),
+            "total_words": sum(f["words"] for f in files.values()),
+            "average_completeness": int(sum(f["score"] for f in files.values()) / max(1, len(files))),
+            "mode": config.get("mode", "standalone"),
+            "default_tier": config.get("default_tier", "standard")
+        }
+    }
+
 def get_all_skills():
     skills = []
     category_map = {
@@ -244,6 +481,30 @@ class PMCommandCenterApiHandler(SimpleHTTPRequestHandler):
                 return self.send_json(json.loads(manifest_file.read_text(encoding="utf-8")))
             return self.send_json({"error": "Manifest not found. Run scripts/export-skills.py first."}, status=404)
 
+        if path == "/api/context":
+            return self.send_json(get_context_overview())
+
+        if path.startswith("/api/context/"):
+            filename = path[len("/api/context/"):].strip()
+            if not filename or "/" in filename or "\\" in filename or ".." in filename:
+                return self.send_json({"error": "Invalid filename parameter"}, status=400)
+            target = CONTEXT_DIR / filename
+            if not target.exists():
+                return self.send_json({"error": f"Context file not found: {filename}"}, status=404)
+            content = target.read_text(encoding="utf-8")
+            stat = target.stat()
+            return self.send_json({
+                "filename": filename,
+                "content": content,
+                "lines": len(content.splitlines()),
+                "words": len(content.split()),
+                "bytes": stat.st_size,
+                "modified_iso": datetime.fromtimestamp(stat.st_mtime).strftime("%Y-%m-%d %H:%M")
+            })
+
+        if path == "/api/config":
+            return self.send_json({"config": parse_harness_config()})
+
         if path == "/api/skills":
             return self.send_json({"skills": get_all_skills()})
 
@@ -275,53 +536,23 @@ class PMCommandCenterApiHandler(SimpleHTTPRequestHandler):
             })
 
         if path == "/api/mcp-status":
-            env_vars = parse_env_file()
-            return self.send_json({
-                "atlassian": {
-                    "configured": bool(env_vars.get("ATLASSIAN_HOST") and "your-domain" not in env_vars.get("ATLASSIAN_HOST", "")),
-                    "host": env_vars.get("ATLASSIAN_HOST", "Not configured"),
-                    "email": env_vars.get("ATLASSIAN_EMAIL", "Not configured"),
-                    "has_token": bool(env_vars.get("ATLASSIAN_API_TOKEN"))
-                },
-                "github": {
-                    "configured": bool(env_vars.get("GITHUB_PERSONAL_ACCESS_TOKEN") and "your_github" not in env_vars.get("GITHUB_PERSONAL_ACCESS_TOKEN", "")),
-                    "has_token": bool(env_vars.get("GITHUB_PERSONAL_ACCESS_TOKEN")),
-                    "owner": env_vars.get("GITHUB_OWNER", ""),
-                    "repo": env_vars.get("GITHUB_REPO", "")
-                },
-                "figma": {
-                    "configured": bool(env_vars.get("FIGMA_ACCESS_TOKEN") and "your_figma" not in env_vars.get("FIGMA_ACCESS_TOKEN", "")),
-                    "has_token": bool(env_vars.get("FIGMA_ACCESS_TOKEN"))
-                },
-                "miro": {
-                    "configured": bool(env_vars.get("MIRO_ACCESS_TOKEN") and "your_miro" not in env_vars.get("MIRO_ACCESS_TOKEN", "")),
-                    "has_token": bool(env_vars.get("MIRO_ACCESS_TOKEN"))
-                },
-                "notion": {
-                    "configured": bool(env_vars.get("NOTION_API_TOKEN") and "your_notion" not in env_vars.get("NOTION_API_TOKEN", "")),
-                    "has_token": bool(env_vars.get("NOTION_API_TOKEN")),
-                    "root_page_id": env_vars.get("NOTION_ROOT_PAGE_ID", "")
-                },
-                "stitch": {
-                    "configured": bool(env_vars.get("STITCH_API_KEY") and "your_stitch" not in env_vars.get("STITCH_API_KEY", "")),
-                    "has_token": bool(env_vars.get("STITCH_API_KEY"))
-                },
-                "local_daemon": {
-                    "configured": True,
-                    "endpoint": "ws://127.0.0.1:3000/bridge"
-                }
-            })
+            return self.send_json(get_mcp_status())
 
         if path == "/api/user-settings":
             env_vars = parse_env_file()
+            cfg = parse_harness_config()
             return self.send_json({
                 "user_name": env_vars.get("USER_NAME", "Paula (Lead PM)"),
                 "user_email": env_vars.get("USER_EMAIL", "paula.pm@company.com"),
                 "persona": env_vars.get("DEFAULT_PERSONA", "paula"),
-                "prd_mode": env_vars.get("DEFAULT_PRD_MODE", "standard"),
+                "prd_mode": cfg.get("default_tier") or env_vars.get("DEFAULT_PRD_MODE", "standard"),
                 "ac_format": env_vars.get("DEFAULT_AC_FORMAT", "gherkin"),
                 "story_scale": env_vars.get("DEFAULT_STORY_SCALE", "fibonacci"),
                 "ui_theme": env_vars.get("DEFAULT_UI_THEME", "stitch"),
+                "mode": cfg.get("mode", "standalone"),
+                "default_tier": cfg.get("default_tier", "standard"),
+                "favorite_skills": cfg.get("favorite_skills", []),
+                "active_frameworks": cfg.get("active_frameworks", []),
                 "workspace_path": str(ROOT_DIR),
                 "atlassian_host": env_vars.get("ATLASSIAN_HOST", ""),
                 "atlassian_email": env_vars.get("ATLASSIAN_EMAIL", ""),
@@ -349,9 +580,39 @@ class PMCommandCenterApiHandler(SimpleHTTPRequestHandler):
         except Exception:
             data = {}
 
+        if path in ("/api/config", "/api/harness-config"):
+            updated_cfg = write_harness_config(data)
+            # Sync user profile fields to .env if supplied
+            if any(k in data for k in ("user_name", "user_email", "persona", "prd_mode", "ac_format", "story_scale", "ui_theme")):
+                write_env_file(data)
+            return self.send_json({
+                "success": True,
+                "config": updated_cfg,
+                "message": "Configuration successfully saved to .context/harness-config.yaml!"
+            })
+
+        if path.startswith("/api/context/"):
+            filename = path[len("/api/context/"):].strip()
+            if not filename or "/" in filename or "\\" in filename or ".." in filename:
+                return self.send_json({"error": "Invalid filename parameter"}, status=400)
+            target = CONTEXT_DIR / filename
+            new_content = data.get("content", "")
+            target.write_text(new_content, encoding="utf-8")
+            lines = len(new_content.splitlines())
+            words = len(new_content.split())
+            return self.send_json({
+                "success": True,
+                "filename": filename,
+                "lines": lines,
+                "words": words,
+                "message": f"Successfully updated .context/{filename} ({lines} lines, {words} words)."
+            })
+
         if path in ("/api/save-credentials", "/api/user-settings"):
             write_env_file(data)
-            return self.send_json({"success": True, "message": "User settings and credentials saved to .env!"})
+            # If default_tier or mode or favorite_skills supplied, also update harness-config.yaml
+            write_harness_config(data)
+            return self.send_json({"success": True, "message": "User settings and credentials saved to .env & harness-config.yaml!"})
 
         if path == "/api/test-mcp":
             target = data.get("target", "atlassian")

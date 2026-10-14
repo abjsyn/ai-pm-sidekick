@@ -285,6 +285,16 @@
         console.warn('Could not load dynamic manifest, using built-in catalog', err);
       }
 
+      try {
+        const cfgRes = await fetch('/api/context');
+        if (cfgRes.ok) {
+          const ctxData = await cfgRes.json();
+          if (ctxData.config && Array.isArray(ctxData.config.favorite_skills)) {
+            localStorage.setItem('pm_favorite_skills', JSON.stringify(ctxData.config.favorite_skills));
+          }
+        }
+      } catch (e) {}
+
       renderSkillCategories();
       renderFavoritesSection();
       updateFavoriteIcons();
@@ -343,6 +353,11 @@
       localStorage.setItem('pm_favorite_skills', JSON.stringify(favs));
       renderFavoritesSection();
       updateFavoriteIcons();
+      fetch('/api/config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ favorite_skills: favs })
+      }).catch(e => console.warn('Could not sync favorites to /api/config', e));
     }
 
     function toggleFavorite(skillId, event) {

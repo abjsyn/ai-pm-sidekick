@@ -38,8 +38,8 @@ active_frameworks:
 # Enabled MCP (Model Context Protocol) Integration Targets:
 mcp_enabled:
   - atlassian  # Jira & Confluence
-  - github     # GitHub Issues, PRs, & Milestones
-  - figma      # UI design files & comments
-  - miro       # Visual whiteboards & sticky notes
-  - notion     # Product wikis & database sync
-  - stitch     # Google Stitch Atelier UI
+  - github  # GitHub Issues, PRs, & Milestones
+  - figma  # UI design files & comments
+  - miro  # Visual whiteboards & sticky notes
+  - notion  # Product wikis & database sync
+  - stitch  # Google Stitch Atelier UI

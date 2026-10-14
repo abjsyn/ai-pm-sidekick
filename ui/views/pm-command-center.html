@@ -199,143 +199,11 @@
 
           <hr class="border-[#2a2b30] my-2 sidebar-label"/>
 
-          <!-- SECTION 1: STRATEGY & PRD -->
-          <div class="space-y-1">
-            <div class="px-2 text-[10px] font-mono text-zinc-500 uppercase tracking-wider font-semibold sidebar-label">Strategy & PRD</div>
-            
-            <div data-skill-id="create-prd" class="sidebar-skill-item w-full p-2 rounded-lg hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center justify-between transition-colors group cursor-pointer" onclick="triggerSkillFromSidepanel('create-prd')">
-              <div class="sidebar-skill-main flex items-center gap-2.5 min-w-0">
-                <span class="material-symbols-outlined text-[18px] text-amber-500 shrink-0">description</span>
-                <span class="text-[13px] font-medium truncate sidebar-label">PRD Generator</span>
-              </div>
-              <button onclick="toggleFavorite('create-prd', event)" title="Pin to Favorites" class="sidebar-fav opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
-                <span class="material-symbols-outlined text-[16px]" id="fav-icon-create-prd">star_outline</span>
-              </button>
-            </div>
-
-            <div data-skill-id="brainstorm" class="sidebar-skill-item w-full p-2 rounded-lg hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center justify-between transition-colors group cursor-pointer" onclick="triggerSkillFromSidepanel('brainstorm')">
-              <div class="sidebar-skill-main flex items-center gap-2.5 min-w-0">
-                <span class="material-symbols-outlined text-[18px] text-amber-500 shrink-0">psychology_alt</span>
-                <span class="text-[13px] font-medium truncate sidebar-label">Opportunity Brainstorm</span>
-              </div>
-              <button onclick="toggleFavorite('brainstorm', event)" title="Pin to Favorites" class="sidebar-fav opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
-                <span class="material-symbols-outlined text-[16px]" id="fav-icon-brainstorm">star_outline</span>
-              </button>
-            </div>
-
-            <div data-skill-id="validate-idea" class="sidebar-skill-item w-full p-2 rounded-lg hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center justify-between transition-colors group cursor-pointer" onclick="triggerSkillFromSidepanel('validate-idea')">
-              <div class="sidebar-skill-main flex items-center gap-2.5 min-w-0">
-                <span class="material-symbols-outlined text-[18px] text-red-400 shrink-0">fact_check</span>
-                <span class="text-[13px] font-medium truncate sidebar-label">Idea Validator</span>
-              </div>
-              <button onclick="toggleFavorite('validate-idea', event)" title="Pin to Favorites" class="sidebar-fav opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
-                <span class="material-symbols-outlined text-[16px]" id="fav-icon-validate-idea">star_outline</span>
-              </button>
-            </div>
-
-            <div data-skill-id="create-documentation" class="sidebar-skill-item w-full p-2 rounded-lg hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center justify-between transition-colors group cursor-pointer" onclick="triggerSkillFromSidepanel('create-documentation')">
-              <div class="sidebar-skill-main flex items-center gap-2.5 min-w-0">
-                <span class="material-symbols-outlined text-[18px] text-zinc-400 shrink-0">menu_book</span>
-                <span class="text-[13px] font-medium truncate sidebar-label">Technical Docs</span>
-              </div>
-              <button onclick="toggleFavorite('create-documentation', event)" title="Pin to Favorites" class="sidebar-fav opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
-                <span class="material-symbols-outlined text-[16px]" id="fav-icon-create-documentation">star_outline</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- SECTION 2: STORIES & BACKLOG -->
-          <div class="space-y-1">
-            <div class="px-2 text-[10px] font-mono text-zinc-500 uppercase tracking-wider font-semibold sidebar-label">Stories & Backlog</div>
-            
-            <div data-skill-id="create-user-stories" class="sidebar-skill-item w-full p-2 rounded-lg hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center justify-between transition-colors group cursor-pointer" onclick="triggerSkillFromSidepanel('create-user-stories')">
-              <div class="sidebar-skill-main flex items-center gap-2.5 min-w-0">
-                <span class="material-symbols-outlined text-[18px] text-blue-400 shrink-0">splitscreen</span>
-                <span class="text-[13px] font-medium truncate sidebar-label">INVEST User Stories</span>
-              </div>
-              <button onclick="toggleFavorite('create-user-stories', event)" title="Pin to Favorites" class="sidebar-fav opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
-                <span class="material-symbols-outlined text-[16px]" id="fav-icon-create-user-stories">star_outline</span>
-              </button>
-            </div>
-
-            <div data-skill-id="refine-user-stories" class="sidebar-skill-item w-full p-2 rounded-lg hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center justify-between transition-colors group cursor-pointer" onclick="triggerSkillFromSidepanel('refine-user-stories')">
-              <div class="sidebar-skill-main flex items-center gap-2.5 min-w-0">
-                <span class="material-symbols-outlined text-[18px] text-blue-400 shrink-0">tune</span>
-                <span class="text-[13px] font-medium truncate sidebar-label">Story Refinement</span>
-              </div>
-              <button onclick="toggleFavorite('refine-user-stories', event)" title="Pin to Favorites" class="sidebar-fav opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
-                <span class="material-symbols-outlined text-[16px]" id="fav-icon-refine-user-stories">star_outline</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- SECTION 3: DESIGN -->
-          <div class="space-y-1">
-            <div class="px-2 text-[10px] font-mono text-zinc-500 uppercase tracking-wider font-semibold sidebar-label">Design & Wireframe</div>
-
-            <div data-skill-id="create-mockup" class="sidebar-skill-item w-full p-2 rounded-lg hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center justify-between transition-colors group cursor-pointer" onclick="triggerSkillFromSidepanel('create-mockup')">
-              <div class="sidebar-skill-main flex items-center gap-2.5 min-w-0">
-                <span class="material-symbols-outlined text-[18px] text-teal-400 shrink-0">web</span>
-                <span class="text-[13px] font-medium truncate sidebar-label">HTML Wireframe</span>
-              </div>
-              <button onclick="toggleFavorite('create-mockup', event)" title="Pin to Favorites" class="sidebar-fav opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
-                <span class="material-symbols-outlined text-[16px]" id="fav-icon-create-mockup">star_outline</span>
-              </button>
-            </div>
-
-            <div data-skill-id="create-design-brief" class="sidebar-skill-item w-full p-2 rounded-lg hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center justify-between transition-colors group cursor-pointer" onclick="triggerSkillFromSidepanel('create-design-brief')">
-              <div class="sidebar-skill-main flex items-center gap-2.5 min-w-0">
-                <span class="material-symbols-outlined text-[18px] text-teal-400 shrink-0">palette</span>
-                <span class="text-[13px] font-medium truncate sidebar-label">UI/UX Design Brief</span>
-              </div>
-              <button onclick="toggleFavorite('create-design-brief', event)" title="Pin to Favorites" class="sidebar-fav opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
-                <span class="material-symbols-outlined text-[16px]" id="fav-icon-create-design-brief">star_outline</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- SECTION 4: MCP -->
-          <div class="space-y-1">
-            <div class="px-2 text-[10px] font-mono text-zinc-500 uppercase tracking-wider font-semibold sidebar-label">MCP Sync</div>
-
-            <div data-skill-id="sync-jira" class="sidebar-skill-item w-full p-2 rounded-lg hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center justify-between transition-colors group cursor-pointer" onclick="triggerSkillFromSidepanel('sync-jira')">
-              <div class="sidebar-skill-main flex items-center gap-2.5 min-w-0">
-                <span class="material-symbols-outlined text-[18px] text-blue-400 shrink-0">sync_alt</span>
-                <span class="text-[13px] font-medium truncate sidebar-label">Sync to Jira</span>
-              </div>
-              <button onclick="toggleFavorite('sync-jira', event)" title="Pin to Favorites" class="sidebar-fav opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
-                <span class="material-symbols-outlined text-[16px]" id="fav-icon-sync-jira">star_outline</span>
-              </button>
-            </div>
-
-            <div data-skill-id="sync-confluence" class="sidebar-skill-item w-full p-2 rounded-lg hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center justify-between transition-colors group cursor-pointer" onclick="triggerSkillFromSidepanel('sync-confluence')">
-              <div class="sidebar-skill-main flex items-center gap-2.5 min-w-0">
-                <span class="material-symbols-outlined text-[18px] text-blue-400 shrink-0">cloud_upload</span>
-                <span class="text-[13px] font-medium truncate sidebar-label">Publish Confluence</span>
-              </div>
-              <button onclick="toggleFavorite('sync-confluence', event)" title="Pin to Favorites" class="sidebar-fav opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
-                <span class="material-symbols-outlined text-[16px]" id="fav-icon-sync-confluence">star_outline</span>
-              </button>
-            </div>
-
-            <div data-skill-id="sync-figma" class="sidebar-skill-item w-full p-2 rounded-lg hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center justify-between transition-colors group cursor-pointer" onclick="triggerSkillFromSidepanel('sync-figma')">
-              <div class="sidebar-skill-main flex items-center gap-2.5 min-w-0">
-                <span class="material-symbols-outlined text-[18px] text-purple-400 shrink-0">design_services</span>
-                <span class="text-[13px] font-medium truncate sidebar-label">Figma Sync</span>
-              </div>
-              <button onclick="toggleFavorite('sync-figma', event)" title="Pin to Favorites" class="sidebar-fav opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
-                <span class="material-symbols-outlined text-[16px]" id="fav-icon-sync-figma">star_outline</span>
-              </button>
-            </div>
-
-            <div data-skill-id="sync-miro" class="sidebar-skill-item w-full p-2 rounded-lg hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center justify-between transition-colors group cursor-pointer" onclick="triggerSkillFromSidepanel('sync-miro')">
-              <div class="sidebar-skill-main flex items-center gap-2.5 min-w-0">
-                <span class="material-symbols-outlined text-[18px] text-yellow-400 shrink-0">dashboard_customize</span>
-                <span class="text-[13px] font-medium truncate sidebar-label">Miro Stickies</span>
-              </div>
-              <button onclick="toggleFavorite('sync-miro', event)" title="Pin to Favorites" class="sidebar-fav opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
-                <span class="material-symbols-outlined text-[16px]" id="fav-icon-sync-miro">star_outline</span>
-              </button>
+          <!-- DYNAMIC SKILL CATEGORIES (Hydrated from /api/manifest) -->
+          <div id="dynamic-categories-container" class="space-y-4">
+            <div class="px-2 py-4 text-center text-xs text-zinc-500 font-mono flex items-center justify-center gap-2">
+              <span class="w-3 h-3 border-2 border-amber-500/30 border-t-amber-500 rounded-full animate-spin"></span>
+              <span class="sidebar-label">Loading skills manifest...</span>
             </div>
           </div>
 
@@ -377,6 +245,38 @@
                     <span class="font-mono text-[11px] text-amber-400 uppercase font-medium">⭐ Pinned Skills</span>
                     <span class="font-headline text-2xl text-amber-400 font-bold mt-0.5" id="stat-favorites-count">0</span>
                   </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- ================= PRODUCT KNOWLEDGE BASE (.context/) ================= -->
+            <section class="w-full rounded-2xl bg-[#18191d] p-6 border border-[#2a2b30] shadow-sm space-y-4">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#2a2b30]">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
+                    <span class="material-symbols-outlined text-[20px]">psychology</span>
+                  </div>
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <h2 class="font-headline text-lg text-zinc-100 font-bold">Product Knowledge Base (<code class="text-xs text-amber-400 font-mono">.context/</code>)</h2>
+                      <span id="badge-operating-mode" class="px-2 py-0.5 rounded bg-[#26272e] text-amber-400 font-mono text-[10px] uppercase border border-amber-500/20">Standalone Mode</span>
+                    </div>
+                    <p class="text-xs text-zinc-400 mt-0.5">Single source of truth for strategy, discovery, architecture, and ADR decisions.</p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <button onclick="loadContextOverview()" class="p-1.5 rounded-lg bg-[#26272e] hover:bg-[#31323a] text-zinc-300 text-xs flex items-center gap-1.5 transition-colors" title="Reload Context Health">
+                    <span class="material-symbols-outlined text-[16px]">refresh</span>
+                    <span class="text-[11px] font-mono">Refresh</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Context Cards Grid -->
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="context-cards-grid">
+                <div class="col-span-full py-6 text-center text-zinc-500 text-xs font-mono flex items-center justify-center gap-2">
+                  <span class="w-3 h-3 border-2 border-amber-500/30 border-t-amber-500 rounded-full animate-spin"></span>
+                  <span>Hydrating .context/ overview...</span>
                 </div>
               </div>
             </section>
@@ -536,28 +436,88 @@
           <!-- ================= TAB 4: MCP CONNECTIONS ================= -->
           <div id="view-mcp-connections" class="tab-view hidden space-y-6">
             <section class="w-full rounded-2xl bg-[#18191d] p-6 border border-[#2a2b30] shadow-sm">
-              <h2 class="font-headline text-xl text-zinc-100 font-bold mb-4">MCP Connection Manager</h2>
-              <p class="text-sm text-zinc-400 mb-6">Configure Google Stitch, Atlassian (Jira & Confluence), Figma, and Miro credentials.</p>
+              <div class="flex items-center justify-between mb-4">
+                <div>
+                  <h2 class="font-headline text-xl text-zinc-100 font-bold">MCP Connection Manager</h2>
+                  <p class="text-sm text-zinc-400 mt-0.5">Audit Model Context Protocol integrations across Atlassian, GitHub, Figma, Miro, Notion, and Stitch.</p>
+                </div>
+                <button onclick="refreshMcpStatusBadges()" class="p-1.5 rounded-lg bg-[#26272e] hover:bg-[#31323a] text-zinc-300 text-xs flex items-center gap-1.5 transition-colors">
+                  <span class="material-symbols-outlined text-[16px]">refresh</span>
+                  <span class="text-[11px] font-mono">Check Status</span>
+                </button>
+              </div>
               
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="p-4 rounded-xl bg-[#1f2025] border border-[#2a2b30] space-y-2">
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="mcp-cards-grid">
+                <!-- Google Stitch MCP -->
+                <div class="p-4 rounded-xl bg-[#1f2025] border border-[#2a2b30] space-y-3">
                   <div class="flex items-center justify-between">
                     <span class="font-semibold text-zinc-100 text-xs flex items-center gap-2">
                       <span class="material-symbols-outlined text-indigo-400 text-[18px]">palette</span> Google Stitch MCP
                     </span>
-                    <span class="text-[10px] text-emerald-400 font-mono bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">Connected (5 Projects)</span>
+                    <span id="tab4-badge-stitch" class="text-[10px] text-zinc-400 font-mono bg-[#121316] px-2 py-0.5 rounded border border-[#2a2b30]">Checking...</span>
                   </div>
-                  <input type="password" id="mcp-stitch-key" value="stitch_live_9f81a74e..." class="w-full px-3 py-1.5 rounded bg-[#121316] border border-[#2a2b30] text-zinc-200 text-xs font-mono focus:outline-none focus:border-amber-500"/>
+                  <p class="text-[11px] text-zinc-400">Design systems, Tailwind mockups, and UI token synchronization.</p>
+                  <button onclick="testMcpConnection('stitch')" class="w-full py-1.5 px-3 rounded bg-[#26272e] hover:bg-[#31323a] text-zinc-200 text-xs font-mono transition-colors">Test Connection</button>
                 </div>
 
-                <div class="p-4 rounded-xl bg-[#1f2025] border border-[#2a2b30] space-y-2">
+                <!-- Atlassian Jira & Confluence -->
+                <div class="p-4 rounded-xl bg-[#1f2025] border border-[#2a2b30] space-y-3">
                   <div class="flex items-center justify-between">
                     <span class="font-semibold text-zinc-100 text-xs flex items-center gap-2">
-                      <span class="material-symbols-outlined text-blue-400 text-[18px]">sync_alt</span> Atlassian Jira & Confluence
+                      <span class="material-symbols-outlined text-blue-400 text-[18px]">sync_alt</span> Atlassian (Jira & Confluence)
                     </span>
-                    <span class="text-[10px] text-amber-400 font-mono bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">Optional</span>
+                    <span id="tab4-badge-atlassian" class="text-[10px] text-zinc-400 font-mono bg-[#121316] px-2 py-0.5 rounded border border-[#2a2b30]">Checking...</span>
                   </div>
-                  <input type="password" id="mcp-atlassian-key" placeholder="ATATT3xFfGF0..." class="w-full px-3 py-1.5 rounded bg-[#121316] border border-[#2a2b30] text-zinc-200 text-xs font-mono focus:outline-none focus:border-amber-500"/>
+                  <p class="text-[11px] text-zinc-400">Direct export of user stories to Jira and PRDs to Confluence spaces.</p>
+                  <button onclick="testMcpConnection('atlassian')" class="w-full py-1.5 px-3 rounded bg-[#26272e] hover:bg-[#31323a] text-zinc-200 text-xs font-mono transition-colors">Test Connection</button>
+                </div>
+
+                <!-- GitHub Issues -->
+                <div class="p-4 rounded-xl bg-[#1f2025] border border-[#2a2b30] space-y-3">
+                  <div class="flex items-center justify-between">
+                    <span class="font-semibold text-zinc-100 text-xs flex items-center gap-2">
+                      <span class="material-symbols-outlined text-zinc-200 text-[18px]">code</span> GitHub Issues & Milestones
+                    </span>
+                    <span id="tab4-badge-github" class="text-[10px] text-zinc-400 font-mono bg-[#121316] px-2 py-0.5 rounded border border-[#2a2b30]">Checking...</span>
+                  </div>
+                  <p class="text-[11px] text-zinc-400">Bi-directional issue tracking, sprint milestones, and bug triage.</p>
+                  <button onclick="testMcpConnection('github')" class="w-full py-1.5 px-3 rounded bg-[#26272e] hover:bg-[#31323a] text-zinc-200 text-xs font-mono transition-colors">Test Connection</button>
+                </div>
+
+                <!-- Figma MCP -->
+                <div class="p-4 rounded-xl bg-[#1f2025] border border-[#2a2b30] space-y-3">
+                  <div class="flex items-center justify-between">
+                    <span class="font-semibold text-zinc-100 text-xs flex items-center gap-2">
+                      <span class="material-symbols-outlined text-purple-400 text-[18px]">design_services</span> Figma Canvas
+                    </span>
+                    <span id="tab4-badge-figma" class="text-[10px] text-zinc-400 font-mono bg-[#121316] px-2 py-0.5 rounded border border-[#2a2b30]">Checking...</span>
+                  </div>
+                  <p class="text-[11px] text-zinc-400">Design token inspection, component frame comments, and brief posting.</p>
+                  <button onclick="testMcpConnection('figma')" class="w-full py-1.5 px-3 rounded bg-[#26272e] hover:bg-[#31323a] text-zinc-200 text-xs font-mono transition-colors">Test Connection</button>
+                </div>
+
+                <!-- Miro MCP -->
+                <div class="p-4 rounded-xl bg-[#1f2025] border border-[#2a2b30] space-y-3">
+                  <div class="flex items-center justify-between">
+                    <span class="font-semibold text-zinc-100 text-xs flex items-center gap-2">
+                      <span class="material-symbols-outlined text-yellow-400 text-[18px]">dashboard_customize</span> Miro Whiteboards
+                    </span>
+                    <span id="tab4-badge-miro" class="text-[10px] text-zinc-400 font-mono bg-[#121316] px-2 py-0.5 rounded border border-[#2a2b30]">Checking...</span>
+                  </div>
+                  <p class="text-[11px] text-zinc-400">Visual stickies for SCAMPER, 6 Thinking Hats, and outcome roadmaps.</p>
+                  <button onclick="testMcpConnection('miro')" class="w-full py-1.5 px-3 rounded bg-[#26272e] hover:bg-[#31323a] text-zinc-200 text-xs font-mono transition-colors">Test Connection</button>
+                </div>
+
+                <!-- Notion MCP -->
+                <div class="p-4 rounded-xl bg-[#1f2025] border border-[#2a2b30] space-y-3">
+                  <div class="flex items-center justify-between">
+                    <span class="font-semibold text-zinc-100 text-xs flex items-center gap-2">
+                      <span class="material-symbols-outlined text-orange-400 text-[18px]">sticky_note_2</span> Notion Product Wiki
+                    </span>
+                    <span id="tab4-badge-notion" class="text-[10px] text-zinc-400 font-mono bg-[#121316] px-2 py-0.5 rounded border border-[#2a2b30]">Checking...</span>
+                  </div>
+                  <p class="text-[11px] text-zinc-400">Customer discovery databases, product wikis, and decision logs.</p>
+                  <button onclick="testMcpConnection('notion')" class="w-full py-1.5 px-3 rounded bg-[#26272e] hover:bg-[#31323a] text-zinc-200 text-xs font-mono transition-colors">Test Connection</button>
                 </div>
               </div>
             </section>
@@ -718,7 +678,10 @@
                         <span class="font-semibold text-zinc-100 text-xs flex items-center gap-2">
                           <span class="material-symbols-outlined text-blue-400 text-[18px]">sync_alt</span> Atlassian (Jira & Confluence)
                         </span>
-                        <span class="text-[10px] text-amber-400 font-mono">Optional</span>
+                        <div class="flex items-center gap-2">
+                          <span id="badge-atlassian-status-native" class="text-[10px] text-amber-400 font-mono bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">Optional</span>
+                          <button onclick="testMcpConnection('atlassian')" class="px-2 py-0.5 rounded bg-[#26272e] hover:bg-[#31323a] text-zinc-300 text-[10px] font-mono">Test</button>
+                        </div>
                       </div>
                       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <input type="text" id="input-atlassian-host" placeholder="https://domain.atlassian.net" class="px-3 py-1.5 rounded bg-[#121316] border border-[#2a2b30] text-zinc-200 text-xs font-mono"/>
@@ -727,13 +690,54 @@
                       </div>
                     </div>
 
+                    <!-- GitHub Issues -->
+                    <div class="p-4 rounded-xl bg-[#1f2025] border border-[#2a2b30] space-y-3">
+                      <div class="flex items-center justify-between">
+                        <span class="font-semibold text-zinc-100 text-xs flex items-center gap-2">
+                          <span class="material-symbols-outlined text-zinc-200 text-[18px]">code</span> GitHub Issues & Milestones
+                        </span>
+                        <div class="flex items-center gap-2">
+                          <span id="badge-github-status-native" class="text-[10px] text-zinc-400 font-mono bg-[#121316] px-2 py-0.5 rounded border border-[#2a2b30]">Unconfigured</span>
+                          <button onclick="testMcpConnection('github')" class="px-2 py-0.5 rounded bg-[#26272e] hover:bg-[#31323a] text-zinc-300 text-[10px] font-mono">Test</button>
+                        </div>
+                      </div>
+                      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <input type="text" id="input-github-owner" placeholder="Owner (e.g. org or username)" class="px-3 py-1.5 rounded bg-[#121316] border border-[#2a2b30] text-zinc-200 text-xs font-mono"/>
+                        <input type="text" id="input-github-repo" placeholder="Repository name" class="px-3 py-1.5 rounded bg-[#121316] border border-[#2a2b30] text-zinc-200 text-xs font-mono"/>
+                        <input type="password" id="input-github-token" placeholder="ghp_..." class="sm:col-span-2 px-3 py-1.5 rounded bg-[#121316] border border-[#2a2b30] text-zinc-200 text-xs font-mono"/>
+                      </div>
+                    </div>
+
+                    <!-- Notion MCP -->
+                    <div class="p-4 rounded-xl bg-[#1f2025] border border-[#2a2b30] space-y-3">
+                      <div class="flex items-center justify-between">
+                        <span class="font-semibold text-zinc-100 text-xs flex items-center gap-2">
+                          <span class="material-symbols-outlined text-orange-400 text-[18px]">sticky_note_2</span> Notion Product Wiki & Databases
+                        </span>
+                        <div class="flex items-center gap-2">
+                          <span id="badge-notion-status-native" class="text-[10px] text-zinc-400 font-mono bg-[#121316] px-2 py-0.5 rounded border border-[#2a2b30]">Unconfigured</span>
+                          <button onclick="testMcpConnection('notion')" class="px-2 py-0.5 rounded bg-[#26272e] hover:bg-[#31323a] text-zinc-300 text-[10px] font-mono">Test</button>
+                        </div>
+                      </div>
+                      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <input type="text" id="input-notion-page" placeholder="NOTION_ROOT_PAGE_ID" class="px-3 py-1.5 rounded bg-[#121316] border border-[#2a2b30] text-zinc-200 text-xs font-mono"/>
+                        <input type="password" id="input-notion-token" placeholder="secret_..." class="px-3 py-1.5 rounded bg-[#121316] border border-[#2a2b30] text-zinc-200 text-xs font-mono"/>
+                      </div>
+                    </div>
+
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div class="p-4 rounded-xl bg-[#1f2025] border border-[#2a2b30] space-y-1.5">
-                        <span class="font-semibold text-zinc-100 text-xs block">Figma Access Token</span>
+                        <div class="flex items-center justify-between">
+                          <span class="font-semibold text-zinc-100 text-xs block">Figma Access Token</span>
+                          <button onclick="testMcpConnection('figma')" class="px-2 py-0.5 rounded bg-[#26272e] hover:bg-[#31323a] text-zinc-300 text-[10px] font-mono">Test</button>
+                        </div>
                         <input type="password" id="input-figma-token" placeholder="figd_..." class="w-full px-3 py-1.5 rounded bg-[#121316] border border-[#2a2b30] text-zinc-200 text-xs font-mono"/>
                       </div>
                       <div class="p-4 rounded-xl bg-[#1f2025] border border-[#2a2b30] space-y-1.5">
-                        <span class="font-semibold text-zinc-100 text-xs block">Miro Access Token</span>
+                        <div class="flex items-center justify-between">
+                          <span class="font-semibold text-zinc-100 text-xs block">Miro Access Token</span>
+                          <button onclick="testMcpConnection('miro')" class="px-2 py-0.5 rounded bg-[#26272e] hover:bg-[#31323a] text-zinc-300 text-[10px] font-mono">Test</button>
+                        </div>
                         <input type="password" id="input-miro-token" placeholder="eyJhbGci..." class="w-full px-3 py-1.5 rounded bg-[#121316] border border-[#2a2b30] text-zinc-200 text-xs font-mono"/>
                       </div>
                     </div>
@@ -744,14 +748,22 @@
                 <div id="sec-skills" class="settings-section hidden space-y-6">
                   <div>
                     <h3 class="font-headline text-base font-bold text-zinc-100 flex items-center gap-2">
-                      <span class="material-symbols-outlined text-teal-400 text-[20px]">auto_awesome</span> Skill Execution Defaults
+                      <span class="material-symbols-outlined text-teal-400 text-[20px]">auto_awesome</span> Harness & Skill Execution Defaults
                     </h3>
                   </div>
 
                   <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div class="space-y-1.5">
-                      <label class="block text-xs font-medium text-zinc-300">Default PRD Execution Mode</label>
-                      <select id="setting-prd-mode" class="w-full px-3 py-2 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-xs">
+                      <label class="block text-xs font-medium text-zinc-300">Operating Mode</label>
+                      <select id="setting-harness-mode" class="w-full px-3 py-2 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-xs focus:outline-none focus:border-amber-500">
+                        <option value="standalone">Standalone PM Command Center</option>
+                        <option value="embedded">Embedded Codebase Harness</option>
+                      </select>
+                    </div>
+
+                    <div class="space-y-1.5">
+                      <label class="block text-xs font-medium text-zinc-300">Default PRD / Story Tier</label>
+                      <select id="setting-prd-mode" class="w-full px-3 py-2 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-xs focus:outline-none focus:border-amber-500">
                         <option value="standard">Standard Agile (Growth / Mid-size)</option>
                         <option value="lean">Lean Startup / MVP Mode</option>
                         <option value="enterprise">Enterprise Compliance & Scale</option>
@@ -816,29 +828,201 @@
 
   </div>
 
+  <!-- ================= CONTEXT FILE VIEWER / EDITOR MODAL ================= -->
+  <div id="context-editor-modal" class="fixed inset-0 z-50 hidden bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-[#18191d] border border-[#2a2b30] rounded-2xl w-full max-w-4xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+      <!-- Modal Header -->
+      <div class="h-14 px-6 border-b border-[#2a2b30] flex items-center justify-between bg-[#1f2025]">
+        <div class="flex items-center gap-3">
+          <span class="material-symbols-outlined text-amber-500 text-[22px]">edit_document</span>
+          <div>
+            <h3 class="font-headline font-bold text-zinc-100 text-sm flex items-center gap-2">
+              <span id="modal-context-title">Editing .context/product.md</span>
+              <span id="modal-context-badge" class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-mono text-[10px] border border-emerald-500/20">Saved</span>
+            </h3>
+            <p class="text-[11px] text-zinc-400 font-mono" id="modal-context-meta">Lines: 0 | Words: 0</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="toggleContextEditorMode()" id="modal-toggle-mode-btn" class="px-3 py-1.5 rounded-lg bg-[#26272e] hover:bg-[#31323a] text-zinc-200 text-xs font-mono transition-colors flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]" id="modal-toggle-mode-icon">visibility</span>
+            <span id="modal-toggle-mode-label">Preview</span>
+          </button>
+          <button onclick="saveContextFileFromModal()" id="modal-save-btn" class="px-4 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-500 text-white font-medium text-xs shadow-sm transition-colors flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">save</span> Save to Disk
+          </button>
+          <button onclick="closeContextEditor()" class="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-100 hover:bg-[#26272e] transition-colors">
+            <span class="material-symbols-outlined text-[20px]">close</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Modal Body (Editor vs Preview) -->
+      <div class="p-5 flex-1 overflow-y-auto">
+        <div id="modal-editor-container" class="h-[460px]">
+          <textarea id="modal-context-textarea" oninput="updateContextModalMeta()" class="w-full h-full p-4 rounded-xl bg-[#121316] border border-[#2a2b30] text-zinc-200 font-mono text-xs leading-relaxed focus:outline-none focus:border-amber-500 resize-none" placeholder="Enter markdown content..."></textarea>
+        </div>
+        <div id="modal-preview-container" class="hidden h-[460px] p-5 rounded-xl bg-[#121316] border border-[#2a2b30] overflow-y-auto prose prose-invert max-w-none text-xs">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLOATING TOAST CONTAINER -->
+  <div id="global-toast" class="fixed bottom-5 right-5 z-50 hidden max-w-md p-3.5 rounded-xl bg-[#1f2025] border border-amber-500/40 text-zinc-100 text-xs font-mono shadow-2xl flex items-center gap-2.5 transition-all">
+    <span class="material-symbols-outlined text-[18px] text-amber-400" id="global-toast-icon">check_circle</span>
+    <span id="global-toast-msg">Action completed</span>
+  </div>
+
   <!-- JAVASCRIPT CONTROLLERS WITH FAVORITES SYSTEM -->
   <script>
     let globalArtifacts = [];
     let currentPreviewContent = '';
     let sidebarExpanded = true;
+    let currentEditingFilename = '';
+    let contextEditorIsPreview = false;
     
-    // Skills dictionary for titles and icons
-    const SKILL_DETAILS = {
-      'create-prd': { name: 'PRD Generator', icon: 'description', color: 'text-amber-500' },
-      'create-user-stories': { name: 'INVEST User Stories', icon: 'splitscreen', color: 'text-blue-400' },
-      'refine-user-stories': { name: 'Story Refinement', icon: 'tune', color: 'text-blue-400' },
-      'create-mockup': { name: 'HTML Wireframe', icon: 'web', color: 'text-teal-400' },
-      'create-design-brief': { name: 'UI/UX Design Brief', icon: 'palette', color: 'text-teal-400' },
-      'create-documentation': { name: 'Technical Docs', icon: 'menu_book', color: 'text-zinc-400' },
-      'brainstorm': { name: 'Opportunity Brainstorm', icon: 'psychology_alt', color: 'text-amber-500' },
-      'validate-idea': { name: 'Idea Validator', icon: 'fact_check', color: 'text-red-400' },
-      'sync-jira': { name: 'Sync to Jira', icon: 'sync_alt', color: 'text-blue-400' },
-      'sync-confluence': { name: 'Publish Confluence', icon: 'cloud_upload', color: 'text-blue-400' },
-      'sync-figma': { name: 'Figma Sync', icon: 'design_services', color: 'text-purple-400' },
-      'sync-miro': { name: 'Miro Stickies', icon: 'dashboard_customize', color: 'text-yellow-400' }
+    // Skills dictionary for titles and icons (hydrated dynamically from /api/manifest)
+    let SKILL_DETAILS = {
+      'create-prd': { name: 'PRD Generator', icon: 'description', color: 'text-amber-500', category: 'specification', description: 'Generates comprehensive PRDs across Lean, Agile, and Enterprise tiers.' },
+      'create-user-stories': { name: 'INVEST User Stories', icon: 'splitscreen', color: 'text-blue-400', category: 'specification', description: 'Generates INVEST user stories with Gherkin BDD criteria.' },
+      'refine-user-stories': { name: 'Story Refinement & SPIDR', icon: 'tune', color: 'text-blue-400', category: 'specification', description: 'Refines user stories, applies SPIDR splitting, and calculates readiness score.' },
+      'create-mockup': { name: 'HTML Wireframe & Prototype', icon: 'web', color: 'text-teal-400', category: 'specification', description: 'Generates interactive UI wireframes and prototypes.' },
+      'create-design-brief': { name: 'UI/UX Design Brief', icon: 'palette', color: 'text-teal-400', category: 'specification', description: 'Creates UI/UX design briefs with WCAG accessibility guidelines.' },
+      'create-documentation': { name: 'Technical & User Docs', icon: 'menu_book', color: 'text-zinc-400', category: 'specification', description: 'Generates OpenAPI specs, Mermaid diagrams, and user guides.' },
+      'brainstorm': { name: 'Opportunity Brainstorm', icon: 'psychology_alt', color: 'text-amber-500', category: 'ideation', description: 'Structured brainstorming with SCAMPER, HMW, and 6 Hats.' },
+      'validate-idea': { name: 'Idea & Hypothesis Validator', icon: 'fact_check', color: 'text-red-400', category: 'ideation', description: 'Validates product ideas with Strategyzer 4-Risk and Mom Test.' },
+      'ingest-context': { name: 'Context Ingestion Router', icon: 'input', color: 'text-purple-400', category: 'knowledge', description: 'Ingests raw notes and routes structured facts to .context/.' },
+      'apply-framework': { name: 'Modular Framework Runner', icon: 'hub', color: 'text-indigo-400', category: 'knowledge', description: 'Runs strategic, discovery, and prioritization frameworks.' },
+      'connect-mcp': { name: 'MCP Integration Manager', icon: 'cable', color: 'text-emerald-400', category: 'sync', description: 'Manages MCP connections across PM tools.' },
+      'sync-jira': { name: 'Jira Epics & Stories Sync', icon: 'task_alt', color: 'text-blue-500', category: 'sync', description: 'Syncs epics and user stories directly to Jira.' },
+      'sync-confluence': { name: 'Confluence Wiki Sync', icon: 'library_books', color: 'text-blue-400', category: 'sync', description: 'Publishes PRDs and specs directly to Confluence.' },
+      'sync-github-issues': { name: 'GitHub Issues Sync', icon: 'code', color: 'text-zinc-200', category: 'sync', description: 'Bi-directionally syncs GitHub Issues and milestones.' },
+      'sync-figma': { name: 'Figma Specs Sync', icon: 'design_services', color: 'text-violet-400', category: 'sync', description: 'Pushes specs and comments to Figma canvases.' },
+      'sync-miro': { name: 'Miro Whiteboards Sync', icon: 'dashboard_customize', color: 'text-yellow-400', category: 'sync', description: 'Exports brainstorms and roadmaps to Miro boards.' },
+      'sync-notion': { name: 'Notion Databases Sync', icon: 'sticky_note_2', color: 'text-orange-400', category: 'sync', description: 'Syncs product wikis, research databases, and PRDs.' },
+      'gui-run': { name: 'PM Command Center GUI', icon: 'open_in_browser', color: 'text-amber-500', category: 'gui', description: 'Launches the local PM Command Center web GUI.' }
     };
 
-    // Load Pinned Favorites from localStorage
+    const CATEGORY_META = {
+      'ideation': { title: 'Ideation & Validation', order: 1 },
+      'specification': { title: 'Specifications & Delivery', order: 2 },
+      'knowledge': { title: 'Knowledge & Context', order: 3 },
+      'sync': { title: 'External Sync (MCP)', order: 4 },
+      'gui': { title: 'GUI & Workspace', order: 5 }
+    };
+
+    // Load dynamic skills manifest from backend
+    async function loadHarnessManifest() {
+      try {
+        let manifest = null;
+        for (const url of ['/dist/harness-manifest.json', '/api/manifest', '../../dist/harness-manifest.json', 'dist/harness-manifest.json']) {
+          try {
+            const res = await fetch(url);
+            if (res.ok) {
+              manifest = await res.json();
+              break;
+            }
+          } catch (e) {}
+        }
+
+        if (manifest && Array.isArray(manifest.skills) && manifest.skills.length > 0) {
+          SKILL_DETAILS = {};
+          manifest.skills.forEach(s => {
+            SKILL_DETAILS[s.id] = {
+              name: s.name,
+              icon: s.icon || 'extension',
+              color: s.color || 'text-zinc-400',
+              category: s.category || 'knowledge',
+              description: s.description || '',
+              required_context_files: s.required_context_files || [],
+              command: s.command_trigger || `/${s.id}`
+            };
+          });
+
+          // Update wizard skill dropdown options
+          const wizardSelect = document.getElementById('wizard-skill-select');
+          if (wizardSelect) {
+            wizardSelect.innerHTML = manifest.skills.map(s => 
+              `<option value="${s.id}">${s.id} — ${s.name}</option>`
+            ).join('');
+          }
+
+          // Update skills grid in dashboard tab
+          renderSkillsGrid(manifest.skills);
+        }
+      } catch (err) {
+        console.warn('Could not load dynamic manifest, using built-in catalog', err);
+      }
+
+      renderSkillCategories();
+      renderFavoritesSection();
+      updateFavoriteIcons();
+    }
+
+    function renderSkillCategories() {
+      const container = document.getElementById('dynamic-categories-container');
+      if (!container) return;
+
+      const grouped = {};
+      Object.keys(CATEGORY_META).forEach(cat => { grouped[cat] = []; });
+
+      Object.entries(SKILL_DETAILS).forEach(([id, skill]) => {
+        const cat = skill.category || 'knowledge';
+        if (!grouped[cat]) grouped[cat] = [];
+        grouped[cat].push({ id, ...skill });
+      });
+
+      let html = '';
+      Object.keys(CATEGORY_META).forEach(cat => {
+        const skillsInCat = grouped[cat] || [];
+        if (skillsInCat.length === 0) return;
+
+        const catInfo = CATEGORY_META[cat];
+        html += `
+          <div class="space-y-1">
+            <div class="px-2 text-[10px] font-mono text-zinc-500 uppercase tracking-wider font-semibold sidebar-label">${catInfo.title}</div>
+            ${skillsInCat.map(s => `
+              <div data-skill-id="${s.id}" class="sidebar-skill-item w-full p-2 rounded-lg hover:bg-[#26272e] text-zinc-300 hover:text-zinc-100 flex items-center justify-between transition-colors group cursor-pointer" onclick="triggerSkillFromSidepanel('${s.id}')">
+                <div class="sidebar-skill-main flex items-center gap-2.5 min-w-0">
+                  <span class="material-symbols-outlined text-[18px] ${s.color} shrink-0">${s.icon}</span>
+                  <span class="text-[13px] font-medium truncate sidebar-label">${s.name}</span>
+                </div>
+                <button onclick="toggleFavorite('${s.id}', event)" title="Pin to Favorites" class="sidebar-fav opacity-40 group-hover:opacity-100 hover:scale-110 transition-all p-0.5 text-zinc-400 hover:text-amber-400">
+                  <span class="material-symbols-outlined text-[16px]" id="fav-icon-${s.id}">star_outline</span>
+                </button>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    function renderSkillsGrid(skills) {
+      const grid = document.getElementById('skills-grid');
+      if (!grid) return;
+      const featured = ['create-prd', 'create-user-stories', 'create-mockup', 'brainstorm', 'validate-idea', 'ingest-context'];
+      const displaySkills = skills.filter(s => featured.includes(s.id) || !s.category.includes('gui'));
+      grid.innerHTML = displaySkills.slice(0, 6).map(s => `
+        <div onclick="launchSkillWizard('${s.id}')" class="group p-5 rounded-xl bg-[#1f2025] hover:bg-[#26272e] border border-[#2a2b30] transition-all cursor-pointer flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-[24px] ${s.color || 'text-amber-500'}">${s.icon || 'extension'}</span>
+            <div>
+              <h3 class="font-headline font-semibold text-zinc-100 text-sm">${s.name}</h3>
+              <p class="text-zinc-400 text-xs mt-0.5 line-clamp-1">${s.description}</p>
+            </div>
+          </div>
+          <button onclick="toggleFavorite('${s.id}', event)" class="text-zinc-500 hover:text-amber-400 p-1">
+            <span class="material-symbols-outlined text-[18px]" id="grid-fav-${s.id}">star_outline</span>
+          </button>
+        </div>
+      `).join('');
+      updateFavoriteIcons();
+    }
+
+    // Load Pinned Favorites from localStorage & /api/context
     function getFavoriteSkills() {
       try {
         const stored = localStorage.getItem('pm_favorite_skills');
@@ -852,10 +1036,15 @@
       localStorage.setItem('pm_favorite_skills', JSON.stringify(favs));
       renderFavoritesSection();
       updateFavoriteIcons();
+      fetch('/api/config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ favorite_skills: favs })
+      }).catch(e => console.warn('Could not sync favorites to /api/config', e));
     }
 
     function toggleFavorite(skillId, event) {
-      if (event) event.stopPropagation(); // prevent triggering skill launch on star click
+      if (event) event.stopPropagation();
       let favs = getFavoriteSkills();
       if (favs.includes(skillId)) {
         favs = favs.filter(id => id !== skillId);
@@ -868,11 +1057,9 @@
     function renderFavoritesSection() {
       const favs = getFavoriteSkills();
       const container = document.getElementById('favorites-list');
-      const section = document.getElementById('sidepanel-favorites-section');
       const badgeCount = document.getElementById('stat-favorites-count');
 
       if (badgeCount) badgeCount.textContent = favs.length;
-
       if (!container) return;
 
       if (favs.length === 0) {
@@ -917,6 +1104,292 @@
       });
     }
 
+    // ================= LOAD PRODUCT KNOWLEDGE BASE (.context/) OVERVIEW =================
+    async function loadContextOverview() {
+      const container = document.getElementById('context-cards-grid');
+      try {
+        const res = await fetch('/api/context');
+        if (!res.ok) throw new Error('API context error');
+        const data = await res.json();
+        
+        // Update Operating Mode Badge
+        const modeBadge = document.getElementById('badge-operating-mode');
+        if (modeBadge && data.config) {
+          const mode = (data.config.mode || 'standalone').toLowerCase();
+          modeBadge.textContent = mode === 'embedded' ? 'Embedded Mode (Codebase)' : 'Standalone Mode (PM Core)';
+          const modeSelect = document.getElementById('setting-harness-mode');
+          if (modeSelect) modeSelect.value = mode;
+        }
+
+        // Hydrate favorite skills from config
+        if (data.config && Array.isArray(data.config.favorite_skills)) {
+          localStorage.setItem('pm_favorite_skills', JSON.stringify(data.config.favorite_skills));
+          renderFavoritesSection();
+          updateFavoriteIcons();
+        }
+
+        if (!container) return;
+        if (!Array.isArray(data.files) || data.files.length === 0) {
+          container.innerHTML = `<div class="col-span-full py-4 text-center text-zinc-500 text-xs">No .context/ files found.</div>`;
+          return;
+        }
+
+        const FILE_ICONS = {
+          'product.md': 'flag',
+          'discovery.md': 'explore',
+          'strategy-and-constraints.md': 'map',
+          'architecture.md': 'account_tree',
+          'decisions.md': 'gavel',
+          'conventions.md': 'rule'
+        };
+
+        container.innerHTML = data.files.map(file => {
+          const icon = FILE_ICONS[file.name] || 'description';
+          const score = file.completeness_score || 0;
+          const statusColor = file.status === 'Healthy' ? 'emerald' : file.status === 'In Progress' ? 'amber' : 'red';
+          const prompt = file.suggested_prompt || `/ingest-context`;
+
+          return `
+            <div class="p-4 rounded-xl bg-[#1f2025] border border-[#2a2b30] flex flex-col justify-between space-y-3 hover:border-amber-500/30 transition-all">
+              <div class="space-y-1.5">
+                <div class="flex items-start justify-between gap-2">
+                  <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[20px] text-amber-500">${icon}</span>
+                    <span class="font-semibold text-zinc-100 text-xs">${file.title}</span>
+                  </div>
+                  <span class="px-2 py-0.5 rounded-full bg-${statusColor}-500/10 text-${statusColor}-400 border border-${statusColor}-500/20 text-[10px] font-mono font-medium flex items-center gap-1 shrink-0">
+                    <span class="w-1.5 h-1.5 rounded-full bg-${statusColor}-400"></span> ${file.status}
+                  </span>
+                </div>
+                <p class="text-[11px] text-zinc-400 line-clamp-2">${file.description}</p>
+              </div>
+
+              <div class="space-y-2 pt-2 border-t border-[#2a2b30]/60">
+                <div class="flex items-center justify-between text-[10px] font-mono text-zinc-400">
+                  <span>${file.words} words • ${file.lines} lines</span>
+                  <span class="text-amber-400 font-semibold">${score}% Complete</span>
+                </div>
+
+                <div class="w-full bg-[#121316] h-1.5 rounded-full overflow-hidden">
+                  <div class="bg-amber-500 h-full rounded-full transition-all duration-500" style="width: ${score}%"></div>
+                </div>
+
+                <div class="flex items-center justify-between pt-1 gap-2">
+                  <button onclick="copyPromptToClipboard('${prompt}')" title="Copy CLI/IDE trigger" class="truncate py-1 px-2 rounded bg-[#121316] hover:bg-[#26272e] border border-[#2a2b30] text-zinc-300 hover:text-amber-400 font-mono text-[10px] flex items-center gap-1 transition-colors">
+                    <span class="material-symbols-outlined text-[13px]">terminal</span>
+                    <span class="truncate">${prompt}</span>
+                  </button>
+                  <button onclick="openContextEditor('${file.name}')" class="py-1 px-2.5 rounded bg-amber-600/20 hover:bg-amber-600 hover:text-white border border-amber-500/30 text-amber-400 font-mono text-[10px] flex items-center gap-1 transition-all shrink-0">
+                    <span class="material-symbols-outlined text-[13px]">edit_note</span>
+                    <span>Edit</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } catch (err) {
+        if (container) {
+          container.innerHTML = `<div class="col-span-full py-4 text-center text-red-400 text-xs">Error loading .context/ files: ${err.message}</div>`;
+        }
+      }
+    }
+
+    // ================= CONTEXT FILE VIEWER / EDITOR =================
+    async function openContextEditor(filename) {
+      currentEditingFilename = filename;
+      const modal = document.getElementById('context-editor-modal');
+      const textarea = document.getElementById('modal-context-textarea');
+      const title = document.getElementById('modal-context-title');
+      const meta = document.getElementById('modal-context-meta');
+      const badge = document.getElementById('modal-context-badge');
+
+      if (title) title.textContent = `Editing .context/${filename}`;
+      if (badge) {
+        badge.textContent = 'Loading...';
+        badge.className = 'px-2 py-0.5 rounded bg-zinc-500/10 text-zinc-400 font-mono text-[10px] border border-zinc-500/20';
+      }
+      if (textarea) textarea.value = 'Loading file...';
+
+      contextEditorIsPreview = false;
+      document.getElementById('modal-editor-container').classList.remove('hidden');
+      document.getElementById('modal-preview-container').classList.add('hidden');
+      document.getElementById('modal-toggle-mode-label').textContent = 'Preview';
+      document.getElementById('modal-toggle-mode-icon').textContent = 'visibility';
+
+      modal.classList.remove('hidden');
+
+      try {
+        const res = await fetch(`/api/context/${filename}`);
+        if (!res.ok) throw new Error('Could not read file');
+        const data = await res.json();
+        textarea.value = data.content;
+        updateContextModalMeta();
+        if (badge) {
+          badge.textContent = 'Ready to Edit';
+          badge.className = 'px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-mono text-[10px] border border-emerald-500/20';
+        }
+      } catch (err) {
+        textarea.value = `Error loading .context/${filename}: ${err.message}`;
+      }
+    }
+
+    function closeContextEditor() {
+      document.getElementById('context-editor-modal').classList.add('hidden');
+    }
+
+    function updateContextModalMeta() {
+      const textarea = document.getElementById('modal-context-textarea');
+      const meta = document.getElementById('modal-context-meta');
+      if (!textarea || !meta) return;
+      const val = textarea.value;
+      const lines = val ? val.split('\n').length : 0;
+      const words = val ? val.trim().split(/\s+/).filter(Boolean).length : 0;
+      meta.textContent = `Lines: ${lines} | Words: ${words}`;
+    }
+
+    function toggleContextEditorMode() {
+      const editor = document.getElementById('modal-editor-container');
+      const preview = document.getElementById('modal-preview-container');
+      const label = document.getElementById('modal-toggle-mode-label');
+      const icon = document.getElementById('modal-toggle-mode-icon');
+      const textarea = document.getElementById('modal-context-textarea');
+
+      contextEditorIsPreview = !contextEditorIsPreview;
+      if (contextEditorIsPreview) {
+        editor.classList.add('hidden');
+        preview.classList.remove('hidden');
+        label.textContent = 'Edit Code';
+        icon.textContent = 'edit';
+        if (typeof marked !== 'undefined') {
+          preview.innerHTML = marked.parse(textarea.value || '*No content*');
+        } else {
+          preview.innerHTML = `<pre class="text-zinc-200 font-mono text-xs">${textarea.value}</pre>`;
+        }
+      } else {
+        preview.classList.add('hidden');
+        editor.classList.remove('hidden');
+        label.textContent = 'Preview';
+        icon.textContent = 'visibility';
+      }
+    }
+
+    async function saveContextFileFromModal() {
+      if (!currentEditingFilename) return;
+      const textarea = document.getElementById('modal-context-textarea');
+      const badge = document.getElementById('modal-context-badge');
+      const saveBtn = document.getElementById('modal-save-btn');
+
+      saveBtn.disabled = true;
+      saveBtn.textContent = 'Saving...';
+
+      try {
+        const res = await fetch(`/api/context/${currentEditingFilename}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content: textarea.value })
+        });
+        const data = await res.json();
+        if (badge) {
+          badge.textContent = `Saved (${data.words || 0} words)`;
+          badge.className = 'px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-mono text-[10px] border border-emerald-500/20';
+        }
+        showGlobalToast(`Saved .context/${currentEditingFilename}`, 'save');
+        loadContextOverview();
+      } catch (err) {
+        if (badge) {
+          badge.textContent = 'Save Failed';
+          badge.className = 'px-2 py-0.5 rounded bg-red-500/10 text-red-400 font-mono text-[10px] border border-red-500/20';
+        }
+        showGlobalToast(`Error saving file: ${err.message}`, 'error');
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = '<span class="material-symbols-outlined text-[16px]">save</span> Save to Disk';
+      }
+    }
+
+    // ================= TOAST & CLIPBOARD HELPERS =================
+    function showGlobalToast(msg, icon = 'check_circle') {
+      const toast = document.getElementById('global-toast');
+      const toastMsg = document.getElementById('global-toast-msg');
+      const toastIcon = document.getElementById('global-toast-icon');
+      if (!toast) return;
+      toastMsg.textContent = msg;
+      if (toastIcon) toastIcon.textContent = icon;
+      toast.classList.remove('hidden');
+      clearTimeout(window.__toastTimeout);
+      window.__toastTimeout = setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 3500);
+    }
+
+    function copyPromptToClipboard(promptText) {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(promptText).then(() => {
+          showGlobalToast(`Copied prompt: ${promptText}`, 'content_copy');
+        }).catch(() => {
+          showGlobalToast(`Command: ${promptText}`);
+        });
+      } else {
+        showGlobalToast(`Command: ${promptText}`);
+      }
+    }
+
+    // ================= MCP STATUS & TESTING =================
+    async function testMcpConnection(target) {
+      showGlobalToast(`Testing ${target.toUpperCase()} MCP connection...`, 'sync');
+      try {
+        const res = await fetch('/api/test-mcp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ target })
+        });
+        const data = await res.json();
+        if (data.connected) {
+          showGlobalToast(`✅ ${target.toUpperCase()} Connected! (${data.status})`, 'check_circle');
+        } else {
+          showGlobalToast(`⚠️ ${target.toUpperCase()}: ${data.status}`, 'warning');
+        }
+        refreshMcpStatusBadges();
+      } catch (err) {
+        showGlobalToast(`Connection check failed: ${err.message}`, 'error');
+      }
+    }
+
+    async function refreshMcpStatusBadges() {
+      try {
+        const res = await fetch('/api/mcp-status');
+        if (!res.ok) return;
+        const data = await res.json();
+        
+        const updateBadge = (id, configured, label) => {
+          const el = document.getElementById(id);
+          if (!el) return;
+          if (configured) {
+            el.className = 'text-[10px] text-emerald-400 font-mono bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20';
+            el.textContent = label || 'Connected';
+          } else {
+            el.className = 'text-[10px] text-zinc-400 font-mono bg-[#121316] px-2 py-0.5 rounded border border-[#2a2b30]';
+            el.textContent = 'Unconfigured';
+          }
+        };
+
+        updateBadge('tab4-badge-stitch', data.stitch?.configured, 'Connected');
+        updateBadge('tab4-badge-atlassian', data.atlassian?.configured, 'Connected');
+        updateBadge('tab4-badge-github', data.github?.configured, 'Connected');
+        updateBadge('tab4-badge-figma', data.figma?.configured, 'Connected');
+        updateBadge('tab4-badge-miro', data.miro?.configured, 'Connected');
+        updateBadge('tab4-badge-notion', data.notion?.configured, 'Connected');
+
+        updateBadge('badge-stitch-status-native', data.stitch?.configured, 'Connected');
+        updateBadge('badge-atlassian-status-native', data.atlassian?.configured, 'Connected');
+        updateBadge('badge-github-status-native', data.github?.configured, 'Connected');
+        updateBadge('badge-notion-status-native', data.notion?.configured, 'Connected');
+      } catch (err) {
+        console.warn('Could not refresh MCP badges', err);
+      }
+    }
+
     function switchSettingsSection(secId) {
       document.querySelectorAll('.settings-section').forEach(sec => sec.classList.add('hidden'));
       document.querySelectorAll('.settings-nav-btn').forEach(btn => {
@@ -935,36 +1408,70 @@
     }
 
     async function saveAllSettings() {
-      const payload = {
-        user_name: document.getElementById('setting-user-name').value,
-        user_email: document.getElementById('setting-user-email').value,
-        persona: document.getElementById('setting-persona-select').value,
-        prd_mode: document.getElementById('setting-prd-mode').value,
-        ac_format: document.getElementById('setting-ac-format').value,
-        story_scale: document.getElementById('setting-points-scale').value,
-        ui_theme: document.getElementById('setting-ui-theme').value,
-        stitch_token: document.getElementById('input-stitch-token').value,
-        atlassian_host: document.getElementById('input-atlassian-host').value,
-        atlassian_email: document.getElementById('input-atlassian-email').value,
-        atlassian_token: document.getElementById('input-atlassian-token').value,
-        figma_token: document.getElementById('input-figma-token').value,
-        miro_token: document.getElementById('input-miro-token').value
+      const userName = document.getElementById('setting-user-name')?.value || 'Marcin';
+      const userEmail = document.getElementById('setting-user-email')?.value || '';
+      const persona = document.getElementById('setting-persona-select')?.value || 'paula';
+      const prdMode = document.getElementById('setting-prd-mode')?.value || 'standard';
+      const acFormat = document.getElementById('setting-ac-format')?.value || 'gherkin';
+      const storyScale = document.getElementById('setting-points-scale')?.value || 'fibonacci';
+      const uiTheme = document.getElementById('setting-ui-theme')?.value || 'stitch';
+      const harnessMode = document.getElementById('setting-harness-mode')?.value || 'standalone';
+
+      const stitchToken = document.getElementById('input-stitch-token')?.value || '';
+      const atlassianHost = document.getElementById('input-atlassian-host')?.value || '';
+      const atlassianEmail = document.getElementById('input-atlassian-email')?.value || '';
+      const atlassianToken = document.getElementById('input-atlassian-token')?.value || '';
+      const githubOwner = document.getElementById('input-github-owner')?.value || '';
+      const githubRepo = document.getElementById('input-github-repo')?.value || '';
+      const githubToken = document.getElementById('input-github-token')?.value || '';
+      const figmaToken = document.getElementById('input-figma-token')?.value || '';
+      const miroToken = document.getElementById('input-miro-token')?.value || '';
+      const notionPage = document.getElementById('input-notion-page')?.value || '';
+      const notionToken = document.getElementById('input-notion-token')?.value || '';
+
+      const envPayload = {
+        user_name: userName,
+        user_email: userEmail,
+        persona,
+        prd_mode: prdMode,
+        ac_format: acFormat,
+        story_scale: storyScale,
+        ui_theme: uiTheme,
+        stitch_token: stitchToken,
+        atlassian_host: atlassianHost,
+        atlassian_email: atlassianEmail,
+        atlassian_token: atlassianToken,
+        github_owner: githubOwner,
+        github_repo: githubRepo,
+        github_token: githubToken,
+        figma_token: figmaToken,
+        miro_token: miroToken,
+        notion_page: notionPage,
+        notion_token: notionToken
       };
 
       try {
         await fetch('/api/user-settings', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
+          body: JSON.stringify(envPayload)
         });
-      } catch (err) {}
 
-      loadUserSettingsInDashboard();
+        await fetch('/api/config', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            mode: harnessMode,
+            default_tier: prdMode
+          })
+        });
 
-      const toast = document.getElementById('save-toast');
-      if (toast) {
-        toast.classList.remove('hidden');
-        setTimeout(() => toast.classList.add('hidden'), 4000);
+        showGlobalToast('Settings saved to .env & harness-config.yaml!', 'check_circle');
+        loadUserSettingsInDashboard();
+        loadContextOverview();
+        refreshMcpStatusBadges();
+      } catch (err) {
+        showGlobalToast(`Error saving settings: ${err.message}`, 'error');
       }
     }
 
@@ -1005,10 +1512,14 @@
           if (data.ac_format && document.getElementById('setting-ac-format')) document.getElementById('setting-ac-format').value = data.ac_format;
           if (data.story_scale && document.getElementById('setting-points-scale')) document.getElementById('setting-points-scale').value = data.story_scale;
           if (data.ui_theme && document.getElementById('setting-ui-theme')) document.getElementById('setting-ui-theme').value = data.ui_theme;
+          if (data.mode && document.getElementById('setting-harness-mode')) document.getElementById('setting-harness-mode').value = data.mode;
           if (data.workspace_path && document.getElementById('setting-workspace-path')) document.getElementById('setting-workspace-path').value = data.workspace_path;
 
           if (data.atlassian_host && document.getElementById('input-atlassian-host')) document.getElementById('input-atlassian-host').value = data.atlassian_host;
           if (data.atlassian_email && document.getElementById('input-atlassian-email')) document.getElementById('input-atlassian-email').value = data.atlassian_email;
+          if (data.github_owner && document.getElementById('input-github-owner')) document.getElementById('input-github-owner').value = data.github_owner;
+          if (data.github_repo && document.getElementById('input-github-repo')) document.getElementById('input-github-repo').value = data.github_repo;
+          if (data.notion_root_page_id && document.getElementById('input-notion-page')) document.getElementById('input-notion-page').value = data.notion_root_page_id;
         }
       } catch (err) {
         console.warn('Could not load user settings in dashboard');
@@ -1016,12 +1527,33 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+      loadHarnessManifest();
+      loadContextOverview();
       loadUserSettingsInDashboard();
       loadArtifactsFromApi();
+      refreshMcpStatusBadges();
       renderFavoritesSection();
       updateFavoriteIcons();
       initSidebarTooltips();
+
+      const themeBtn = document.getElementById('theme-toggle-btn');
+      if (themeBtn) themeBtn.addEventListener('click', toggleAppTheme);
     });
+
+    function toggleAppTheme() {
+      const isDark = document.documentElement.classList.contains('dark');
+      const label = document.getElementById('theme-label');
+      const icon = document.getElementById('theme-icon');
+      if (isDark) {
+        document.documentElement.classList.remove('dark');
+        if (label) label.textContent = 'Light';
+        if (icon) icon.textContent = 'light_mode';
+      } else {
+        document.documentElement.classList.add('dark');
+        if (label) label.textContent = 'Dark';
+        if (icon) icon.textContent = 'dark_mode';
+      }
+    }
 
     function initSidebarTooltips() {
       const sidebar = document.getElementById('main-sidebar');
