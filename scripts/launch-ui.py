@@ -34,6 +34,7 @@ CONTEXT_DIR = ROOT_DIR / ".context"
 ENV_FILE = ROOT_DIR / ".env"
 ENV_EXAMPLE = ROOT_DIR / ".env.example"
 DIST_DIR = ROOT_DIR / "dist"
+CURRENT_PORT = 3000
 
 def parse_env_file():
     target = ENV_FILE if ENV_FILE.exists() else ENV_EXAMPLE
@@ -268,7 +269,7 @@ def get_mcp_status():
         },
         "local_daemon": {
             "configured": True,
-            "endpoint": "ws://127.0.0.1:3000/bridge"
+            "endpoint": f"ws://127.0.0.1:{CURRENT_PORT}/bridge"
         }
     }
 
@@ -690,9 +691,29 @@ class PMCommandCenterApiHandler(SimpleHTTPRequestHandler):
         return self.send_json({"error": "Endpoint not found"}, status=404)
 
 def run_server(host="127.0.0.1", port=3000, open_browser=False):
+    global CURRENT_PORT
     os.chdir(ROOT_DIR)
     server_address = (host, port)
-    httpd = HTTPServer(server_address, PMCommandCenterApiHandler)
+    try:
+        httpd = HTTPServer(server_address, PMCommandCenterApiHandler)
+    except OSError as e:
+        if e.errno == 98 or "Address already in use" in str(e):
+            original_port = port
+            for candidate in range(port + 1, port + 20):
+                try:
+                    server_address = (host, candidate)
+                    httpd = HTTPServer(server_address, PMCommandCenterApiHandler)
+                    port = candidate
+                    print(f"\n⚠️  Port {original_port} is already in use; automatically switched to port {port}.")
+                    break
+                except OSError:
+                    continue
+            else:
+                raise e
+        else:
+            raise e
+
+    CURRENT_PORT = port
     url = f"http://{host}:{port}"
 
     print(f"\n=======================================================")
