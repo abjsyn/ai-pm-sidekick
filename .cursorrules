@@ -11,7 +11,7 @@ For any deliverable generation, refinement, or strategic analysis, execute in 4 
 
 ### Stage 1: Context Hydration First
 Before generating or modifying any product artifact:
-1. Read `.context/harness-config.yaml` to determine operating mode (`standalone` vs `embedded`) and deliverable tier (`lean`, `standard`, `enterprise`).
+1. Read `.context/harness-config.yaml` to determine operating mode (`standalone` vs `embedded`), deliverable tier (`lean`, `standard`, `enterprise`), and delivery operating model (`scrum`, `shape-up`, `kanban`, `gist`).
 2. Read `.context/product.md` and `.context/conventions.md`.
 3. Ingest domain-specific context:
    - For Discovery & Brainstorms: `.context/discovery.md`
@@ -28,7 +28,7 @@ Before generating full specifications:
 
 ### Stage 3: Grounded Generation
 - Produce deliverables matching the active tier (`lean` for MVPs, `standard` for Agile squads, `enterprise` for compliance and scale).
-- Apply relevant frameworks from `frameworks/` (e.g., Wardley Mapping, Theory of Constraints, OST, JTBD, RICE, WSJF, Kano).
+- Apply relevant frameworks from `frameworks/` or diagnose bottlenecks with `/recommend-framework`.
 - Adhere to Given/When/Then Gherkin acceptance criteria and INVEST guidelines for user stories.
 
 ### Stage 4: Knowledge Compounding (Write-Back)
@@ -50,31 +50,62 @@ Before generating full specifications:
 
 ---
 
-## ⚡ 3. Skills and Slash Commands Directory
+## ⚡ 3. Skills and Slash Commands Directory (19 Skills)
 
-- `/create-prd`: Generates PRDs across Lean, Standard Agile, and Enterprise tiers.
-- `/create-user-stories`: Breaks down features into INVEST stories with Gherkin BDD.
-- `/refine-user-stories`: Grooms stories, applies SPIDR splitting, and scores readiness.
-- `/create-mockup`: Builds self-contained Tailwind HTML wireframes and prototypes.
-- `/create-design-brief`: Produces UI/UX briefs with user flows and WCAG guidelines.
-- `/create-documentation`: Generates API schemas, Mermaid diagrams, and user manuals.
-- `/brainstorm`: Structured feature ideation with SCAMPER, HMW, and 6 Hats.
-- `/validate-idea`: Idea validation via Strategyzer 4-Risk, Mom Test, and Pre-mortem.
-- `/apply-framework`: Runs frameworks from `frameworks/` over ideas or PRDs.
-- `/recommend-framework`: Diagnoses PM bottlenecks and prescribes best-fit frameworks and lightweight alternatives.
-- `/ingest-context`: Ingests unstructured notes/transcripts and updates `.context/`.
-- `/connect-mcp`: Configures MCP integrations for Jira, Confluence, GitHub, Figma, Miro, Notion.
-- `/sync-jira`: Syncs epics and user stories directly to Jira.
-- `/sync-confluence`: Publishes PRDs and specs to Confluence spaces.
-- `/sync-github-issues`: Bi-directionally syncs GitHub Issues and milestones.
-- `/sync-figma`: Reads Figma designs and attaches specs to Figma canvas nodes.
-- `/sync-miro`: Exports brainstorms and roadmaps to Miro visual boards.
-- `/sync-notion`: Bi-directionally syncs Notion databases and wikis.
-- `/gui-run`: Launches the PM Command Center local GUI on port 3000.
+- `/apply-framework`: Executes modular strategic, discovery, or prioritization frameworks from frameworks/ over an idea, backlog, or PRD, and synchronizes results back to .context/.
+- `/brainstorm`: Facilitates structured product & feature brainstorming using SCAMPER, How Might We (HMW), 6 Thinking Hats, and Value vs. Effort matrix.
+- `/connect-mcp`: Establishes, tests, and manages Model Context Protocol (MCP) integrations for external PM tools: Atlassian (Jira & Confluence), GitHub Issues, Figma, Miro, Notion, and Google Stitch across AGY, Claude Code, and Cursor IDEs.
+- `/create-design-brief`: Creates comprehensive UI/UX Design Briefs including design objectives, user context, step-by-step user flows, component specs, WCAG 2.1 AA accessibility guidelines, and Figma handoff criteria.
+- `/create-documentation`: Generates dual-purpose technical and end-user documentation. Produces API schemas (OpenAPI format), Mermaid sequence diagrams, architecture specs, and step-by-step end-user manuals.
+- `/create-mockup`: Generates clickable, interactive UI mockups and prototypes as self-contained HTML files styled with Tailwind CSS, supporting interactive tabs, modals, forms, and responsive device views.
+- `/create-prd`: Generates comprehensive Product Requirements Documents (PRDs) across 3 modes: Lean (Startup/MVP), Standard Agile (Growth/Mid-size), and Enterprise (Compliance/Scale).
+- `/create-user-stories`: Generates user stories adhering to INVEST criteria, Concur format (As a/I want/So that), Gherkin Given-When-Then Acceptance Criteria, Fibonacci story points, and Definition of Done across Lean, Standard Agile, and Enterprise modes.
+- `/gui-run`: Launches the PM Command Center visual web application (GUI) locally on port 3000 and automatically opens it in your default web browser.
+- `/ingest-context`: Ingests raw unstructured inputs (meeting notes, customer interview transcripts, Slack dumps, existing PRDs, codebase READMEs, or MCP pages) and routes structured updates into .context/ product knowledge files.
+- `/recommend-framework`: Diagnoses PM bottlenecks, uncertainty, or prioritization challenges, recommends the optimal framework & skill with a lightweight alternative and anti-pattern warning, and guides execution.
+- `/refine-user-stories`: Grooms and refines existing user stories. Detects ambiguity, splits large stories using the SPIDR framework, adds missing Gherkin edge cases, and calculates a Grooming Readiness Score (0-100%).
+- `/sync-confluence`: Bi-directionally syncs Confluence product wikis and specs. Pulls company knowledge into .context/ and BACKLOG.md, or publishes PRDs, design briefs, and technical specs to Confluence via Atlassian MCP.
+- `/sync-figma`: Bi-directionally syncs Figma design tokens, components, and brief annotations. Pulls design context into .context/ and BACKLOG.md, or posts UX specs to Figma nodes via Figma MCP.
+- `/sync-github-issues`: Bi-directionally syncs GitHub Issues, labels, and milestones. Pulls issues into BACKLOG.md and .context/discovery.md, or exports refined user stories as structured GitHub Issues.
+- `/sync-jira`: Bi-directionally syncs Jira epics, stories, and sprint issues. Pulls issues into BACKLOG.md and .context/discovery.md, or exports INVEST user stories from docs/ to Jira via Atlassian MCP.
+- `/sync-miro`: Bi-directionally syncs Miro whiteboards, brainstorm sticky notes, and roadmaps. Pulls visual ideation into .context/ and BACKLOG.md, or exports brainstorms/roadmaps to Miro via Miro MCP.
+- `/sync-notion`: Bi-directionally syncs Notion product wikis, databases, and pages. Pulls research into .context/, or publishes PRDs, design briefs, and decision logs to Notion.
+- `/validate-idea`: Validates product ideas, feature concepts, and business hypotheses using Strategyzer 4-Risk Analysis, The Mom Test customer interview framework, TAM/SAM/SOM market sizing, and Pre-mortem risk identification.
 
 ---
 
-## 🛠️ 4. Tool & Script Guidelines
+## 🗺️ 4. Modular Frameworks (10 Frameworks across 4 Categories)
+
+Frameworks are located in `frameworks/` and invoked via `/apply-framework <id>` or diagnosed via `/recommend-framework`:
+
+- **Strategy**:
+  - `theory-of-constraints`: Theory of Constraints (ToC) & CRT Mapping — To pinpoint the operational bottleneck choking product delivery, maximize throughput at that specific point, and align all upstream discovery and downstream execution to eliminate waste.
+  - `wardley-mapping`: Wardley Value Chain Evolution Mapping — To prevent catastrophic resource misallocation (e.g., custom-building commoditized components) and explicitly identify where a product's true competitive differentiation resides.
+- **Discovery**:
+  - `jtbd-and-mom-test`: Jobs-to-be-Done (JTBD) & The Mom Test — To uncover genuine customer demand by systematically filtering out false validation, identifying real customer struggle, and structuring value propositions around the forces that drive adoption.
+  - `opportunity-solution-tree`: Opportunity Solution Tree (OST) — To break the "feature factory" anti-pattern by ensuring teams explore the problem space thoroughly, evaluate multiple competing solutions for each customer pain point, and test assumptions before committing engineering resources.
+- **Prioritization**:
+  - `kano-model`: The Kano Model & Customer Delight — To construct balanced product releases that satisfy table-stakes baseline requirements, compete effectively on performance, and incorporate distinct delighters while aggressively pruning indifferent bloat.
+  - `rice`: RICE Scoring Matrix — To eliminate cognitive bias, loud-stakeholder lobbying, and "pet project" syndrome by anchoring prioritization to empirical reach, measurable business impact, defensible confidence, and engineering effort.
+  - `wsjf-cost-of-delay`: Weighted Shortest Job First (WSJF) & Cost of Delay — To maximize economic flow by scheduling high-value, time-critical, risk-reducing features that can be delivered quickly, preventing the common failure mode of tying up engineering squads on monolithic, slow-moving projects.
+- **Operations & Delivery**:
+  - `gist-planning`: GIST Planning (Goals, Ideas, Step-projects, Tasks) — To drastically reduce product waste by testing ideas through tiny step-projects before committing full engineering squads to building multi-month feature implementations.
+  - `scrum-sprint-delivery`: Scrum Sprint Delivery & INVEST Execution — To provide predictable, sustainable, cross-functional engineering throughput with continuous delivery of shippable software increments.
+  - `shape-up`: Shape Up (Basecamp Product Development) — To eliminate endless scope creep, eliminate backlog grooming debt, and empower autonomous cross-functional teams to deliver complete, polished features within bounded timeboxes.
+
+---
+
+## 🔄 5. Delivery Operating Models (`operating_model`)
+
+Configured via `operating_model` in `.context/harness-config.yaml`:
+- `scrum`: 1–2 week sprints, INVEST stories, Fibonacci points, DoD sign-off (Default)
+- `shape-up`: 6-week cycles, shaped pitches, appetite budgeting, hill charts, circuit breaker
+- `kanban`: Continuous pull flow, WIP limits, cycle-time optimization
+- `gist`: Goals, Ideas (ICE scored), Step-projects (<= 2 wks), Tasks for high-uncertainty planning
+
+---
+
+## 🛠️ 6. Tool & Script Guidelines
 
 - **Python Scripts**: All helper scripts in `scripts/` use Python standard library only. Do not introduce external pip dependencies.
 - **Manifest**: Consult `dist/harness-manifest.json` for live machine-readable metadata on all skills, frameworks, and context files.

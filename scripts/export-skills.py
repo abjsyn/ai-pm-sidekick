@@ -410,12 +410,53 @@ def export_bundle(skills, frameworks):
     bundle_path.write_text(bundle_text, encoding="utf-8")
     print(f"✅ Exported single prompt bundle: {bundle_path}")
 
-def export_root_routers():
-    """Generates .cursorrules, .agents/skills/project-harness/SKILL.md, and CLAUDE.md."""
+def export_root_routers(skills, frameworks):
+    """Generates .cursorrules, .agents/skills/project-harness/SKILL.md, and CLAUDE.md dynamically."""
     
+    # Partition frameworks into the 4 standard categories
+    frameworks_by_cat = {
+        "strategy": [],
+        "discovery": [],
+        "prioritization": [],
+        "operations": []
+    }
+    for fw in frameworks:
+        cat = fw.get("category", "strategy")
+        if cat in frameworks_by_cat:
+            frameworks_by_cat[cat].append(fw)
+        else:
+            frameworks_by_cat[cat] = [fw]
+
+    def format_agy_fw_section(fw_list):
+        if not fw_list:
+            return "_None configured._\n"
+        lines = []
+        for fw in fw_list:
+            desc = fw.get("description", "")
+            stages = ", ".join(fw.get("best_for_stage", []))
+            maturity = fw.get("data_maturity_required", "medium")
+            wb = fw.get("write_back_target", ".context/product.md")
+            sigs = "; ".join(fw.get("problem_signatures", [])[:2])
+            lines.append(f"- **{fw['name']}** (`{fw['id']}`): {desc}")
+            lines.append(f"  - *Target*: `{wb}` | *Data Maturity*: `{maturity}` | *Stages*: `{stages}`")
+            if sigs:
+                lines.append(f"  - *Solves*: {sigs}")
+        return "\n".join(lines)
+
+    def format_cursor_fw_section(fw_list):
+        if not fw_list:
+            return "  - _None configured._"
+        return "\n".join([f"  - `{fw['id']}`: {fw['name']} — {fw['description']}" for fw in fw_list])
+
+    def format_claude_fw_section(fw_list):
+        if not fw_list:
+            return "- _None configured._"
+        return "\n".join([f"- **{fw['name']}** (`{fw['id']}`): {fw['description']}" for fw in fw_list])
+
     # 1. Cursor Global Rules (.cursorrules)
     cursorrules_path = ROOT_DIR / ".cursorrules"
-    cursorrules_content = """# AI PM Sidekick — Global Workspace Instructions & Harness Router
+    cursor_skills_lines = "\n".join([f"- `{s['command_trigger']}`: {s['description']}" for s in skills])
+    cursorrules_content = f"""# AI PM Sidekick — Global Workspace Instructions & Harness Router
 
 You are **AI PM Sidekick**, an expert AI partner for Product Managers, Technical PMs, and Engineering Leaders.
 You operate natively within this workspace using the `.context/` Product Knowledge Core, modular strategic frameworks, and strict architectural isolation.
@@ -428,7 +469,7 @@ For any deliverable generation, refinement, or strategic analysis, execute in 4 
 
 ### Stage 1: Context Hydration First
 Before generating or modifying any product artifact:
-1. Read `.context/harness-config.yaml` to determine operating mode (`standalone` vs `embedded`) and deliverable tier (`lean`, `standard`, `enterprise`).
+1. Read `.context/harness-config.yaml` to determine operating mode (`standalone` vs `embedded`), deliverable tier (`lean`, `standard`, `enterprise`), and delivery operating model (`scrum`, `shape-up`, `kanban`, `gist`).
 2. Read `.context/product.md` and `.context/conventions.md`.
 3. Ingest domain-specific context:
    - For Discovery & Brainstorms: `.context/discovery.md`
@@ -445,7 +486,7 @@ Before generating full specifications:
 
 ### Stage 3: Grounded Generation
 - Produce deliverables matching the active tier (`lean` for MVPs, `standard` for Agile squads, `enterprise` for compliance and scale).
-- Apply relevant frameworks from `frameworks/` (e.g., Wardley Mapping, Theory of Constraints, OST, JTBD, RICE, WSJF, Kano).
+- Apply relevant frameworks from `frameworks/` or diagnose bottlenecks with `/recommend-framework`.
 - Adhere to Given/When/Then Gherkin acceptance criteria and INVEST guidelines for user stories.
 
 ### Stage 4: Knowledge Compounding (Write-Back)
@@ -467,31 +508,38 @@ Before generating full specifications:
 
 ---
 
-## ⚡ 3. Skills and Slash Commands Directory
+## ⚡ 3. Skills and Slash Commands Directory ({len(skills)} Skills)
 
-- `/create-prd`: Generates PRDs across Lean, Standard Agile, and Enterprise tiers.
-- `/create-user-stories`: Breaks down features into INVEST stories with Gherkin BDD.
-- `/refine-user-stories`: Grooms stories, applies SPIDR splitting, and scores readiness.
-- `/create-mockup`: Builds self-contained Tailwind HTML wireframes and prototypes.
-- `/create-design-brief`: Produces UI/UX briefs with user flows and WCAG guidelines.
-- `/create-documentation`: Generates API schemas, Mermaid diagrams, and user manuals.
-- `/brainstorm`: Structured feature ideation with SCAMPER, HMW, and 6 Hats.
-- `/validate-idea`: Idea validation via Strategyzer 4-Risk, Mom Test, and Pre-mortem.
-- `/apply-framework`: Runs frameworks from `frameworks/` over ideas or PRDs.
-- `/recommend-framework`: Diagnoses PM bottlenecks and prescribes best-fit frameworks and lightweight alternatives.
-- `/ingest-context`: Ingests unstructured notes/transcripts and updates `.context/`.
-- `/connect-mcp`: Configures MCP integrations for Jira, Confluence, GitHub, Figma, Miro, Notion.
-- `/sync-jira`: Syncs epics and user stories directly to Jira.
-- `/sync-confluence`: Publishes PRDs and specs to Confluence spaces.
-- `/sync-github-issues`: Bi-directionally syncs GitHub Issues and milestones.
-- `/sync-figma`: Reads Figma designs and attaches specs to Figma canvas nodes.
-- `/sync-miro`: Exports brainstorms and roadmaps to Miro visual boards.
-- `/sync-notion`: Bi-directionally syncs Notion databases and wikis.
-- `/gui-run`: Launches the PM Command Center local GUI on port 3000.
+{cursor_skills_lines}
 
 ---
 
-## 🛠️ 4. Tool & Script Guidelines
+## 🗺️ 4. Modular Frameworks ({len(frameworks)} Frameworks across 4 Categories)
+
+Frameworks are located in `frameworks/` and invoked via `/apply-framework <id>` or diagnosed via `/recommend-framework`:
+
+- **Strategy**:
+{format_cursor_fw_section(frameworks_by_cat['strategy'])}
+- **Discovery**:
+{format_cursor_fw_section(frameworks_by_cat['discovery'])}
+- **Prioritization**:
+{format_cursor_fw_section(frameworks_by_cat['prioritization'])}
+- **Operations & Delivery**:
+{format_cursor_fw_section(frameworks_by_cat['operations'])}
+
+---
+
+## 🔄 5. Delivery Operating Models (`operating_model`)
+
+Configured via `operating_model` in `.context/harness-config.yaml`:
+- `scrum`: 1–2 week sprints, INVEST stories, Fibonacci points, DoD sign-off (Default)
+- `shape-up`: 6-week cycles, shaped pitches, appetite budgeting, hill charts, circuit breaker
+- `kanban`: Continuous pull flow, WIP limits, cycle-time optimization
+- `gist`: Goals, Ideas (ICE scored), Step-projects (<= 2 wks), Tasks for high-uncertainty planning
+
+---
+
+## 🛠️ 6. Tool & Script Guidelines
 
 - **Python Scripts**: All helper scripts in `scripts/` use Python standard library only. Do not introduce external pip dependencies.
 - **Manifest**: Consult `dist/harness-manifest.json` for live machine-readable metadata on all skills, frameworks, and context files.
@@ -503,7 +551,13 @@ Before generating full specifications:
     agy_skill_harness = ROOT_DIR / ".agents" / "skills" / "project-harness"
     agy_skill_harness.mkdir(parents=True, exist_ok=True)
     agy_harness_path = agy_skill_harness / "SKILL.md"
-    agy_harness_content = """---
+    
+    skills_table_rows = []
+    for s in skills:
+        skills_table_rows.append(f"| `{s['command_trigger']}` | **{s['name']}** | `{s['category']}` | {s['description']} |")
+    skills_table_md = "\n".join(skills_table_rows)
+
+    agy_harness_content = f"""---
 name: project-harness
 description: >-
   Core AI PM Sidekick operational router. Hydrates product context from .context/, enforces strict separation between internal UI and user deliverables, applies Socratic inquiry, and compounds knowledge.
@@ -513,42 +567,88 @@ description: >-
 
 This is the primary harness router skill for the AI PM Sidekick. It governs how agentic models interact with the workspace, consult product context, and generate production-grade PM deliverables.
 
-## 1. Operating Principles
+## 🧭 1. Operating Principles & 4-Stage Execution Protocol
 
-1. **Context Hydration**: Always read relevant files from `.context/` before initiating work:
-   - Configuration: `.context/harness-config.yaml`
+For any deliverable generation, refinement, or strategic analysis, execute in 4 strict stages:
+
+1. **Stage 1: Context Hydration First**: Always read relevant files from `.context/` before initiating work:
+   - Configuration & Operating Model: `.context/harness-config.yaml` (reads `mode`, `default_tier`, and `operating_model`)
+   - Conventions & Standards: `.context/conventions.md` (DoR, DoD, Gherkin BDD, and Operating Model cadences)
    - Vision & Personas: `.context/product.md`
-   - Conventions & Standards: `.context/conventions.md`
    - Discovery & Outcomes: `.context/discovery.md`
    - Strategy & Bottlenecks: `.context/strategy-and-constraints.md`
-   - Architecture & Schemas: `.context/architecture.md`
+   - Architecture & Schemas: `.context/architecture.md` (plus repo package manifests in embedded mode)
    - Decision Log: `.context/decisions.md`
 
-2. **Prevent Context Contamination**:
-   - `ui/specs/` and `ui/views/` are strictly internal Sidekick assets. Never treat them as user product documentation.
-   - User PRDs, specs, and stories MUST be created in `docs/`.
-   - User HTML prototypes and mockups MUST be created in `mockups/`.
+2. **Absolute Separation of Concerns (Zero Context Contamination)**:
+   - `ui/specs/`, `ui/views/`, and `ui/stitch/` are strictly internal Sidekick web application assets. Never treat them as user product documentation.
+   - User PRDs, specs, user stories, and technical documentation MUST be created in `docs/`.
+   - User HTML prototypes, wireframes, and mockups MUST be created in `mockups/`.
 
-3. **Socratic Clarifying Gate**:
-   - Never hallucinate critical business constraints or user pain points.
+3. **Stage 2: Socratic Clarifying Gate**:
+   - Never hallucinate critical business constraints, user pain points, or architecture.
    - If user requirements lack necessary context for the requested deliverable tier, pause and ask 2–4 targeted clarifying questions.
-   - If the user prefers fast iteration, document explicit assumptions in the output.
+   - If the user prefers fast iteration, document explicit working assumptions in the output.
 
-4. **Knowledge Compounding**:
+4. **Stage 3: Grounded Generation**:
+   - Produce deliverables matching the active tier (`lean` for MVPs, `standard` for Agile squads, `enterprise` for compliance and scale).
+   - Apply relevant frameworks from `frameworks/` or use `/recommend-framework` to diagnose bottlenecks.
+   - Adhere to Given/When/Then Gherkin acceptance criteria and INVEST guidelines for user stories.
+
+5. **Stage 4: Knowledge Compounding (Write-Back)**:
    - When a session yields validated assumptions, architectural decisions, or user insights, propose updating the `.context/*.md` files and logging decisions in `.context/decisions.md`.
 
-## 2. Dynamic Skill & Framework Routing
+---
 
-- Match user requests to skills in `skills/` or invoke via slash commands (`/create-prd`, `/create-user-stories`, `/apply-framework`, etc.).
-- Strategic, discovery, and prioritization frameworks are available in `frameworks/strategy/`, `frameworks/discovery/`, and `frameworks/prioritization/`.
-- Refer to `dist/harness-manifest.json` for live metadata and triggers.
+## ⚡ 2. Active Skills Catalog ({len(skills)} Skills)
+
+| Command / Trigger | Skill Name | Category | Primary Purpose |
+| :--- | :--- | :--- | :--- |
+{skills_table_md}
+
+---
+
+## 🗺️ 3. Modular Product Frameworks ({len(frameworks)} Frameworks across 4 Categories)
+
+Frameworks are organized into 4 strategic categories and invoked via `/apply-framework <id>` or diagnosed via `/recommend-framework`:
+
+### 📈 Strategy Frameworks
+{format_agy_fw_section(frameworks_by_cat['strategy'])}
+
+### 🔍 Discovery Frameworks
+{format_agy_fw_section(frameworks_by_cat['discovery'])}
+
+### ⚖️ Prioritization Frameworks
+{format_agy_fw_section(frameworks_by_cat['prioritization'])}
+
+### 🚀 Operations & Delivery Frameworks
+{format_agy_fw_section(frameworks_by_cat['operations'])}
+
+---
+
+## 🔄 4. Delivery Operating Models (`operating_model`)
+
+Configured via `operating_model` in `.context/harness-config.yaml` and detailed in Section 5 of `.context/conventions.md`:
+- **`scrum`** *(Default)*: 1–2 week sprints, INVEST stories, Fibonacci points (<= 5 pts), sprint velocity and DoD sign-off.
+- **`shape-up`**: 6-week cycles + 2-week cooldown, shaped pitches, fixed appetite budgeting, hill charts, and circuit breaker.
+- **`kanban`**: Continuous pull flow, WIP limits, cycle-time optimization, backlog queue triage.
+- **`gist`**: Iterative experiment loops, step-projects (<= 2 weeks), ICE scoring, outcome tracking.
+
+---
+
+## 🛠️ 5. Integration & Tooling Reference
+
+- **Model Context Protocol (MCP)**: Use `/connect-mcp` or tool-specific sync skills (`/sync-jira`, `/sync-confluence`, `/sync-github-issues`, `/sync-figma`, `/sync-miro`, `/sync-notion`).
+- **GUI Command Center**: Launch the local visual dashboard on port 3000 via `/gui-run` (`python3 scripts/launch-ui.py --open`).
+- **Machine-Readable Manifest**: Consult `dist/harness-manifest.json` for live schema definitions, triggers, and framework metadata.
 """
     agy_harness_path.write_text(agy_harness_content.strip() + "\n", encoding="utf-8")
     print(f"✅ Generated AGY project harness router: {agy_harness_path}")
 
     # 3. Claude Code Guide (CLAUDE.md)
     claude_md_path = ROOT_DIR / "CLAUDE.md"
-    claude_md_content = """# AI PM Sidekick — Claude Code Workspace Guide
+    claude_skills_table = "\n".join([f"| `{s['command_trigger']}` | {s['description']} |" for s in skills])
+    claude_md_content = f"""# AI PM Sidekick — Claude Code Workspace Guide
 
 Welcome to **AI PM Sidekick**, a local-first product management command center and AI harness.
 
@@ -557,7 +657,7 @@ Welcome to **AI PM Sidekick**, a local-first product management command center a
 When assisting product managers, technical PMs, or engineering leads, always follow this protocol:
 
 1. **Stage 1: Context Hydration**
-   - Check `.context/harness-config.yaml` to know the workspace mode (`standalone` vs `embedded`) and deliverable tier (`lean`, `standard`, `enterprise`).
+   - Check `.context/harness-config.yaml` to know the workspace mode (`standalone` vs `embedded`), deliverable tier (`lean`, `standard`, `enterprise`), and delivery operating model (`scrum`, `shape-up`, `kanban`, `gist`).
    - Hydrate core knowledge from `.context/product.md`, `.context/conventions.md`, `.context/discovery.md`, `.context/strategy-and-constraints.md`, and `.context/architecture.md`.
    - In `embedded` mode, check repository package manifests and structure.
 
@@ -568,7 +668,7 @@ When assisting product managers, technical PMs, or engineering leads, always fol
 
 3. **Stage 3: Grounded Generation**
    - Use the appropriate template from `templates/` and tier conventions from `.context/conventions.md`.
-   - Reference frameworks in `frameworks/` (Wardley mapping, Theory of Constraints, OST, JTBD, RICE, WSJF, Kano).
+   - Reference frameworks in `frameworks/` or diagnose via `/recommend-framework`.
    - Ensure user stories meet INVEST criteria and Given/When/Then Gherkin acceptance criteria.
 
 4. **Stage 4: Knowledge Compounding (Write-Back)**
@@ -578,33 +678,38 @@ When assisting product managers, technical PMs, or engineering leads, always fol
 ## 🚫 Critical Guardrail: Zero Context Contamination
 
 - **Internal UI vs User Product**:
-  - `ui/specs/` and `ui/views/` are internal assets for the Sidekick's own web UI. **DO NOT** read them as product requirements for the user's product.
+  - `ui/specs/`, `ui/views/`, and `ui/stitch/` are internal assets for the Sidekick's own web UI. **DO NOT** read them as product requirements for the user's product.
   - All user-facing PRDs, stories, and technical specs belong in `docs/`.
   - All user-facing UI wireframes and HTML mockups belong in `mockups/`.
 
-## ⚡ Slash Commands & Skills
+## ⚡ Slash Commands & Skills ({len(skills)} Skills)
 
 | Command | Purpose |
 |---------|---------|
-| `/create-prd` | Generate PRD (Lean, Standard, or Enterprise) |
-| `/create-user-stories` | Break down features into INVEST stories + Gherkin AC |
-| `/refine-user-stories` | Groom stories, SPIDR split, readiness score |
-| `/create-mockup` | Interactive Tailwind HTML wireframe |
-| `/create-design-brief` | UI/UX design brief with WCAG guidelines |
-| `/create-documentation` | OpenAPI specs, Mermaid diagrams, user guides |
-| `/brainstorm` | SCAMPER, HMW, 6 Hats feature ideation |
-| `/validate-idea` | Strategyzer 4-Risk & Mom Test validation |
-| `/apply-framework` | Execute framework from `frameworks/` |
-| `/recommend-framework` | Diagnose PM bottleneck & prescribe best-fit framework |
-| `/ingest-context` | Ingest notes/interviews into `.context/` |
-| `/connect-mcp` | Configure Jira, Confluence, GitHub, Figma, Miro, Notion |
-| `/sync-jira` | Export stories and epics to Jira |
-| `/sync-confluence` | Publish docs to Confluence spaces |
-| `/sync-github-issues` | Bi-directionally sync GitHub Issues and milestones |
-| `/sync-figma` | Inspect designs and push specs to Figma |
-| `/sync-miro` | Export brainstorms and roadmaps to Miro |
-| `/sync-notion` | Bi-directionally sync Notion databases and wikis |
-| `/gui-run` | Launch PM Command Center GUI on port 3000 |
+{claude_skills_table}
+
+## 🗺️ Modular Product Frameworks ({len(frameworks)} Frameworks across 4 Categories)
+
+Organized across 4 categories in `frameworks/`:
+### Strategy
+{format_claude_fw_section(frameworks_by_cat['strategy'])}
+
+### Discovery
+{format_claude_fw_section(frameworks_by_cat['discovery'])}
+
+### Prioritization
+{format_claude_fw_section(frameworks_by_cat['prioritization'])}
+
+### Operations & Delivery
+{format_claude_fw_section(frameworks_by_cat['operations'])}
+
+## 🔄 Delivery Operating Models (`operating_model`)
+
+Configured via `operating_model` in `.context/harness-config.yaml`:
+- `scrum`: Iterative sprints, INVEST user stories, Fibonacci points, DoD sign-off (Default)
+- `shape-up`: 6-week cycles, shaped pitches, appetite budgeting, hill charts, circuit breaker
+- `kanban`: Continuous pull flow, WIP limits, cycle-time optimization
+- `gist`: Goals, Ideas (ICE scored), Step-projects (<= 2 wks), Tasks for high-uncertainty planning
 
 ## 📦 Architecture & Conventions
 
@@ -801,7 +906,7 @@ def main():
     export_to_cursor(skills)
     export_to_claude(skills)
     export_bundle(skills, frameworks)
-    export_root_routers()
+    export_root_routers(skills, frameworks)
     export_manifest(skills, frameworks, context_files)
     print("\n🎉 All skill exports and harness generation completed successfully!")
 

@@ -27,20 +27,33 @@ favorite_skills:
   - create-user-stories
   - refine-user-stories
   - create-mockup
+  - recommend-framework
   - sync-jira
 
-# Active Product Strategy & Discovery Frameworks:
-#   - ost: Opportunity Solution Tree (Teresa Torres continuous discovery)
-#   - wardley: Wardley Value Chain Evolution Mapping
-#   - toc: Theory of Constraints (Goldratt bottleneck identification)
-#   - rice: Reach, Impact, Confidence, Effort scoring
-#   - wsjf: Weighted Shortest Job First (Cost of Delay / Duration)
+# Active Product Strategy, Discovery, Prioritization, and Operations Frameworks:
+#   Strategy:
+#     - wardley: Wardley Value Chain Evolution Mapping
+#     - toc: Theory of Constraints (Goldratt bottleneck identification)
+#   Discovery:
+#     - ost: Opportunity Solution Tree (Teresa Torres continuous discovery)
+#     - jtbd-and-mom-test: Jobs-to-be-Done & The Mom Test customer interviews
+#   Prioritization:
+#     - rice: Reach, Impact, Confidence, Effort scoring
+#     - wsjf: Weighted Shortest Job First (Cost of Delay / Duration)
+#     - kano-model: Kano Customer Delight & Hygiene analysis
+#   Operations:
+#     - scrum-sprint-delivery: Sprint Goal, INVEST Stories & Velocity Slicing
+#     - shape-up: Basecamp Shaped Pitches, Appetite Budgeting & Hill Charts
+#     - gist-planning: Goals, Ideas, Step-projects, Tasks
 active_frameworks:
   - ost
   - wardley
   - toc
   - rice
   - wsjf
+  - shape-up
+  - scrum-sprint-delivery
+  - gist-planning
 
 # Enabled MCP (Model Context Protocol) Integration Targets:
 mcp_enabled:

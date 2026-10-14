@@ -369,7 +369,7 @@ The primary structural directories identified in this repository:
 - **Compliance Constraints**: Adhere to conventions outlined in `.context/conventions.md`.
 """
 
-def generate_harness_config(mode: str, tier: str) -> str:
+def generate_harness_config(mode: str, tier: str, operating_model: str = "scrum") -> str:
     return f"""# ==============================================================================
 # AI PM Sidekick — Harness Configuration
 # Single Source of Truth for Workspace Context, Operating Mode, and Tooling
@@ -386,26 +386,46 @@ mode: {mode}
 #   - enterprise: Traceability matrix, SOC2/GDPR compliance tags, SLAs, audit logs (Enterprise scale)
 default_tier: {tier}
 
+# Operating Model:
+#   - scrum: Iterative sprint planning, user stories, Fibonacci points, sprint velocity (Default)
+#   - shape-up: 6-week cycles, shaped pitches, appetite budgeting, hill charts, no-gos
+#   - kanban: Continuous pull flow, WIP limits, cycle-time optimization, backlog queue
+#   - gist: High-uncertainty iterative planning (Goals, Ideas, Step-projects, Tasks)
+operating_model: {operating_model}
+
 # Favorite / Pinned Skills for Quick Launcher in PM Command Center & Sidepanel:
 favorite_skills:
   - create-prd
   - create-user-stories
   - refine-user-stories
   - create-mockup
+  - recommend-framework
   - sync-jira
 
-# Active Product Strategy & Discovery Frameworks:
-#   - ost: Opportunity Solution Tree (Teresa Torres continuous discovery)
-#   - wardley: Wardley Value Chain Evolution Mapping
-#   - toc: Theory of Constraints (Goldratt bottleneck identification)
-#   - rice: Reach, Impact, Confidence, Effort scoring
-#   - wsjf: Weighted Shortest Job First (Cost of Delay / Duration)
+# Active Product Strategy, Discovery, Prioritization, and Operations Frameworks:
+#   Strategy:
+#     - wardley: Wardley Value Chain Evolution Mapping
+#     - toc: Theory of Constraints (Goldratt bottleneck identification)
+#   Discovery:
+#     - ost: Opportunity Solution Tree (Teresa Torres continuous discovery)
+#     - jtbd-and-mom-test: Jobs-to-be-Done & The Mom Test customer interviews
+#   Prioritization:
+#     - rice: Reach, Impact, Confidence, Effort scoring
+#     - wsjf: Weighted Shortest Job First (Cost of Delay / Duration)
+#     - kano-model: Kano Customer Delight & Hygiene analysis
+#   Operations:
+#     - scrum-sprint-delivery: Sprint Goal, INVEST Stories & Velocity Slicing
+#     - shape-up: Basecamp Shaped Pitches, Appetite Budgeting & Hill Charts
+#     - gist-planning: Goals, Ideas, Step-projects, Tasks
 active_frameworks:
   - ost
   - wardley
   - toc
   - rice
   - wsjf
+  - shape-up
+  - scrum-sprint-delivery
+  - gist-planning
 
 # Enabled MCP (Model Context Protocol) Integration Targets:
 mcp_enabled:
@@ -421,7 +441,7 @@ mcp_enabled:
 # INITIALIZATION RUNNER
 # ==============================================================================
 
-def initialize_workspace(target_dir: Path, mode: str = "standalone", tier: str = "standard", force: bool = False, dry_run: bool = False) -> dict:
+def initialize_workspace(target_dir: Path, mode: str = "standalone", tier: str = "standard", operating_model: str = "scrum", force: bool = False, dry_run: bool = False) -> dict:
     context_dir = target_dir / ".context"
     docs_dir = target_dir / "docs"
     mockups_dir = target_dir / "mockups"
@@ -431,10 +451,11 @@ def initialize_workspace(target_dir: Path, mode: str = "standalone", tier: str =
     print(f"\n=======================================================")
     print(f"🚀 AI PM Sidekick — Workspace Initializer")
     print(f"=======================================================")
-    print(f"  • Target Path:    {target_dir.resolve()}")
-    print(f"  • Selected Mode:  {mode.upper()}")
-    print(f"  • Artifact Tier:  {tier.upper()}")
-    print(f"  • Overwrite:      {'FORCED' if force else 'Safe (Preserve Existing)'}")
+    print(f"  • Target Path:        {target_dir.resolve()}")
+    print(f"  • Selected Mode:      {mode.upper()}")
+    print(f"  • Artifact Tier:      {tier.upper()}")
+    print(f"  • Operating Model:    {operating_model.upper()}")
+    print(f"  • Overwrite:          {'FORCED' if force else 'Safe (Preserve Existing)'}")
     print(f"=======================================================\n")
 
     if not dry_run:
@@ -458,16 +479,32 @@ def initialize_workspace(target_dir: Path, mode: str = "standalone", tier: str =
     config_file = context_dir / "harness-config.yaml"
     if not config_file.exists() or force:
         if not dry_run:
-            config_file.write_text(generate_harness_config(mode, tier), encoding="utf-8")
-        actions_taken.append("Configured .context/harness-config.yaml")
+            config_file.write_text(generate_harness_config(mode, tier, operating_model), encoding="utf-8")
+        actions_taken.append(f"Configured .context/harness-config.yaml (operating_model: {operating_model})")
     else:
-        # Update mode and tier inside existing config without wiping comments
+        # Update mode, tier, and operating_model inside existing config without wiping comments
         current_text = config_file.read_text(encoding="utf-8")
         updated_text = re.sub(r"^mode:\s*.*$", f"mode: {mode}", current_text, flags=re.MULTILINE)
         updated_text = re.sub(r"^default_tier:\s*.*$", f"default_tier: {tier}", updated_text, flags=re.MULTILINE)
+        
+        # Preserve or update operating_model
+        if re.search(r"^operating_model:\s*.*$", updated_text, flags=re.MULTILINE):
+            updated_text = re.sub(r"^operating_model:\s*.*$", f"operating_model: {operating_model}", updated_text, flags=re.MULTILINE)
+        else:
+            op_block = f"\n# Operating Model:\n#   - scrum: Iterative sprint planning (Default)\n#   - shape-up: 6-week cycles, shaped pitches, appetite budgeting\n#   - kanban: Continuous pull flow, WIP limits\n#   - gist: High-uncertainty iterative planning\noperating_model: {operating_model}\n"
+            updated_text = re.sub(r"(^default_tier:\s*.*$)", rf"\1\n{op_block}", updated_text, flags=re.MULTILINE)
+            
+        # Ensure recommend-framework is in favorite_skills
+        if "recommend-framework" not in updated_text:
+            updated_text = re.sub(
+                r"(favorite_skills:\s*\n(?:\s*-\s*[^\n]+\n)*)",
+                r"\g<1>  - recommend-framework\n",
+                updated_text
+            )
+            
         if not dry_run:
             config_file.write_text(updated_text, encoding="utf-8")
-        actions_taken.append(f"Updated .context/harness-config.yaml (mode: {mode}, tier: {tier})")
+        actions_taken.append(f"Updated .context/harness-config.yaml (mode: {mode}, tier: {tier}, operating_model: {operating_model})")
 
     # 3. Handle architecture.md
     arch_file = context_dir / "architecture.md"
@@ -506,6 +543,30 @@ def initialize_workspace(target_dir: Path, mode: str = "standalone", tier: str =
             if src_file.exists() and not dry_run:
                 dest_file.write_text(src_file.read_text(encoding="utf-8"), encoding="utf-8")
                 actions_taken.append(f"Scaffolded .context/{cf}")
+        elif dest_file.exists() and cf == "conventions.md":
+            conv_text = dest_file.read_text(encoding="utf-8")
+            if "operating_model" not in conv_text:
+                sec5_text = r"""
+## 🔄 5. Operating Model Conventions (`operating_model`)
+
+AI PM Sidekick supports 4 delivery operating models configured via `operating_model` in `.context/harness-config.yaml`. Each model shapes how backlogs, cycles, estimation, and handoffs are executed:
+
+| Operating Model | Core Cadence | Unit of Work | Estimation & Sizing | Primary Delivery Gate |
+| :--- | :--- | :--- | :--- | :--- |
+| **`scrum`** *(Default)* | 1–2 week sprints | INVEST User Stories + Gherkin ACs | Fibonacci story points ($\le 5$ pts) | Definition of Ready ($\ge 85\%$) & Sprint Goal |
+| **`shape-up`** | 6-week cycles + 2-week cooldown | Shaped Pitches & Scopes | Fixed Appetite (Small = 1–2 wks, Big = 6 wks) | Betting Table approval & Circuit Breaker |
+| **`kanban`** | Continuous pull flow | Backlog items with WIP limits | Cycle time & throughput metrics | WIP column limits & SLA throughput |
+| **`gist`** | Iterative experiment loops | Step-projects ($\le 2$ weeks) & Tasks | ICE scoring (Impact, Confidence, Ease) | Metric validation gate to unlock next step |
+
+### Operating Model Selection Heuristics:
+1. **Choose `scrum`** when cross-functional engineering sprints require predictable velocity, sprint commitments, and rigorous DoD sign-off.
+2. **Choose `shape-up`** when teams suffer from backlog bloat and sprint rollover fatigue, and need bounded appetites with high autonomous design/build agency.
+3. **Choose `kanban`** for operational maintenance, ongoing developer platform enhancements, or bug triage queues where work arrives unpredictably.
+4. **Choose `gist`** for high-uncertainty 0-to-1 innovation tracks where committing to a multi-month solution is premature before smoke testing ideas with fast step-projects.
+"""
+                if not dry_run:
+                    dest_file.write_text(conv_text.rstrip() + "\n" + sec5_text, encoding="utf-8")
+                actions_taken.append("Preserved and synced Section 5 Operating Model in .context/conventions.md")
 
     print("\n✅ Initialization Summary:")
     for a in actions_taken:
@@ -515,8 +576,28 @@ def initialize_workspace(target_dir: Path, mode: str = "standalone", tier: str =
         "status": "success",
         "mode": mode,
         "tier": tier,
+        "operating_model": operating_model,
         "actions": actions_taken
     }
+
+def prompt_operating_model(default: str = "scrum") -> str:
+    """Interactively prompts the user to select an operating delivery model."""
+    print("\nSelect delivery operating model:")
+    print("  1. scrum     — Iterative sprints, INVEST stories, Fibonacci points (Default)")
+    print("  2. shape-up  — 6-week cycles, shaped pitches, appetite budgeting, hill charts")
+    print("  3. kanban    — Continuous pull flow, WIP limits, cycle-time optimization")
+    print("  4. gist      — High-uncertainty iterative planning (Goals, Ideas, Step-projects, Tasks)")
+    try:
+        val = input(f"Enter operating model [1-4 or name] (default: {default}): ").strip().lower()
+        model_map = {
+            "1": "scrum", "scrum": "scrum",
+            "2": "shape-up", "shape-up": "shape-up", "shapeup": "shape-up",
+            "3": "kanban", "kanban": "kanban",
+            "4": "gist", "gist": "gist"
+        }
+        return model_map.get(val, default) if val else default
+    except (EOFError, KeyboardInterrupt):
+        return default
 
 def main():
     parser = argparse.ArgumentParser(
@@ -535,12 +616,22 @@ Examples:
 
   # Initialize embedded mode with enterprise compliance tier:
   python3 scripts/init-workspace.py --mode embedded --tier enterprise
+
+  # Initialize with Shape Up operating model:
+  python3 scripts/init-workspace.py --operating-model shape-up
+
+  # Interactively configure workspace options:
+  python3 scripts/init-workspace.py --interactive
         """
     )
     parser.add_argument("--mode", choices=["standalone", "embedded"], default="standalone",
                         help="Operating mode: 'standalone' (PM command center) or 'embedded' (codebase-integrated). Default: standalone")
     parser.add_argument("--tier", choices=["lean", "standard", "enterprise"], default="standard",
                         help="Default deliverable tier (lean, standard, enterprise). Default: standard")
+    parser.add_argument("--operating-model", choices=["scrum", "shape-up", "kanban", "gist"], default=None,
+                        help="Operating delivery model: 'scrum' (default), 'shape-up', 'kanban', or 'gist'")
+    parser.add_argument("-i", "--interactive", action="store_true",
+                        help="Prompt interactively for workspace options (mode, tier, operating model)")
     parser.add_argument("--target-dir", default=str(ROOT_DIR),
                         help="Target repository directory to initialize. Default: current workspace")
     parser.add_argument("--no-gui", action="store_true",
@@ -557,10 +648,33 @@ Examples:
     args = parser.parse_args()
     target_path = Path(args.target_dir).resolve()
 
+    mode = args.mode
+    tier = args.tier
+    operating_model = args.operating_model
+
+    if args.interactive:
+        print("\n🚀 AI PM Sidekick — Interactive Workspace Setup")
+        print("--------------------------------------------------")
+        try:
+            mode_input = input(f"Select operating mode [standalone | embedded] (default: {mode}): ").strip().lower()
+            if mode_input in ["standalone", "embedded"]:
+                mode = mode_input
+                
+            tier_input = input(f"Select artifact tier [lean | standard | enterprise] (default: {tier}): ").strip().lower()
+            if tier_input in ["lean", "standard", "enterprise"]:
+                tier = tier_input
+        except (EOFError, KeyboardInterrupt):
+            pass
+            
+        operating_model = prompt_operating_model(default=operating_model or "scrum")
+    elif operating_model is None:
+        operating_model = "scrum"
+
     result = initialize_workspace(
         target_dir=target_path,
-        mode=args.mode,
-        tier=args.tier,
+        mode=mode,
+        tier=tier,
+        operating_model=operating_model,
         force=args.force,
         dry_run=args.dry_run
     )
@@ -570,7 +684,7 @@ Examples:
         return
 
     # In standalone mode, launch the GUI unless --no-gui is specified
-    if args.mode == "standalone" and not args.no_gui:
+    if mode == "standalone" and not args.no_gui:
         if LAUNCHER_SCRIPT.exists():
             print(f"\n🚀 Launching PM Command Center GUI on port {args.port}...")
             cmd = [sys.executable, str(LAUNCHER_SCRIPT), "--port", str(args.port)]
@@ -583,8 +697,8 @@ Examples:
         else:
             print(f"\n⚠️  Launcher script not found at {LAUNCHER_SCRIPT}. Start manually with python3 scripts/launch-ui.py")
     else:
-        print(f"\n✨ Workspace initialized in {args.mode.upper()} mode ({args.tier.upper()} tier).")
-        if args.mode == "embedded":
+        print(f"\n✨ Workspace initialized in {mode.upper()} mode ({tier.upper()} tier, {operating_model.upper()} model).")
+        if mode == "embedded":
             print("💡 The Product Knowledge Core (.context/) is now anchored to this codebase.")
             print("   You can start generating PRDs and User Stories with full architectural context!")
         else:
