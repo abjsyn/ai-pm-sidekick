@@ -102,7 +102,7 @@ python3 scripts/export-skills.py
 ```
 
 This single command automatically compiles:
-- **Google Antigravity / AGY**: Native skills in `.agents/skills/` and `.agents/project-harness/SKILL.md`.
+- **Google Antigravity / AGY**: Native skills in `.agents/skills/` and `.agents/skills/project-harness/SKILL.md`.
 - **Cursor IDE**: System rules in `.cursor/rules/*.mdc` and global instructions in `.cursorrules`.
 - **Claude Code**: Slash commands in `.claude/commands/*.md` and workspace instructions in `CLAUDE.md`.
 - **Universal Prompt Bundle**: `dist/pm_sidekick_system_prompt.md` for ChatGPT or Claude Projects.

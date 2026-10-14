@@ -112,7 +112,7 @@ python3 scripts/setup-mcp.py --check
 python3 scripts/export-skills.py
 ```
 This generates native configurations for:
-- **AGY / Gemini**: `.agents/skills/` and `.agents/project-harness/SKILL.md`
+- **AGY / Gemini**: `.agents/skills/` and `.agents/skills/project-harness/SKILL.md`
 - **Cursor IDE**: `.cursor/rules/*.mdc` and `.cursorrules`
 - **Claude Code**: `.claude/commands/*.md` and `CLAUDE.md`
 - **ChatGPT / Custom GPTs**: `dist/pm_sidekick_system_prompt.md`

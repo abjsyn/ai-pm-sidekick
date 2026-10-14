@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "version": "1.0.0",
-  "generated_at": "2026-10-14T12:29:34.823001",
+  "generated_at": "2026-10-14T13:20:18.398259",
   "skills": [
     {
       "id": "apply-framework",
@@ -155,9 +155,11 @@
       "id": "sync-confluence",
       "name": "Confluence Wiki Sync",
       "category": "sync",
-      "description": "Publishes PRDs, Technical Specs, Design Briefs, and User Manuals directly into Confluence spaces using Atlassian MCP integration.",
+      "description": "Bi-directionally syncs Confluence product wikis and specs. Pulls company knowledge into .context/ and BACKLOG.md, or publishes PRDs, design briefs, and technical specs to Confluence via Atlassian MCP.",
       "required_context_files": [
-        ".context/product.md"
+        ".context/product.md",
+        ".context/conventions.md",
+        ".context/harness-config.yaml"
       ],
       "command_trigger": "/sync-confluence",
       "icon": "library_books",
@@ -167,9 +169,11 @@
       "id": "sync-figma",
       "name": "Figma Specs Sync",
       "category": "sync",
-      "description": "Inspects Figma design files, imports component details, and posts design feedback/brief specifications directly to Figma nodes via Figma MCP.",
+      "description": "Bi-directionally syncs Figma design tokens, components, and brief annotations. Pulls design context into .context/ and BACKLOG.md, or posts UX specs to Figma nodes via Figma MCP.",
       "required_context_files": [
-        ".context/conventions.md"
+        ".context/product.md",
+        ".context/conventions.md",
+        ".context/harness-config.yaml"
       ],
       "command_trigger": "/sync-figma",
       "icon": "design_services",
@@ -181,8 +185,9 @@
       "category": "sync",
       "description": "Bi-directionally syncs GitHub Issues, labels, and milestones. Pulls issues into BACKLOG.md and .context/discovery.md, or exports refined user stories as structured GitHub Issues.",
       "required_context_files": [
-        ".context/discovery.md",
-        ".context/conventions.md"
+        ".context/product.md",
+        ".context/conventions.md",
+        ".context/harness-config.yaml"
       ],
       "command_trigger": "/sync-github-issues",
       "icon": "code",
@@ -192,9 +197,11 @@
       "id": "sync-jira",
       "name": "Jira Epics & Stories Sync",
       "category": "sync",
-      "description": "Syncs user stories, acceptance criteria (Gherkin BDD), story points, and epics directly to Jira via Atlassian MCP integration.",
+      "description": "Bi-directionally syncs Jira epics, stories, and sprint issues. Pulls issues into BACKLOG.md and .context/discovery.md, or exports INVEST user stories from docs/ to Jira via Atlassian MCP.",
       "required_context_files": [
-        ".context/conventions.md"
+        ".context/product.md",
+        ".context/conventions.md",
+        ".context/harness-config.yaml"
       ],
       "command_trigger": "/sync-jira",
       "icon": "task_alt",
@@ -204,9 +211,11 @@
       "id": "sync-miro",
       "name": "Miro Whiteboards Sync",
       "category": "sync",
-      "description": "Exports SCAMPER, HMW, 6 Thinking Hats brainstorm sessions, and outcome roadmaps directly to Miro visual whiteboards via Miro MCP integration.",
+      "description": "Bi-directionally syncs Miro whiteboards, brainstorm sticky notes, and roadmaps. Pulls visual ideation into .context/ and BACKLOG.md, or exports brainstorms/roadmaps to Miro via Miro MCP.",
       "required_context_files": [
-        ".context/discovery.md"
+        ".context/product.md",
+        ".context/conventions.md",
+        ".context/harness-config.yaml"
       ],
       "command_trigger": "/sync-miro",
       "icon": "dashboard_customize",
@@ -219,7 +228,8 @@
       "description": "Bi-directionally syncs Notion product wikis, databases, and pages. Pulls research into .context/, or publishes PRDs, design briefs, and decision logs to Notion.",
       "required_context_files": [
         ".context/product.md",
-        ".context/decisions.md"
+        ".context/conventions.md",
+        ".context/harness-config.yaml"
       ],
       "command_trigger": "/sync-notion",
       "icon": "sticky_note_2",

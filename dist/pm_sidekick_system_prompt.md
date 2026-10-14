@@ -905,79 +905,174 @@ At the end of story grooming, ALWAYS recommend the logical next steps:
 ## Skill: sync-confluence (Confluence Wiki Sync)
 - **Category**: `sync`
 - **Trigger**: `/sync-confluence`
-- **Description**: Publishes PRDs, Technical Specs, Design Briefs, and User Manuals directly into Confluence spaces using Atlassian MCP integration.
-- **Required Context**: .context/product.md
+- **Description**: Bi-directionally syncs Confluence product wikis and specs. Pulls company knowledge into .context/ and BACKLOG.md, or publishes PRDs, design briefs, and technical specs to Confluence via Atlassian MCP.
+- **Required Context**: .context/product.md, .context/conventions.md, .context/harness-config.yaml
 
-# 📄 Confluence Documentation Sync Skill
+# 📄 Confluence Documentation & Wiki Sync Skill
 
 ## Overview
-The `sync-confluence` skill converts generated PRDs (`create-prd`), Design Briefs (`create-design-brief`), and Technical Specs (`create-documentation`) into structured Confluence pages using Atlassian MCP.
+The `sync-confluence` skill connects AI PM Sidekick directly with Atlassian Confluence Cloud via Model Context Protocol (MCP) using `@modelcontextprotocol/server-atlassian`. It provides bi-directional synchronization: pulling existing enterprise wikis, product roadmaps, and architecture guidelines into the `.context/` Product Knowledge Core, and publishing production PRDs, Design Briefs, Technical Specs, and Decision Records from `docs/` and `.context/` into Confluence spaces.
+
+---
+
+## ⚙️ Prerequisites & MCP Credentials
+Ensure credentials are configured in `.env` (or via `python3 scripts/setup-mcp.py --tool atlassian --interactive`):
+```env
+ATLASSIAN_HOST=https://your-domain.atlassian.net
+ATLASSIAN_EMAIL=your-email@domain.com
+ATLASSIAN_API_TOKEN=your_atlassian_api_token
+CONFLUENCE_SPACE_KEY=PROD
+```
+Active MCP Server: `atlassian` (`@modelcontextprotocol/server-atlassian`).
+
+---
+
+## 🔄 Dual Bi-Directional Synchronization Flows
+
+### Flow 1: PULL (Confluence ➔ PM Workspace)
+Pulls enterprise documentation, strategy wikis, and legacy specs from Confluence into the PM workspace:
+1. **Product Vision & OKRs Ingestion**: Fetches strategic pages (`confluence_get_page`, `confluence_search`) and maps company goals into [`.context/product.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/.context/product.md).
+2. **Architecture Standards & API Guidelines**: Extracts enterprise compliance, engineering patterns, and data schemas into [`.context/architecture.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/.context/architecture.md) and [`.context/conventions.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/.context/conventions.md).
+3. **Unstructured Research & Feedback Routing**: Routes meeting minutes, interview notes, and legacy specs into [`.context/discovery.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/.context/discovery.md) and [`BACKLOG.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/BACKLOG.md) (or delegates to [`skills/ingest-context/SKILL.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/skills/ingest-context/SKILL.md)).
+
+### Flow 2: PUSH (PM Workspace ➔ Confluence)
+Publishes generated PM deliverables into structured Confluence spaces and page hierarchies:
+1. **Mandatory Context Hydration Gate**:
+   Before formatting and publishing documents, **MUST** read:
+   - [`.context/product.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/.context/product.md) — verifies product vision, persona definitions, and executive summary tone.
+   - [`.context/conventions.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/.context/conventions.md) — applies organizational documentation standards, naming conventions, and terminology.
+   - [`.context/harness-config.yaml`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/.context/harness-config.yaml) — ensures tier completeness (`lean`, `agile`, `enterprise`).
+2. **Document Transformation & Publishing**:
+   - **PRD Publishing**: Converts `docs/*_prd.md` into Confluence Storage Format with status callouts, expandable requirement sections, and metric tables.
+   - **Technical & Architecture Specs**: Converts `docs/*_documentation.md` into Confluence technical specs with embedded Mermaid sequence diagrams and OpenAPI endpoint tables.
+   - **Design Briefs**: Converts `docs/*_design_brief.md` into Confluence UX specifications with WCAG accessibility guidelines.
+   - **Product Decision Records (PDRs)**: Publishes append-only records from [`.context/decisions.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/.context/decisions.md) into a Confluence Decision Register page.
 
 ---
 
 ## 🛠️ Step-by-Step Execution Workflow
 
-1. **Verify Confluence MCP Connection**:
-   - Check Atlassian MCP server readiness (`ATLASSIAN_HOST`, `ATLASSIAN_EMAIL`, `ATLASSIAN_API_TOKEN`).
-   - If missing, prompt user to run `/connect-mcp`.
+### Step 1: Verify MCP Connection Readiness
+- Check Confluence MCP tools availability (`confluence_create_page`, `confluence_get_page`, `confluence_update_page`, `confluence_search`).
+- Validate `ATLASSIAN_HOST`, `ATLASSIAN_EMAIL`, `ATLASSIAN_API_TOKEN`, and `CONFLUENCE_SPACE_KEY`.
 
-2. **Gather Target Confluence Parameters**:
-   - **Space Key**: (e.g., `PROD`, `ENG`, `DESIGN`).
-   - **Parent Page ID**: (optional, to nest under epic or product hierarchy).
-   - **Page Title**: Auto-populated from PRD or spec header.
+### Step 2: Context Hydration
+- Read `.context/product.md`, `.context/conventions.md`, and `.context/harness-config.yaml`.
+- Determine target audience tone, space hierarchy, and required metadata macros.
 
-3. **Format & Publish Document**:
-   - Convert Markdown content into Confluence Storage Format (XHTML / standard HTML markdown).
-   - Render Mermaid sequence diagrams into Confluence-compatible macro or image callouts.
-   - Invoke `confluence_create_page` or `confluence_update_page` via MCP.
+### Step 3: Select Sync Direction & Scope
+Prompt user for synchronization action:
+> *"What Confluence operation would you like to run?*
+> 1. **Pull**: Ingest enterprise wiki pages or legacy specs into `.context/` and `BACKLOG.md`.
+> 2. **Push PRD**: Publish `docs/<feature>_prd.md` to Confluence space.
+> 3. **Push Tech Spec / Brief**: Publish `docs/<feature>_documentation.md` or `_design_brief.md`.
+> 4. **Push Decision Log**: Publish `.context/decisions.md` to Confluence Decision Register."*
 
-4. **Deliver URL & Summary**:
-   - Return direct link to created Confluence page.
+### Step 4: Payload Construction & Preview
+- For **Pull**: Display preview of page content, title, and target destination in `.context/*.md` or `BACKLOG.md`.
+- For **Push**: Display target Space Key, Parent Page ID, Page Title, and formatting summary.
+
+### Step 5: User Confirmation Gate
+- **STOP** and ask for confirmation before writing to Confluence or workspace files:
+  > *"Review the Confluence publishing payload above. Would you like me to proceed with creating/pulling this page?"*
+
+### Step 6: Execute MCP Tool Calls & Return URLs
+- Call `confluence_create_page` or `confluence_update_page`.
+- Return direct Confluence page URL (e.g. `https://your-domain.atlassian.net/wiki/spaces/PROD/pages/123456`) and status.
 
 ---
 
 ## 🔄 Flow Handling & Next Skill Suggestions
-- **Next Step 1 (Export Jira Backlog)**: "Would you like to break this PRD down into Jira tickets using `sync-jira`?"
-- **Next Step 2 (Design Specs)**: "Would you like to sync design components with Figma using `sync-figma`?"
+At the end of synchronizing Confluence documents, ALWAYS recommend the logical next steps:
+- **Next Step 1 (Export Jira Backlog)**: "Would you like to break this published PRD down into Jira user stories using `sync-jira`?"
+- **Next Step 2 (Design Specs to Figma)**: "Would you like to sync design components and accessibility criteria with Figma using `sync-figma`?"
+- **Next Step 3 (Interactive Prototype)**: "Would you like to generate an interactive HTML wireframe prototype using `create-mockup`?"
 
 ---
 
 ## Skill: sync-figma (Figma Specs Sync)
 - **Category**: `sync`
 - **Trigger**: `/sync-figma`
-- **Description**: Inspects Figma design files, imports component details, and posts design feedback/brief specifications directly to Figma nodes via Figma MCP.
-- **Required Context**: .context/conventions.md
+- **Description**: Bi-directionally syncs Figma design tokens, components, and brief annotations. Pulls design context into .context/ and BACKLOG.md, or posts UX specs to Figma nodes via Figma MCP.
+- **Required Context**: .context/product.md, .context/conventions.md, .context/harness-config.yaml
 
-# 🎨 Figma Design Sync Skill
+# 🎨 Figma Design & Specification Sync Skill
 
 ## Overview
-The `sync-figma` skill links product management specifications with live Figma design files via Model Context Protocol (MCP). It can inspect component specs, pull layout trees, and attach UI/UX requirements directly as comments on Figma frames.
+The `sync-figma` skill links AI PM Sidekick directly with Figma design files via Model Context Protocol (MCP) using `@modelcontextprotocol/server-figma`. It provides bi-directional collaboration between product and design: inspecting layout hierarchies, design tokens, and review feedback to hydrate `.context/` and `BACKLOG.md`, and pushing structured UI/UX Design Brief specs, state requirements, and accessibility criteria from `docs/` directly as comments onto Figma frames.
+
+---
+
+## ⚙️ Prerequisites & MCP Credentials
+Ensure credentials are configured in `.env` (or via `python3 scripts/setup-mcp.py --tool figma --interactive`):
+```env
+FIGMA_ACCESS_TOKEN=figd_your_access_token_here
+FIGMA_FILE_KEY=your_figma_file_key_here
+```
+Active MCP Server: `figma` (`@modelcontextprotocol/server-figma`).
+
+---
+
+## 🔄 Dual Bi-Directional Synchronization Flows
+
+### Flow 1: PULL (Figma ➔ PM Workspace)
+Pulls design tokens, component hierarchies, and design critique comments into the PM workspace:
+1. **Design Tokens & UI Styles**: Inspects Figma files (`figma_get_file`, `figma_get_file_nodes`) to extract color palettes, typography styles, spacing rules, and component definitions into [`.context/conventions.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/.context/conventions.md) and [`.context/architecture.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/.context/architecture.md).
+2. **Design Critique & Review Comments**: Fetches design comments (`figma_get_comments`) and extracts feedback, UX gaps, and edge cases into [`.context/discovery.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/.context/discovery.md) (or delegates to [`skills/ingest-context/SKILL.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/skills/ingest-context/SKILL.md)).
+3. **UX Debt & Missing States**: Flags unresolved Figma discussion threads and missing UI states directly into [`BACKLOG.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/BACKLOG.md).
+
+### Flow 2: PUSH (PM Workspace ➔ Figma)
+Annotates Figma canvas frames and components with rigorous PM specifications from `docs/`:
+1. **Mandatory Context Hydration Gate**:
+   Before annotating Figma designs, **MUST** read:
+   - [`.context/product.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/.context/product.md) — extracts target user personas, mental models, and primary user journeys.
+   - [`.context/conventions.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/.context/conventions.md) — aligns with WCAG 2.1 AA accessibility standards, component naming rules, and responsive breakpoints.
+   - [`.context/harness-config.yaml`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/.context/harness-config.yaml) — ensures deliverable tier rigor (`lean`, `agile`, `enterprise`).
+2. **Design Brief & Acceptance Annotation**:
+   - Reads UI/UX Design Briefs from `docs/*_design_brief.md`.
+   - Posts targeted comments onto specific Figma node IDs (`figma_post_comment`):
+     - **Component State Matrix**: Hover, Active, Focus, Disabled, Loading, and Error states.
+     - **Accessibility Rules**: Minimum 4.5:1 contrast ratios, screen-reader labels, keyboard navigation order.
+     - **Business Logic & Validation**: Form error rules, input masks, and edge-case behaviors.
 
 ---
 
 ## 🛠️ Step-by-Step Execution Workflow
 
-1. **Verify Figma MCP Connection**:
-   - Ensure `FIGMA_ACCESS_TOKEN` is set.
-   - If missing, guide user to run `/connect-mcp` or `python3 scripts/setup-mcp.py`.
+### Step 1: Verify MCP Connection Readiness
+- Check Figma MCP tools availability (`figma_get_file`, `figma_get_file_nodes`, `figma_get_comments`, `figma_post_comment`).
+- Validate `FIGMA_ACCESS_TOKEN` and `FIGMA_FILE_KEY`.
 
-2. **Select Action Mode**:
-   - **Mode A: Inspect Figma File / Component**:
-     - Input: Figma File Key (from URL `https://figma.com/file/<file_key>/...`)
-     - MCP Call: `figma_get_file` or `figma_get_file_nodes`
-     - Action: Extract color styles, typography, component names, layout hierarchy. Use data to enrich `create-design-brief` or `create-mockup`.
-   - **Mode B: Post Design Brief Comments**:
-     - Input: Figma File Key & Node ID
-     - Action: Attach WCAG 2.1 AA accessibility guidelines and state specs (Hover/Active/Disabled/Error) directly onto design nodes via `figma_post_comment`.
+### Step 2: Context Hydration
+- Read `.context/product.md`, `.context/conventions.md`, and `.context/harness-config.yaml`.
+- Extract accessibility thresholds, persona context, and project tier.
 
-3. **Deliver Summary**:
-   - Present component hierarchy or confirm comments attached to Figma nodes.
+### Step 3: Select Sync Direction & Scope
+Prompt user for synchronization action:
+> *"What Figma sync operation would you like to run?*
+> 1. **Pull Design Context**: Extract design tokens, component hierarchy, and review comments into `.context/` and `BACKLOG.md`.
+> 2. **Push Design Brief**: Annotate Figma frames with specs from `docs/<feature>_design_brief.md`.
+> 3. **Inspect Frame**: Inspect node details and layout properties for a specific Figma Frame ID."*
+
+### Step 4: Payload Construction & Preview
+- For **Pull**: Display discovered components, typography tokens, and comments with target destinations in `.context/conventions.md`, `.context/discovery.md`, or `BACKLOG.md`.
+- For **Push**: Display table mapping Figma Node IDs to proposed specification comments.
+
+### Step 5: User Confirmation Gate
+- **STOP** and ask for confirmation before writing comments to Figma or workspace files:
+  > *"Review the Figma payload above. Would you like me to proceed with attaching/pulling this design context?"*
+
+### Step 6: Execute MCP Tool Calls & Deliver Status
+- Call `figma_post_comment` or `figma_get_file`.
+- Return direct Figma frame URLs (e.g. `https://www.figma.com/design/<file_key>?node-id=12%3A34`) and confirmation summary.
 
 ---
 
 ## 🔄 Flow Handling & Next Skill Suggestions
-- **Next Step 1 (Build HTML Mockup)**: "Would you like to build an interactive HTML wireframe prototype based on these Figma components using `create-mockup`?"
-- **Next Step 2 (Write User Stories)**: "Would you like to write Gherkin user stories for these design states using `create-user-stories`?"
+At the end of synchronizing Figma designs, ALWAYS recommend the logical next steps:
+- **Next Step 1 (Build HTML Prototype)**: "Would you like to build an interactive HTML prototype matching these Figma components using `create-mockup`?"
+- **Next Step 2 (INVEST User Stories)**: "Would you like to generate Gherkin user stories for these design states using `create-user-stories`?"
+- **Next Step 3 (Sync to Jira)**: "Would you like to push the resulting frontend user stories to Jira using `sync-jira`?"
 
 ---
 
@@ -985,7 +1080,7 @@ The `sync-figma` skill links product management specifications with live Figma d
 - **Category**: `sync`
 - **Trigger**: `/sync-github-issues`
 - **Description**: Bi-directionally syncs GitHub Issues, labels, and milestones. Pulls issues into BACKLOG.md and .context/discovery.md, or exports refined user stories as structured GitHub Issues.
-- **Required Context**: .context/discovery.md, .context/conventions.md
+- **Required Context**: .context/product.md, .context/conventions.md, .context/harness-config.yaml
 
 # 🐙 GitHub Issues & Backlog Sync Skill
 
@@ -1066,91 +1161,181 @@ At the end of synchronizing GitHub Issues, ALWAYS recommend the logical next ste
 ## Skill: sync-jira (Jira Epics & Stories Sync)
 - **Category**: `sync`
 - **Trigger**: `/sync-jira`
-- **Description**: Syncs user stories, acceptance criteria (Gherkin BDD), story points, and epics directly to Jira via Atlassian MCP integration.
-- **Required Context**: .context/conventions.md
+- **Description**: Bi-directionally syncs Jira epics, stories, and sprint issues. Pulls issues into BACKLOG.md and .context/discovery.md, or exports INVEST user stories from docs/ to Jira via Atlassian MCP.
+- **Required Context**: .context/product.md, .context/conventions.md, .context/harness-config.yaml
 
-# 🎟️ Jira Backlog Sync Skill
+# 🎟️ Jira Backlog & Issue Sync Skill
 
 ## Overview
-The `sync-jira` skill connects AI PM Sidekick output directly with Atlassian Jira via Model Context Protocol (MCP). It parses Gherkin user stories, Fibonacci story points, and Definition of Done, creating Jira Epics, Stories, and Sub-tasks automatically.
+The `sync-jira` skill establishes bi-directional synchronization between Atlassian Jira and the AI PM Sidekick workspace via Model Context Protocol (MCP) using `@modelcontextprotocol/server-atlassian`. It routes sprint backlogs, epics, and bug reports into `BACKLOG.md` and `.context/`, and pushes refined user stories, Gherkin acceptance criteria, and story points from `docs/` directly into Jira.
+
+---
+
+## ⚙️ Prerequisites & MCP Credentials
+Ensure credentials are configured in `.env` (or via `python3 scripts/setup-mcp.py --tool atlassian --interactive`):
+```env
+ATLASSIAN_HOST=https://your-domain.atlassian.net
+ATLASSIAN_EMAIL=your-email@domain.com
+ATLASSIAN_API_TOKEN=your_atlassian_api_token
+JIRA_PROJECT_KEY=PROJ
+```
+Active MCP Server: `atlassian` (`@modelcontextprotocol/server-atlassian`).
+
+---
+
+## 🔄 Dual Bi-Directional Synchronization Flows
+
+### Flow 1: PULL (Jira ➔ PM Workspace)
+Pulls active sprints, backlog issues, bugs, and epics from Jira into the PM workspace:
+1. **Backlog Ingestion**: Queries open Jira issues via JQL (`jira_search_issues`) and organizes them into [`BACKLOG.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/BACKLOG.md) grouped by Epic, Sprint, and Priority.
+2. **Customer Pain & Bug Discovery**: Ingests bug reports, production incidents, and customer escalations directly into [`.context/discovery.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/.context/discovery.md) under Customer Opportunities and Mom Test behavioral evidence (or delegates to [`skills/ingest-context/SKILL.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/skills/ingest-context/SKILL.md)).
+3. **Execution Constraints & Velocity**: Pulls sprint velocity, blocker tags, and capacity constraints into [`.context/strategy-and-constraints.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/.context/strategy-and-constraints.md).
+
+### Flow 2: PUSH (PM Workspace ➔ Jira)
+Pushes refined user stories and epics from `docs/` to Jira Cloud:
+1. **Mandatory Context Hydration Gate**:
+   Before constructing payloads or creating tickets, **MUST** read:
+   - [`.context/product.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/.context/product.md) — validates persona definitions, product goals, and target release alignment.
+   - [`.context/conventions.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/.context/conventions.md) — adheres to ticket naming conventions, Gherkin syntax standards, and Definition of Done (DoD).
+   - [`.context/harness-config.yaml`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/.context/harness-config.yaml) — ensures deliverable tier standards (`lean`, `agile`, `enterprise`).
+2. **Story Decomposition & Field Mapping**:
+   - **Summary**: `[US-XX] Feature / User Story Title`
+   - **Issue Type**: `Epic`, `Story`, `Bug`, or `Task`
+   - **Description**:
+     - *User Persona & Intent*: `As a [persona], I want [action], So that [outcome]`
+     - *Gherkin Acceptance Criteria*: `Given / When / Then` testable scenarios (happy path, edge cases, error states)
+     - *Definition of Done (DoD)*: Quality and verification checklist
+   - **Story Points**: Fibonacci sequence points (`1, 2, 3, 5, 8, 13`)
+   - **Labels & Links**: Maps operational tags (`ai-pm-sidekick`, tier, sprint) and links to parent Epic.
 
 ---
 
 ## 🛠️ Step-by-Step Execution Workflow
 
-1. **Verify Jira MCP Connection**:
-   - Check if Atlassian MCP server is available (`@modelcontextprotocol/server-atlassian`).
-   - If missing, guide user to run `/connect-mcp` or `python3 scripts/setup-mcp.py`.
+### Step 1: Verify MCP Connection Readiness
+- Check Atlassian MCP tools availability (`jira_create_issue`, `jira_search_issues`, `jira_get_issue`, `jira_update_issue`).
+- Verify `ATLASSIAN_HOST`, `ATLASSIAN_EMAIL`, `ATLASSIAN_API_TOKEN`, and `JIRA_PROJECT_KEY`.
 
-2. **Collect Target Project Details**:
-   - Ask for **Jira Project Key** (e.g. `PROJ`, `CORE`, `MOBILE`).
-   - Ask for **Epic Link / Parent Key** (optional).
-   - Confirm target issue type (`Story`, `Epic`, `Task`).
+### Step 2: Context Hydration
+- Read `.context/product.md`, `.context/conventions.md`, and `.context/harness-config.yaml`.
+- Extract target personas, project key defaults, and DoD criteria.
 
-3. **Map Story Fields to Jira Schema**:
-   - **Summary**: `[US-01] User Story Title`
-   - **Description**: 
-     - User Persona & Need (`As a... I want... So that...`)
-     - Gherkin Acceptance Criteria (`Given / When / Then`)
-     - Definition of Done Checklist
-   - **Story Points**: Map Fibonacci estimate (e.g., `3`, `5`, `8`).
-   - **Labels**: `ai-pm-sidekick`, `generated-story`, operational mode (`lean`/`agile`/`enterprise`).
+### Step 3: Select Sync Direction & Scope
+Prompt user for synchronization action:
+> *"What Jira sync operation would you like to run?*
+> 1. **Pull**: Fetch active sprint issues and bugs into `BACKLOG.md` and `.context/discovery.md`.
+> 2. **Push**: Export user stories from `docs/<feature>_user_stories.md` into Jira project tickets.
+> 3. **Status Check**: Inspect Jira sprint board status, epics, and unestimated backlog items."*
 
-4. **Execute MCP Calls**:
-   - Invoke `jira_create_issue` or `jira_update_issue` tool.
-   - Return created issue keys (e.g., `PROJ-142`, `PROJ-143`) with direct URLs.
+### Step 4: Payload Construction & Preview
+- For **Pull**: Display table of issues to ingest, showing summary, status, and target section in `BACKLOG.md` or `.context/discovery.md`.
+- For **Push**: Display formatted Jira payload table showing Issue Type, Summary, Story Points, Epic Link, and Labels.
+
+### Step 5: User Confirmation Gate
+- **STOP** and ask for confirmation before modifying Jira or workspace files:
+  > *"Review the Jira payload above. Would you like me to proceed with creating/pulling these issues?"*
+
+### Step 6: Execute MCP Tool Calls & Deliver Ticket URLs
+- Call `jira_create_issue` or fetch issues via `jira_search_issues`.
+- Return direct Jira URLs (e.g. `https://your-domain.atlassian.net/browse/PROJ-142`) and synchronization summary.
 
 ---
 
 ## 🔄 Flow Handling & Next Skill Suggestions
-- **Next Step 1 (Publish Confluence Spec)**: "Would you like to publish the overarching PRD to Confluence using `sync-confluence`?"
-- **Next Step 2 (Audit Readiness)**: "Would you like to check remaining story grooming scores using `refine-user-stories`?"
+At the end of synchronizing Jira issues, ALWAYS recommend the logical next steps:
+- **Next Step 1 (Confluence Spec Sync)**: "Would you like to publish the overarching PRD to Confluence using `sync-confluence`?"
+- **Next Step 2 (Readiness Audit)**: "Would you like to audit remaining stories for edge cases using `refine-user-stories`?"
+- **Next Step 3 (Technical Schemas)**: "Would you like to generate OpenAPI schemas or technical documentation for these tickets using `create-documentation`?"
 
 ---
 
 ## Skill: sync-miro (Miro Whiteboards Sync)
 - **Category**: `sync`
 - **Trigger**: `/sync-miro`
-- **Description**: Exports SCAMPER, HMW, 6 Thinking Hats brainstorm sessions, and outcome roadmaps directly to Miro visual whiteboards via Miro MCP integration.
-- **Required Context**: .context/discovery.md
+- **Description**: Bi-directionally syncs Miro whiteboards, brainstorm sticky notes, and roadmaps. Pulls visual ideation into .context/ and BACKLOG.md, or exports brainstorms/roadmaps to Miro via Miro MCP.
+- **Required Context**: .context/product.md, .context/conventions.md, .context/harness-config.yaml
 
-# 🧠 Miro Whiteboard Sync Skill
+# 🧠 Miro Whiteboard & Ideation Sync Skill
 
 ## Overview
-The `sync-miro` skill bridges AI PM Sidekick brainstorming (`brainstorm`) and roadmap planning directly into Miro visual whiteboards using Model Context Protocol (MCP). It turns text concepts into organized color-coded sticky notes, cards, and shapes on Miro boards.
+The `sync-miro` skill bridges AI PM Sidekick brainstorming and roadmap planning directly with Miro visual whiteboards via Model Context Protocol (MCP) using `@modelcontextprotocol/server-miro`. It provides bi-directional synchronization: pulling sticky notes, customer empathy maps, and ideation clusters from Miro boards into `.context/` and `BACKLOG.md`, and exporting structured SCAMPER, 6 Thinking Hats, Value vs. Effort matrices, and Now/Next/Later roadmaps from the PM workspace onto Miro boards.
+
+---
+
+## ⚙️ Prerequisites & MCP Credentials
+Ensure credentials are configured in `.env` (or via `python3 scripts/setup-mcp.py --tool miro --interactive`):
+```env
+MIRO_ACCESS_TOKEN=your_miro_access_token_here
+MIRO_BOARD_ID=your_miro_board_id_here
+```
+Active MCP Server: `miro` (`@modelcontextprotocol/server-miro`).
+
+---
+
+## 🔄 Dual Bi-Directional Synchronization Flows
+
+### Flow 1: PULL (Miro ➔ PM Workspace)
+Pulls workshop ideas, empathy maps, and collaborative whiteboard clusters into the PM workspace:
+1. **Brainstorm & Empathy Ingestion**: Reads board items and sticky notes (`miro_get_board`, `miro_get_board_items`), extracting user quotes, problem observations, and unmet needs into [`.context/discovery.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/.context/discovery.md) under The Mom Test and Opportunity Solution Tree (or delegates to [`skills/ingest-context/SKILL.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/skills/ingest-context/SKILL.md)).
+2. **Backlog Candidate Harvesting**: Gathers high-value sticky notes, feature ideas, and customer requests from Miro boards and organizes them into [`BACKLOG.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/BACKLOG.md) as candidate initiatives.
+3. **Risks & Constraints Capture**: Extracts Black Hat risks, dependencies, and regulatory bottlenecks into [`.context/strategy-and-constraints.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/.context/strategy-and-constraints.md).
+
+### Flow 2: PUSH (PM Workspace ➔ Miro)
+Exports structured brainstorming sessions and product roadmaps to Miro visual boards:
+1. **Mandatory Context Hydration Gate**:
+   Before generating board layouts or creating sticky notes, **MUST** read:
+   - [`.context/product.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/.context/product.md) — extracts core value proposition, North Star Metric, and target personas.
+   - [`.context/conventions.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/.context/conventions.md) — adheres to color coding standards, board formatting conventions, and taxonomy.
+   - [`.context/harness-config.yaml`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/.context/harness-config.yaml) — ensures alignment with active prioritization and discovery frameworks.
+2. **Structured Board Generation**:
+   - **Brainstorm Frameworks**: Generates SCAMPER categories, How Might We (HMW) clusters, or 6 Thinking Hats panels.
+   - **2x2 Prioritization Matrix**: Positions ideas on Value (Impact) vs. Effort axes with quadrant labels (Quick Wins, Strategic Bets, Low-Hanging Fruit, Time Sinks).
+   - **Outcome Roadmap Grid**: Positions initiatives in Now / Next / Later lanes tied to target OKRs.
+   - **Color Semantics**:
+     - 🟡 Yellow: Ideas, Opportunities, Feature Concepts
+     - 🟢 Green: High Value / Quick Wins / Validated Solutions
+     - 🔴 Red: Risks, Bottlenecks, Constraints, Black Hat Critiques
+     - 🔵 Blue: Action Items, Execution Next Steps
 
 ---
 
 ## 🛠️ Step-by-Step Execution Workflow
 
-1. **Verify Miro MCP Connection**:
-   - Check `MIRO_ACCESS_TOKEN`.
-   - If missing, prompt user to run `/connect-mcp` or `python3 scripts/setup-mcp.py`.
+### Step 1: Verify MCP Connection Readiness
+- Check Miro MCP tools availability (`miro_create_board`, `miro_get_board`, `miro_create_sticky_note`, `miro_get_board_items`).
+- Validate `MIRO_ACCESS_TOKEN` and optional `MIRO_BOARD_ID`.
 
-2. **Select Board & Target Structure**:
-   - Prompt user for **Miro Board ID** or choose to create a **New Miro Board**.
-   - Select layout style:
-     - **Brainstorm Matrix**: SCAMPER categories, How Might We (HMW) clusters, 6 Thinking Hats.
-     - **2x2 Matrix**: Value vs. Effort quadrants.
-     - **Roadmap Grid**: Now / Next / Later lanes.
+### Step 2: Context Hydration
+- Read `.context/product.md`, `.context/conventions.md`, and `.context/harness-config.yaml`.
+- Identify North Star metric, active framework choices, and color taxonomy.
 
-3. **Execute Miro MCP Calls**:
-   - `miro_create_board` (if creating a new board).
-   - `miro_create_sticky_note` with color mapping:
-     - 🟡 Yellow: Ideas / Opportunities
-     - 🟢 Green: High Value / Low Effort
-     - 🔴 Red: Risks / Constraints / Black Hat
-     - 🔵 Blue: Process / Next Steps
-   - Position elements in grid/matrix layout.
+### Step 3: Select Sync Direction & Scope
+Prompt user for synchronization action:
+> *"What Miro sync operation would you like to run?*
+> 1. **Pull Board Content**: Ingest workshop sticky notes and ideas into `.context/discovery.md` and `BACKLOG.md`.
+> 2. **Push Brainstorm Session**: Export concepts from `brainstorm` to a new or existing Miro board.
+> 3. **Push 2x2 Prioritization Matrix**: Map ideas onto a Value vs Effort canvas.
+> 4. **Push Outcome Roadmap**: Lay out a Now / Next / Later board."*
 
-4. **Deliver Board URL**:
-   - Provide direct link to open and view the Miro whiteboard.
+### Step 4: Payload Construction & Preview
+- For **Pull**: Display categorized list of sticky notes with target sections in `BACKLOG.md` or `.context/discovery.md`.
+- For **Push**: Display preview table of sticky notes, coordinates, colors, and board layout.
+
+### Step 5: User Confirmation Gate
+- **STOP** and ask for confirmation before modifying Miro or workspace files:
+  > *"Review the Miro payload above. Would you like me to proceed with creating/pulling these board items?"*
+
+### Step 6: Execute MCP Tool Calls & Deliver Board URL
+- Call `miro_create_board` or `miro_create_sticky_note`.
+- Return direct Miro board URL (e.g. `https://miro.com/app/board/uXjVO123456=/`) and layout confirmation.
 
 ---
 
 ## 🔄 Flow Handling & Next Skill Suggestions
-- **Next Step 1 (Validate Winner Idea)**: "Would you like to evaluate the top brainstorm idea using `validate-idea`?"
-- **Next Step 2 (Draft PRD)**: "Would you like to turn these Miro concepts into a PRD using `create-prd`?"
+At the end of synchronizing with Miro, ALWAYS recommend the logical next steps:
+- **Next Step 1 (Idea Validation)**: "Would you like to validate the top brainstormed idea using `validate-idea`?"
+- **Next Step 2 (Draft PRD)**: "Would you like to synthesize winning concepts into a formal PRD using `create-prd`?"
+- **Next Step 3 (Sync to Notion/Confluence)**: "Would you like to document these brainstorm findings in your product wiki using `sync-notion` or `sync-confluence`?"
 
 ---
 
@@ -1158,7 +1343,7 @@ The `sync-miro` skill bridges AI PM Sidekick brainstorming (`brainstorm`) and ro
 - **Category**: `sync`
 - **Trigger**: `/sync-notion`
 - **Description**: Bi-directionally syncs Notion product wikis, databases, and pages. Pulls research into .context/, or publishes PRDs, design briefs, and decision logs to Notion.
-- **Required Context**: .context/product.md, .context/decisions.md
+- **Required Context**: .context/product.md, .context/conventions.md, .context/harness-config.yaml
 
 # 📓 Notion Product Wiki & Database Sync Skill
 

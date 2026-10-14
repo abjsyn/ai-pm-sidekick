@@ -3,7 +3,7 @@
 AI PM Sidekick — Cross-Tool Skill & Framework Exporter + Harness Manifest Generator
 
 Compiles canonical skills (`skills/`) and modular frameworks (`frameworks/`) into:
-  - AGY Native Skills (`.agents/skills/`) & Root Harness (`.agents/project-harness/SKILL.md`)
+  - AGY Native Skills (`.agents/skills/`) & Root Harness (`.agents/skills/project-harness/SKILL.md`)
   - Cursor Rules (`.cursor/rules/*.mdc`) & Root Instructions (`.cursorrules`)
   - Claude Code Commands (`.claude/commands/*.md`) & Workspace Guide (`CLAUDE.md`)
   - Universal Prompt Bundle (`dist/pm_sidekick_system_prompt.md`)
@@ -108,42 +108,42 @@ SKILL_CONFIG = {
         "category": "sync",
         "icon": "task_alt",
         "color": "text-blue-500",
-        "required_context_files": [".context/conventions.md"]
+        "required_context_files": [".context/product.md", ".context/conventions.md", ".context/harness-config.yaml"]
     },
     "sync-confluence": {
         "name": "Confluence Wiki Sync",
         "category": "sync",
         "icon": "library_books",
         "color": "text-blue-400",
-        "required_context_files": [".context/product.md"]
+        "required_context_files": [".context/product.md", ".context/conventions.md", ".context/harness-config.yaml"]
     },
     "sync-github-issues": {
         "name": "GitHub Issues Sync",
         "category": "sync",
         "icon": "code",
         "color": "text-zinc-200",
-        "required_context_files": [".context/discovery.md", ".context/conventions.md"]
+        "required_context_files": [".context/product.md", ".context/conventions.md", ".context/harness-config.yaml"]
     },
     "sync-figma": {
         "name": "Figma Specs Sync",
         "category": "sync",
         "icon": "design_services",
         "color": "text-violet-400",
-        "required_context_files": [".context/conventions.md"]
+        "required_context_files": [".context/product.md", ".context/conventions.md", ".context/harness-config.yaml"]
     },
     "sync-miro": {
         "name": "Miro Whiteboards Sync",
         "category": "sync",
         "icon": "dashboard_customize",
         "color": "text-yellow-400",
-        "required_context_files": [".context/discovery.md"]
+        "required_context_files": [".context/product.md", ".context/conventions.md", ".context/harness-config.yaml"]
     },
     "sync-notion": {
         "name": "Notion Databases Sync",
         "category": "sync",
         "icon": "sticky_note_2",
         "color": "text-orange-400",
-        "required_context_files": [".context/product.md", ".context/decisions.md"]
+        "required_context_files": [".context/product.md", ".context/conventions.md", ".context/harness-config.yaml"]
     },
     "gui-run": {
         "name": "PM Command Center GUI",
@@ -356,7 +356,7 @@ def export_bundle(skills, frameworks):
     print(f"✅ Exported single prompt bundle: {bundle_path}")
 
 def export_root_routers():
-    """Generates .cursorrules, .agents/project-harness/SKILL.md, and CLAUDE.md."""
+    """Generates .cursorrules, .agents/skills/project-harness/SKILL.md, and CLAUDE.md."""
     
     # 1. Cursor Global Rules (.cursorrules)
     cursorrules_path = ROOT_DIR / ".cursorrules"
@@ -443,10 +443,10 @@ Before generating full specifications:
     cursorrules_path.write_text(cursorrules_content.strip() + "\n", encoding="utf-8")
     print(f"✅ Generated root Cursor instructions: {cursorrules_path}")
 
-    # 2. AGY Project Harness Skill (.agents/project-harness/SKILL.md)
-    agy_harness_dir = ROOT_DIR / ".agents" / "project-harness"
-    agy_harness_dir.mkdir(parents=True, exist_ok=True)
-    agy_harness_path = agy_harness_dir / "SKILL.md"
+    # 2. AGY Project Harness Skill (.agents/skills/project-harness/SKILL.md)
+    agy_skill_harness = ROOT_DIR / ".agents" / "skills" / "project-harness"
+    agy_skill_harness.mkdir(parents=True, exist_ok=True)
+    agy_harness_path = agy_skill_harness / "SKILL.md"
     agy_harness_content = """---
 name: project-harness
 description: >-
@@ -488,11 +488,6 @@ This is the primary harness router skill for the AI PM Sidekick. It governs how 
 - Refer to `dist/harness-manifest.json` for live metadata and triggers.
 """
     agy_harness_path.write_text(agy_harness_content.strip() + "\n", encoding="utf-8")
-    
-    # Also link or duplicate into .agents/skills/project-harness/SKILL.md for AGY skill discovery
-    agy_skill_harness = ROOT_DIR / ".agents" / "skills" / "project-harness"
-    agy_skill_harness.mkdir(parents=True, exist_ok=True)
-    (agy_skill_harness / "SKILL.md").write_text(agy_harness_content.strip() + "\n", encoding="utf-8")
     print(f"✅ Generated AGY project harness router: {agy_harness_path}")
 
     # 3. Claude Code Guide (CLAUDE.md)
