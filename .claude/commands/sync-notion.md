@@ -1,6 +1,6 @@
 # Command: /sync-notion
 
->-
+Bi-directionally syncs Notion product wikis, databases, and pages. Pulls research into .context/, or publishes PRDs, design briefs, and decision logs to Notion.
 
 # 📓 Notion Product Wiki & Database Sync Skill
 

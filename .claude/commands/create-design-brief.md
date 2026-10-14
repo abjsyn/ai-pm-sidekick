@@ -1,6 +1,6 @@
 # Command: /create-design-brief
 
->-
+Creates comprehensive UI/UX Design Briefs including design objectives, user context, step-by-step user flows, component specs, WCAG 2.1 AA accessibility guidelines, and Figma handoff criteria.
 
 # 🎨 UI/UX Design Brief Skill
 

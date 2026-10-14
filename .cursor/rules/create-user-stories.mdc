@@ -1,5 +1,5 @@
 ---
-description: >-
+description: Generates user stories adhering to INVEST criteria, Concur format (As a/I want/So that), Gherkin Given-When-Then Acceptance Criteria, Fibonacci story points, and Definition of Done across Lean, Standard Agile, and Enterprise modes.
 globs: "*"
 ---
 # 📖 User Story Generation Skill

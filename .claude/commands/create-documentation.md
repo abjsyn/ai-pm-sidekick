@@ -1,6 +1,6 @@
 # Command: /create-documentation
 
->-
+Generates dual-purpose technical and end-user documentation. Produces API schemas (OpenAPI format), Mermaid sequence diagrams, architecture specs, and step-by-step end-user manuals.
 
 # 📚 Technical & User Documentation Skill
 

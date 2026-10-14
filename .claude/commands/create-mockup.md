@@ -1,6 +1,6 @@
 # Command: /create-mockup
 
->-
+Generates clickable, interactive UI mockups and prototypes as self-contained HTML files styled with Tailwind CSS, supporting interactive tabs, modals, forms, and responsive device views.
 
 # 🎨 Clickable Wireframe & Mockup Skill
 

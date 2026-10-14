@@ -1,6 +1,6 @@
 # Command: /sync-github-issues
 
->-
+Bi-directionally syncs GitHub Issues, labels, and milestones. Pulls issues into BACKLOG.md and .context/discovery.md, or exports refined user stories as structured GitHub Issues.
 
 # 🐙 GitHub Issues & Backlog Sync Skill
 

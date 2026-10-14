@@ -1,6 +1,6 @@
 # Command: /sync-confluence
 
->-
+Publishes PRDs, Technical Specs, Design Briefs, and User Manuals directly into Confluence spaces using Atlassian MCP integration.
 
 # 📄 Confluence Documentation Sync Skill
 

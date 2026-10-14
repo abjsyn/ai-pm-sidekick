@@ -1,6 +1,6 @@
 # Command: /create-prd
 
->-
+Generates comprehensive Product Requirements Documents (PRDs) across 3 modes: Lean (Startup/MVP), Standard Agile (Growth/Mid-size), and Enterprise (Compliance/Scale).
 
 # 📝 Product Requirements Document (PRD) Skill
 

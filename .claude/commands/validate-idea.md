@@ -1,6 +1,6 @@
 # Command: /validate-idea
 
->-
+Validates product ideas, feature concepts, and business hypotheses using Strategyzer 4-Risk Analysis, The Mom Test customer interview framework, TAM/SAM/SOM market sizing, and Pre-mortem risk identification.
 
 # 🧪 Idea & Hypothesis Validation Skill
 

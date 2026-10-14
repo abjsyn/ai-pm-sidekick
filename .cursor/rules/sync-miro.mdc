@@ -1,5 +1,5 @@
 ---
-description: >-
+description: Exports SCAMPER, HMW, 6 Thinking Hats brainstorm sessions, and outcome roadmaps directly to Miro visual whiteboards via Miro MCP integration.
 globs: "*"
 ---
 # 🧠 Miro Whiteboard Sync Skill

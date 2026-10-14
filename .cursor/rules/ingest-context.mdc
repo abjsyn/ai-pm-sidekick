@@ -1,5 +1,5 @@
 ---
-description: >-
+description: Ingests raw unstructured inputs (meeting notes, customer interview transcripts, Slack dumps, existing PRDs, codebase READMEs, or MCP pages) and routes structured updates into .context/ product knowledge files.
 globs: "*"
 ---
 # 📥 Ingest Context Skill

@@ -1,6 +1,6 @@
 # Command: /gui-run
 
->-
+Launches the PM Command Center visual web application (GUI) locally on port 3000 and automatically opens it in your default web browser.
 
 # 🚀 Launch PM Command Center Web GUI
 

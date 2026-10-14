@@ -1,5 +1,5 @@
 ---
-description: >-
+description: Generates clickable, interactive UI mockups and prototypes as self-contained HTML files styled with Tailwind CSS, supporting interactive tabs, modals, forms, and responsive device views.
 globs: "*"
 ---
 # 🎨 Clickable Wireframe & Mockup Skill

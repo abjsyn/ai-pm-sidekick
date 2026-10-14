@@ -1,0 +1,331 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "version": "1.0.0",
+  "generated_at": "2026-10-14T12:05:24.275760",
+  "skills": [
+    {
+      "id": "apply-framework",
+      "name": "Modular Framework Runner",
+      "category": "knowledge",
+      "description": "Executes modular strategic, discovery, or prioritization frameworks from frameworks/ over an idea, backlog, or PRD, and synchronizes results back to .context/.",
+      "required_context_files": [
+        ".context/harness-config.yaml",
+        ".context/discovery.md",
+        ".context/strategy-and-constraints.md"
+      ],
+      "command_trigger": "/apply-framework",
+      "icon": "hub",
+      "color": "text-indigo-400"
+    },
+    {
+      "id": "brainstorm",
+      "name": "Opportunity Brainstorm",
+      "category": "ideation",
+      "description": "Facilitates structured product & feature brainstorming using SCAMPER, How Might We (HMW), 6 Thinking Hats, and Value vs. Effort matrix.",
+      "required_context_files": [
+        ".context/product.md",
+        ".context/discovery.md"
+      ],
+      "command_trigger": "/brainstorm",
+      "icon": "psychology_alt",
+      "color": "text-amber-500"
+    },
+    {
+      "id": "connect-mcp",
+      "name": "MCP Integration Manager",
+      "category": "sync",
+      "description": "Establishes, tests, and manages Model Context Protocol (MCP) integrations for external PM tools: Atlassian (Jira & Confluence), GitHub Issues, Figma, Miro, Notion, and Google Stitch across AGY, Claude Code, and Cursor IDEs.",
+      "required_context_files": [
+        ".context/harness-config.yaml"
+      ],
+      "command_trigger": "/connect-mcp",
+      "icon": "cable",
+      "color": "text-emerald-400"
+    },
+    {
+      "id": "create-design-brief",
+      "name": "UI/UX Design Brief",
+      "category": "specification",
+      "description": "Creates comprehensive UI/UX Design Briefs including design objectives, user context, step-by-step user flows, component specs, WCAG 2.1 AA accessibility guidelines, and Figma handoff criteria.",
+      "required_context_files": [
+        ".context/product.md",
+        ".context/conventions.md"
+      ],
+      "command_trigger": "/create-design-brief",
+      "icon": "palette",
+      "color": "text-teal-400"
+    },
+    {
+      "id": "create-documentation",
+      "name": "Technical & User Docs",
+      "category": "specification",
+      "description": "Generates dual-purpose technical and end-user documentation. Produces API schemas (OpenAPI format), Mermaid sequence diagrams, architecture specs, and step-by-step end-user manuals.",
+      "required_context_files": [
+        ".context/product.md",
+        ".context/architecture.md"
+      ],
+      "command_trigger": "/create-documentation",
+      "icon": "menu_book",
+      "color": "text-zinc-400"
+    },
+    {
+      "id": "create-mockup",
+      "name": "HTML Wireframe & Prototype",
+      "category": "specification",
+      "description": "Generates clickable, interactive UI mockups and prototypes as self-contained HTML files styled with Tailwind CSS, supporting interactive tabs, modals, forms, and responsive device views.",
+      "required_context_files": [
+        ".context/product.md",
+        ".context/conventions.md"
+      ],
+      "command_trigger": "/create-mockup",
+      "icon": "web",
+      "color": "text-teal-400"
+    },
+    {
+      "id": "create-prd",
+      "name": "PRD Generator",
+      "category": "specification",
+      "description": "Generates comprehensive Product Requirements Documents (PRDs) across 3 modes: Lean (Startup/MVP), Standard Agile (Growth/Mid-size), and Enterprise (Compliance/Scale).",
+      "required_context_files": [
+        ".context/product.md",
+        ".context/discovery.md",
+        ".context/strategy-and-constraints.md",
+        ".context/conventions.md"
+      ],
+      "command_trigger": "/create-prd",
+      "icon": "description",
+      "color": "text-amber-500"
+    },
+    {
+      "id": "create-user-stories",
+      "name": "INVEST User Stories",
+      "category": "specification",
+      "description": "Generates user stories adhering to INVEST criteria, Concur format (As a/I want/So that), Gherkin Given-When-Then Acceptance Criteria, Fibonacci story points, and Definition of Done across Lean, Standard Agile, and Enterprise modes.",
+      "required_context_files": [
+        ".context/product.md",
+        ".context/conventions.md",
+        ".context/architecture.md"
+      ],
+      "command_trigger": "/create-user-stories",
+      "icon": "splitscreen",
+      "color": "text-blue-400"
+    },
+    {
+      "id": "gui-run",
+      "name": "PM Command Center GUI",
+      "category": "gui",
+      "description": "Launches the PM Command Center visual web application (GUI) locally on port 3000 and automatically opens it in your default web browser.",
+      "required_context_files": [
+        ".context/harness-config.yaml"
+      ],
+      "command_trigger": "/gui-run",
+      "icon": "open_in_browser",
+      "color": "text-amber-500"
+    },
+    {
+      "id": "ingest-context",
+      "name": "Context Ingestion Router",
+      "category": "knowledge",
+      "description": "Ingests raw unstructured inputs (meeting notes, customer interview transcripts, Slack dumps, existing PRDs, codebase READMEs, or MCP pages) and routes structured updates into .context/ product knowledge files.",
+      "required_context_files": [
+        ".context/product.md",
+        ".context/discovery.md",
+        ".context/strategy-and-constraints.md",
+        ".context/architecture.md",
+        ".context/decisions.md"
+      ],
+      "command_trigger": "/ingest-context",
+      "icon": "input",
+      "color": "text-purple-400"
+    },
+    {
+      "id": "refine-user-stories",
+      "name": "Story Refinement & SPIDR",
+      "category": "specification",
+      "description": "Grooms and refines existing user stories. Detects ambiguity, splits large stories using the SPIDR framework, adds missing Gherkin edge cases, and calculates a Grooming Readiness Score (0-100%).",
+      "required_context_files": [
+        ".context/conventions.md",
+        ".context/architecture.md"
+      ],
+      "command_trigger": "/refine-user-stories",
+      "icon": "tune",
+      "color": "text-blue-400"
+    },
+    {
+      "id": "sync-confluence",
+      "name": "Confluence Wiki Sync",
+      "category": "sync",
+      "description": "Publishes PRDs, Technical Specs, Design Briefs, and User Manuals directly into Confluence spaces using Atlassian MCP integration.",
+      "required_context_files": [
+        ".context/product.md"
+      ],
+      "command_trigger": "/sync-confluence",
+      "icon": "library_books",
+      "color": "text-blue-400"
+    },
+    {
+      "id": "sync-figma",
+      "name": "Figma Specs Sync",
+      "category": "sync",
+      "description": "Inspects Figma design files, imports component details, and posts design feedback/brief specifications directly to Figma nodes via Figma MCP.",
+      "required_context_files": [
+        ".context/conventions.md"
+      ],
+      "command_trigger": "/sync-figma",
+      "icon": "design_services",
+      "color": "text-violet-400"
+    },
+    {
+      "id": "sync-github-issues",
+      "name": "GitHub Issues Sync",
+      "category": "sync",
+      "description": "Bi-directionally syncs GitHub Issues, labels, and milestones. Pulls issues into BACKLOG.md and .context/discovery.md, or exports refined user stories as structured GitHub Issues.",
+      "required_context_files": [
+        ".context/discovery.md",
+        ".context/conventions.md"
+      ],
+      "command_trigger": "/sync-github-issues",
+      "icon": "code",
+      "color": "text-zinc-200"
+    },
+    {
+      "id": "sync-jira",
+      "name": "Jira Epics & Stories Sync",
+      "category": "sync",
+      "description": "Syncs user stories, acceptance criteria (Gherkin BDD), story points, and epics directly to Jira via Atlassian MCP integration.",
+      "required_context_files": [
+        ".context/conventions.md"
+      ],
+      "command_trigger": "/sync-jira",
+      "icon": "task_alt",
+      "color": "text-blue-500"
+    },
+    {
+      "id": "sync-miro",
+      "name": "Miro Whiteboards Sync",
+      "category": "sync",
+      "description": "Exports SCAMPER, HMW, 6 Thinking Hats brainstorm sessions, and outcome roadmaps directly to Miro visual whiteboards via Miro MCP integration.",
+      "required_context_files": [
+        ".context/discovery.md"
+      ],
+      "command_trigger": "/sync-miro",
+      "icon": "dashboard_customize",
+      "color": "text-yellow-400"
+    },
+    {
+      "id": "sync-notion",
+      "name": "Notion Databases Sync",
+      "category": "sync",
+      "description": "Bi-directionally syncs Notion product wikis, databases, and pages. Pulls research into .context/, or publishes PRDs, design briefs, and decision logs to Notion.",
+      "required_context_files": [
+        ".context/product.md",
+        ".context/decisions.md"
+      ],
+      "command_trigger": "/sync-notion",
+      "icon": "sticky_note_2",
+      "color": "text-orange-400"
+    },
+    {
+      "id": "validate-idea",
+      "name": "Idea & Hypothesis Validator",
+      "category": "ideation",
+      "description": "Validates product ideas, feature concepts, and business hypotheses using Strategyzer 4-Risk Analysis, The Mom Test customer interview framework, TAM/SAM/SOM market sizing, and Pre-mortem risk identification.",
+      "required_context_files": [
+        ".context/product.md",
+        ".context/discovery.md",
+        ".context/strategy-and-constraints.md"
+      ],
+      "command_trigger": "/validate-idea",
+      "icon": "fact_check",
+      "color": "text-red-400"
+    }
+  ],
+  "frameworks": [
+    {
+      "id": "jtbd-and-mom-test",
+      "name": "Jobs-to-be-Done (JTBD) & The Mom Test",
+      "category": "discovery",
+      "description": "To uncover genuine customer demand by systematically filtering out false validation, identifying real customer struggle, and structuring value propositions around the forces that drive adoption.",
+      "path": "frameworks/discovery/jtbd-and-mom-test.md"
+    },
+    {
+      "id": "opportunity-solution-tree",
+      "name": "Opportunity Solution Tree (OST)",
+      "category": "discovery",
+      "description": "To break the \"feature factory\" anti-pattern by ensuring teams explore the problem space thoroughly, evaluate multiple competing solutions for each customer pain point, and test assumptions before committing engineering resources.",
+      "path": "frameworks/discovery/opportunity-solution-tree.md"
+    },
+    {
+      "id": "kano-model",
+      "name": "The Kano Model & Customer Delight",
+      "category": "prioritization",
+      "description": "To construct balanced product releases that satisfy table-stakes baseline requirements, compete effectively on performance, and incorporate distinct delighters while aggressively pruning indifferent bloat.",
+      "path": "frameworks/prioritization/kano-model.md"
+    },
+    {
+      "id": "rice",
+      "name": "RICE Scoring Matrix",
+      "category": "prioritization",
+      "description": "To eliminate cognitive bias, loud-stakeholder lobbying, and \"pet project\" syndrome by anchoring prioritization to empirical reach, measurable business impact, defensible confidence, and engineering effort.",
+      "path": "frameworks/prioritization/rice.md"
+    },
+    {
+      "id": "wsjf-cost-of-delay",
+      "name": "Weighted Shortest Job First (WSJF) & Cost of Delay",
+      "category": "prioritization",
+      "description": "To maximize economic flow by scheduling high-value, time-critical, risk-reducing features that can be delivered quickly, preventing the common failure mode of tying up engineering squads on monolithic, slow-moving projects.",
+      "path": "frameworks/prioritization/wsjf-cost-of-delay.md"
+    },
+    {
+      "id": "theory-of-constraints",
+      "name": "Theory of Constraints (ToC) & CRT Mapping",
+      "category": "strategy",
+      "description": "To pinpoint the operational bottleneck choking product delivery, maximize throughput at that specific point, and align all upstream discovery and downstream execution to eliminate waste.",
+      "path": "frameworks/strategy/theory-of-constraints.md"
+    },
+    {
+      "id": "wardley-mapping",
+      "name": "Wardley Value Chain Mapping",
+      "category": "strategy",
+      "description": "To prevent catastrophic resource misallocation (e.g., custom-building commoditized components) and explicitly identify where a product's true competitive differentiation resides.",
+      "path": "frameworks/strategy/wardley-mapping.md"
+    }
+  ],
+  "context_files": [
+    {
+      "filename": "architecture.md",
+      "title": "Architecture & Technical Constraints",
+      "description": "Tech stack overview, core data models, API boundaries, security constraints, and codebase layout."
+    },
+    {
+      "filename": "conventions.md",
+      "title": "Product Conventions & Definition of Ready",
+      "description": "Deliverable tier rules (Lean, Standard Agile, Enterprise), Definition of Ready (DoR), and Given/When/Then AC standards."
+    },
+    {
+      "filename": "decisions.md",
+      "title": "Product Decision Log (PDR)",
+      "description": "Append-only audit trail of strategic product decisions, trade-offs, and rationale."
+    },
+    {
+      "filename": "discovery.md",
+      "title": "Discovery, Opportunities & Insights",
+      "description": "Active outcomes, Opportunity Solution Trees (OST), user interview takeaways, and JTBD insights."
+    },
+    {
+      "filename": "harness-config.yaml",
+      "title": "Harness Configuration",
+      "description": "Defines operating mode (standalone or embedded), deliverable tier, active frameworks, and enabled MCP servers."
+    },
+    {
+      "filename": "product.md",
+      "title": "Product Vision, Personas & OKRs",
+      "description": "Core product identity, target user personas, primary value loops, North Star metric, and strategic OKRs."
+    },
+    {
+      "filename": "strategy-and-constraints.md",
+      "title": "Strategy, Bottlenecks & Constraints",
+      "description": "Wardley mapping value chains, Theory of Constraints system bottleneck, and business/technical constraints."
+    }
+  ]
+}

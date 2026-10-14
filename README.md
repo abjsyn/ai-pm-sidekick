@@ -1,181 +1,141 @@
 # 🚀 AI PM Sidekick
 
-**AI PM Sidekick** is a tool-agnostic AI assistant framework built to empower Product Managers across the entire product lifecycle—from idea validation and PRDs to user stories, interactive HTML wireframes, design briefs, technical documentation, **PM Command Center Web GUI**, and **live integrations via MCP with Atlassian (Jira, Confluence), Figma, Miro, and Google Stitch**.
+**AI PM Sidekick** is a local-first, privacy-respecting, tool-agnostic AI assistant framework and harness built for Product Managers, Technical PMs, and Engineering Leads. It bridges the gap between chaotic customer discovery and engineering execution—powering idea validation, PRDs, user stories, interactive HTML wireframes, design briefs, technical documentation, the **PM Command Center Web GUI**, and **live bi-directional MCP integrations with Atlassian (Jira & Confluence), GitHub Issues, Figma, Miro, Notion, and Google Stitch**.
+
+> 📖 **Looking for the complete operational guide?**  
+> Read the [📘 AI-SDLC Playbook (AI_SDLC.md)](AI_SDLC.md) for step-by-step walkthroughs of **Workflow A (Standalone PM Command Center)**, **Workflow B (Embedded Codebase Harness)**, adding custom frameworks in 2 minutes, and context hygiene rules.
 
 ---
 
-## 🌟 Core Capabilities & MCP Integrations
+## 🌟 Core Capabilities & 18 Canonical Skills
 
-| Skill / Integration | Slash Command | Description | Integration Framework / Standard | Next Skill Suggestion |
-| :--- | :--- | :--- | :--- | :--- |
-| **PM Command Center** | `/gui-run` | Web GUI dashboard & REST API on `localhost:3000` | Google Stitch Atelier UI, REST API, Localhost daemon | `create-prd`, `connect-mcp` |
-| **Idea Validation** | `/validate-idea` | Evaluates raw concepts & hypotheses | Strategyzer 4-Risk, The Mom Test, TAM/SAM/SOM, Pre-mortem | `brainstorm` or `create-prd` |
-| **Brainstorming** | `/brainstorm` | Generates innovative solution angles | SCAMPER, How Might We (HMW), 6 Hats, Value vs Effort | `sync-miro`, `create-prd` |
-| **PRD Generation** | `/create-prd` | Generates structured PRDs | 3 Modes (Lean, Standard Agile, Enterprise) | `sync-confluence`, `create-user-stories` |
-| **Clickable Mockups** | `/create-mockup` | Generates interactive HTML wireframes | Tailwind CSS, interactive modals/tabs | `create-design-brief`, `create-user-stories` |
-| **Design Briefs** | `/create-design-brief` | Bridges PM and UI/UX design specs | WCAG 2.1 AA accessibility, UX flows, Figma handoff | `sync-figma`, `create-mockup` |
-| **User Stories** | `/create-user-stories` | Creates engineering-ready user stories | INVEST, Gherkin BDD (`Given/When/Then`), Fibonacci Points, DoD | `sync-jira`, `refine-user-stories` |
-| **Story Grooming** | `/refine-user-stories` | Refines & splits stories with Readiness Score | SPIDR Splitting framework, Grooming Score (0-100%) | `sync-jira`, `create-documentation` |
-| **Documentation** | `/create-documentation` | Dual tech spec & user guide generator | OpenAPI 3.0, Mermaid sequence diagrams, User manuals | `sync-confluence` |
-| **Context Ingestion** | `/ingest-context` | Distills raw notes, calls, & MCP into `.context/` | Single source of truth, Mom Test filter, Structured PDR | `apply-framework`, `create-prd` |
-| **Apply Framework** | `/apply-framework` | Runs strategic, discovery, & priority models | Wardley Mapping, ToC, OST, JTBD, RICE, WSJF, Kano | `create-prd`, `create-user-stories` |
-| **MCP Setup & Connection** | `/connect-mcp` | Connects & verifies external PM tools | Model Context Protocol (MCP), `.env` credentials | `sync-jira`, `sync-confluence`, `sync-figma`, `sync-miro` |
-| **Jira Backlog Sync** | `/sync-jira` | Exports stories/epics directly to Jira | Atlassian MCP (`jira_create_issue`, `jira_update_issue`) | `sync-confluence`, `refine-user-stories` |
-| **Confluence Doc Sync** | `/sync-confluence` | Publishes PRDs/specs to Confluence | Atlassian MCP (`confluence_create_page`) | `sync-jira` |
-| **GitHub Issues Sync** | `/sync-github-issues` | Bi-directional GitHub Issues & milestone sync | GitHub MCP (`create_issue`, `list_issues`) | `refine-user-stories`, `sync-jira` |
-| **Figma Design Sync** | `/sync-figma` | Inspects components & posts Figma comments | Figma MCP (`figma_get_file`, `figma_post_comment`) | `create-mockup`, `create-user-stories` |
-| **Miro Whiteboard Sync** | `/sync-miro` | Exports sticky notes & matrices to Miro | Miro MCP (`miro_create_board`, `miro_create_sticky_note`) | `validate-idea`, `create-prd` |
-| **Notion Product Wiki** | `/sync-notion` | Bi-directional Notion research & PRD sync | Notion MCP (`notion_create_page`, `notion_get_page`) | `create-prd`, `ingest-context` |
-
----
-
-## 🔌 Connecting External Tools via MCP (Atlassian, GitHub, Figma, Miro, Notion)
-
-You can easily configure and activate live MCP connections to your favorite external tools using the included setup CLI script or slash commands:
-
-### 1. Interactive Setup CLI
-Run the MCP connection wizard in your terminal:
-```bash
-# Interactive setup wizard to configure Atlassian (Jira/Confluence), Figma, and Miro:
-python3 scripts/setup-mcp.py --interactive
-
-# Or generate MCP config across all platforms (AGY, Claude Code, Cursor):
-python3 scripts/setup-mcp.py --target all
-
-# Verify connection readiness & credentials:
-python3 scripts/setup-mcp.py --check
-```
-
-### 2. Required Credentials (`.env`)
-Fill in your credentials in `.env` (or let the interactive wizard populate it):
-```env
-# Atlassian (Jira & Confluence)
-ATLASSIAN_HOST=https://your-company.atlassian.net
-ATLASSIAN_EMAIL=pm@company.com
-ATLASSIAN_API_TOKEN=your_atlassian_api_token
-
-# Figma
-FIGMA_ACCESS_TOKEN=your_figma_personal_access_token
-
-# Miro
-MIRO_ACCESS_TOKEN=your_miro_access_token
-```
-
-### 3. Native Configuration Files Auto-Generated
-- **AGY / Antigravity**: `.agents/mcp.json`
-- **Claude Code**: `.claude/mcp.json`
-- **Cursor IDE**: `.cursor/mcp.json`
+| Skill / Integration | Slash Command | Category | Description | Primary Output Target | Next Skill Suggestion |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **PM Command Center** | `/gui-run` | `gui` | Web GUI dashboard & REST API on `localhost:3000` | Google Stitch Atelier UI | `create-prd`, `connect-mcp` |
+| **Context Ingestion** | `/ingest-context` | `knowledge` | Distills raw notes, calls, & Slack dumps into `.context/` | `.context/*.md`, `decisions.md` | `apply-framework`, `create-prd` |
+| **Apply Framework** | `/apply-framework` | `knowledge` | Runs strategic, discovery, & prioritization models | `.context/`, `BACKLOG.md`, `docs/` | `create-prd`, `create-user-stories` |
+| **Idea Validation** | `/validate-idea` | `ideation` | Evaluates raw concepts & hypotheses (4-Risk, Mom Test, Pre-mortem) | 4-Risk Brief in `docs/` | `brainstorm`, `create-prd` |
+| **Brainstorming** | `/brainstorm` | `ideation` | Generates innovative solution angles (SCAMPER, HMW, 6 Hats) | Opportunity doc in `docs/` | `sync-miro`, `create-prd` |
+| **PRD Generation** | `/create-prd` | `specification` | Generates structured PRDs across Lean, Standard, and Enterprise tiers | PRD in `docs/` | `create-mockup`, `create-user-stories` |
+| **Clickable Mockups** | `/create-mockup` | `specification` | Generates self-contained, interactive Tailwind HTML wireframes | HTML prototype in `mockups/` | `create-design-brief`, `create-user-stories` |
+| **Design Briefs** | `/create-design-brief` | `specification` | Bridges PM and UI/UX design specs with WCAG 2.1 AA accessibility | UI/UX Brief in `docs/` | `sync-figma`, `create-mockup` |
+| **User Stories** | `/create-user-stories` | `specification` | Breaks down features into INVEST stories + Gherkin BDD AC | User Stories in `docs/` | `refine-user-stories`, `sync-jira` |
+| **Story Grooming** | `/refine-user-stories` | `specification` | Refines & splits stories using SPIDR with Readiness Score | Refined Stories in `docs/` | `sync-jira`, `sync-github-issues` |
+| **Documentation** | `/create-documentation` | `specification` | Dual tech spec & user guide generator (OpenAPI 3.0, Mermaid) | Tech Docs & Manuals in `docs/` | `sync-confluence`, `sync-notion` |
+| **MCP Manager** | `/connect-mcp` | `sync` | Connects & verifies external PM tools across IDEs | `mcp.json` & `.env` | `sync-jira`, `sync-github-issues` |
+| **Jira Backlog Sync** | `/sync-jira` | `sync` | Exports stories/epics directly to Jira via Atlassian MCP | Jira Issues & Epics | `sync-confluence`, `refine-user-stories` |
+| **Confluence Doc Sync**| `/sync-confluence` | `sync` | Publishes PRDs/specs straight to Confluence spaces | Confluence Wiki Pages | `sync-jira`, `create-documentation` |
+| **GitHub Issues Sync** | `/sync-github-issues` | `sync` | Bi-directional GitHub Issues, milestones, and label sync | GitHub Issues & Milestones | `refine-user-stories`, `sync-jira` |
+| **Figma Design Sync** | `/sync-figma` | `sync` | Inspects components & posts design feedback to Figma nodes | Figma Comments & Specs | `create-mockup`, `create-design-brief` |
+| **Miro Whiteboard Sync**| `/sync-miro` | `sync` | Exports brainstorm stickies, OSTs, and roadmaps to Miro | Miro Visual Boards | `validate-idea`, `apply-framework` |
+| **Notion Wiki Sync** | `/sync-notion` | `sync` | Bi-directional Notion research databases and PRD wiki sync | Notion Pages & Databases | `create-prd`, `ingest-context` |
 
 ---
 
-## ⚡ Slash Command Invocation & Tool Usage
+## 🧠 The `.context/` Product Knowledge Core
 
-You can invoke any skill using **slash commands** (`/command`) or natural language, depending on your AI tool environment:
+At the center of AI PM Sidekick is a persistent, version-controlled **single source of truth** in `.context/`. Instead of stuffing massive prompts into ephemeral chat windows, agents continuously hydrate from and compound knowledge back into these structured files:
 
-### 1. Claude Code / Claude CLI (`/command` Native)
-In Claude Code, exported commands in `.claude/commands/` are registered natively as slash commands:
-- `/connect-mcp`
-- `/sync-jira`
-- `/sync-confluence`
-- `/sync-github-issues`
-- `/sync-figma`
-- `/sync-miro`
-- `/sync-notion`
-- `/validate-idea`
-- `/brainstorm`
-- `/create-prd`
-- `/create-user-stories`
-- `/refine-user-stories`
-- `/create-mockup`
-- `/create-design-brief`
-- `/create-documentation`
-- `/ingest-context`
-- `/apply-framework`
-- `/gui-run`
+- [`.context/harness-config.yaml`](.context/harness-config.yaml): Workspace mode (`standalone` vs `embedded`), default tier (`lean`, `standard`, `enterprise`), active frameworks, and enabled MCP integrations.
+- [`.context/product.md`](.context/product.md): High-level strategic vision, primary personas, core value loops, North Star metric, and quarterly OKRs.
+- [`.context/discovery.md`](.context/discovery.md): Teresa Torres Opportunity Solution Trees (OST), active customer opportunities, and verified Mom Test insights.
+- [`.context/strategy-and-constraints.md`](.context/strategy-and-constraints.md): Wardley Map value chain evolution table, Theory of Constraints system bottleneck, and business/regulatory constraints.
+- [`.context/architecture.md`](.context/architecture.md): Live tech stack, entity data models, API boundaries, security constraints, and codebase directory layout.
+- [`.context/conventions.md`](.context/conventions.md): Team Definition of Ready (DoR), Given/When/Then Gherkin acceptance criteria standards, and tier rules.
+- [`.context/decisions.md`](.context/decisions.md): Append-only immutable Product Decision Log (PDR/ADR) tracking historical trade-offs, rationale, and rejected alternatives.
 
-### 2. Antigravity / AGY / Gemini (`/command` & Progressive Skill Activation)
-In AGY, skills stored in `.agents/skills/<skill>/SKILL.md` can be called by typing:
-- `/connect-mcp` or *"Connect external tools via MCP..."*
-- `/sync-jira` or *"Export user stories to Jira..."*
-- `/sync-confluence` or *"Publish PRD to Confluence..."*
-- `/sync-github-issues` or *"Sync GitHub issues and milestones..."*
-- `/sync-figma` or *"Inspect Figma design file..."*
-- `/sync-miro` or *"Export brainstorm sticky notes to Miro..."*
-- `/sync-notion` or *"Sync research and PRDs to Notion..."*
-
-### 3. Cursor IDE (`@rule` or `/command` Alias)
-In Cursor, skills in `.cursor/rules/*.mdc` are automatically triggered by topic matching, or explicitly invoked via:
-- Type `@sync-jira` or `/sync-jira` in chat prompt.
+### 🚫 Strict Asset Separation (Zero Context Contamination)
+To eliminate AI hallucinations:
+- **Internal Sidekick UI Specs & Views (`ui/specs/`, `ui/views/`)**: Reserved strictly for the Sidekick's own web UI.
+- **User Product Deliverables (`docs/`, `mockups/`)**: All PRDs, user stories, and specs belong exclusively in `docs/`; all wireframes belong in `mockups/`.
 
 ---
 
-## 🔄 End-to-End Workflow Progression & MCP Flow Handling
+## 🗺️ Modular Framework Engine (`frameworks/`)
 
-AI PM Sidekick seamlessly integrates with external tool ecosystems at every phase of the PM pipeline:
+AI PM Sidekick includes a decoupled library of industry-standard strategic, discovery, and prioritization frameworks:
 
-```mermaid
-flowchart TD
-    A[🧪 validate-idea] -->|Go/Pivot| B[💡 brainstorm]
-    B -->|Sync Whiteboard| B1[📌 sync-miro]
-    B -->|Ready| C[📝 create-prd]
-    C -->|Publish Spec| C1[📄 sync-confluence]
-    C --> D[📖 create-user-stories]
-    C --> E[🎨 create-design-brief]
-    C --> F[🖥️ create-mockup]
-    D -->|Export Tickets| D1[🎟️ sync-jira]
-    E -->|Inspect/Comment| E1[🎨 sync-figma]
-    D --> G[🔍 refine-user-stories]
-    G --> H[📚 create-documentation]
-```
+### 1. Strategic Frameworks ([`frameworks/strategy/`](frameworks/strategy/))
+- **`wardley-mapping`**: Plots value chain components along Visibility vs. Evolution (Genesis ➔ Custom ➔ Product ➔ Commodity) to enforce disciplined Build-vs-Buy decisions.
+- **`theory-of-constraints`**: Executes Goldratt's 5 Focusing Steps to exploit the primary system bottleneck choking sprint throughput, backed by Current Reality Trees (CRT).
+
+### 2. Discovery Frameworks ([`frameworks/discovery/`](frameworks/discovery/))
+- **`opportunity-solution-tree`**: Teresa Torres OST framework connecting Desired Business Outcomes $\rightarrow$ Customer Opportunities (unmet needs) $\rightarrow$ Candidate Solutions $\rightarrow$ Fastest Assumption Tests.
+- **`jtbd-and-mom-test`**: Maps Functional, Emotional, and Social jobs across the Four Forces of Progress ($\text{Push} + \text{Pull} > \text{Anxiety} + \text{Habit}$) and filters customer interviews for behavioral facts over empty compliments.
+
+### 3. Prioritization Frameworks ([`frameworks/prioritization/`](frameworks/prioritization/))
+- **`rice`**: Quantitative score ($\frac{\text{Reach} \times \text{Impact} \times \text{Confidence}}{\text{Effort}}$) featuring strict anti-gaming confidence thresholds ($100\%, 80\%, 50\%, 20\%$).
+- **`wsjf-cost-of-delay`**: Weighted Shortest Job First economic scheduling ($\frac{\text{User Value} + \text{Time Criticality} + \text{Risk Reduction}}{\text{Job Size}}$).
+- **`kano-model`**: Non-linear customer satisfaction classification (Must-be, One-dimensional, Attractive, Indifferent) using functional/dysfunctional question pairs.
+
+> 💡 **Add your own custom framework in under 2 minutes!** Follow the standardized 5-part schema in [`frameworks/README.md`](frameworks/README.md) and run `python3 scripts/export-skills.py`.
 
 ---
 
-## ⚙️ Multi-Tool Compatibility
+## 🔌 6 Live MCP Tool Integrations
 
-AI PM Sidekick is designed to be **100% tool-agnostic**. Run `python3 scripts/export-skills.py` to deploy to your tool of choice:
+Connect the Sidekick directly to your team's production tool stack using the Model Context Protocol (MCP):
 
-* **AGY / Gemini**: Installed natively in `.agents/skills/<skill>/SKILL.md`
-* **Cursor IDE**: Exported to `.cursor/rules/<skill>.mdc`
-* **Claude Code / Claude Projects**: Exported to `.claude/commands/<skill>.md`
-* **ChatGPT / Custom GPTs**: Generated as a single system prompt bundle at `dist/pm_sidekick_system_prompt.md`
+| Tool | Supported Workflows | MCP Server Package |
+| :--- | :--- | :--- |
+| **Atlassian (Jira)** | Backlog sync, epic generation, ticket creation, status updates | `npx -y @atlassian/mcp` |
+| **Atlassian (Confluence)**| PRD publishing, engineering spec updates, space page creation | `npx -y @atlassian/mcp` |
+| **GitHub Issues** | Bi-directional issue sync, milestone mapping, label assignment | `npx -y @modelcontextprotocol/server-github` |
+| **Figma** | Design file inspection, component discovery, canvas comments | `npx -y @figma/mcp` |
+| **Miro** | Sticky note brainstorming, OST visual maps, roadmap exports | `npx -y @miro/mcp` |
+| **Notion** | Research database syncing, product wiki publishing, PDR logs | `npx -y @notionhq/notion-mcp-server` |
 
 ---
 
 ## 🚀 Quick Start Guide
 
-### 1. Installation & Export
+### 1. Initialize Workspace
 ```bash
-git clone https://github.org/your-org/ai-pm-sidekick.git
-cd ai-pm-sidekick
+# Standalone mode (launches local web GUI & PM Command Center):
+python3 scripts/init-workspace.py --mode standalone --open
+
+# Embedded mode (scans existing codebase & pre-populates .context/architecture.md):
+python3 scripts/init-workspace.py --mode embedded --tier standard
+```
+
+### 2. Configure MCP Credentials
+```bash
+# Run interactive setup wizard for Jira, Confluence, GitHub, Figma, Miro, Notion:
+python3 scripts/setup-mcp.py --interactive
+
+# Audit readiness and verify credentials:
+python3 scripts/setup-mcp.py --check
+```
+
+### 3. Compile Skills & Multi-Tool Adapters
+```bash
 python3 scripts/export-skills.py
 ```
-
-### 2. Configure MCP Integrations
-```bash
-python3 scripts/setup-mcp.py --interactive
-```
-
-### 3. Using Capabilities
-In **AGY**, **Cursor**, or **Claude**, invoke the skills by slash command or natural language:
-* `/connect-mcp` — Set up and verify Atlassian, Figma, and Miro integrations
-* `/sync-jira` — Push stories & Gherkin criteria directly to Jira backlog
-* `/sync-confluence` — Publish PRDs and tech specs straight to Confluence
-* `/sync-figma` — Import design components and post feedback to Figma nodes
-* `/sync-miro` — Transform SCAMPER brainstorms into Miro sticky note whiteboards
-* `/create-prd` — Generate a standard PRD for user onboarding flow
-* `/create-user-stories` — Create user stories in Standard Agile mode
+This generates native configurations for:
+- **AGY / Gemini**: `.agents/skills/` and `.agents/project-harness/SKILL.md`
+- **Cursor IDE**: `.cursor/rules/*.mdc` and `.cursorrules`
+- **Claude Code**: `.claude/commands/*.md` and `CLAUDE.md`
+- **ChatGPT / Custom GPTs**: `dist/pm_sidekick_system_prompt.md`
+- **Web GUI Sidepanel**: `dist/harness-manifest.json`
 
 ---
 
-## 🎯 3 Operational Modes (PRD & User Stories)
+## 🎯 3 Operational Deliverable Tiers
 
-Select your operational context when triggering PRD or User Story generation:
-1. **⚡ Lean Mode**: 1-page PRD & concise bullet acceptance criteria (ideal for MVPs & hackathons).
-2. **🎯 Standard Agile Mode** *(Default)*: Full INVEST criteria, Gherkin BDD, Fibonacci story points, and DoD.
-3. **🏢 Enterprise Mode**: Traceability matrix, SOC2/GDPR compliance tags, security assertions, SLA targets, and audit log specs.
+When generating PRDs or User Stories, choose your compliance and detail tier:
+1. **⚡ Lean Mode (Startup / MVP)**: 1-page PRDs, rapid bullet acceptance criteria, minimal overhead.
+2. **🎯 Standard Agile Mode (Default / Growth)**: Full INVEST criteria, Gherkin BDD (`Given/When/Then`), Fibonacci story points, and Definition of Done.
+3. **🏢 Enterprise Mode (Compliance / Scale)**: Traceability matrices, SOC2/GDPR compliance tags, security assertions, SLA targets, and audit log specifications.
 
 ---
 
-## 📋 Extended Backlog
-See [BACKLOG.md](./BACKLOG.md) for planned future capabilities including Competitor Analysis, RICE Backlog Prioritization, Customer Interview Synthesizer, Analytics Telemetry Plan, and Release Notes Generator.
+## 📚 Complete Documentation & Playbook
 
+- **Operational Playbook**: [📘 AI-SDLC Playbook (AI_SDLC.md)](AI_SDLC.md)
+- **Framework Guide**: [🗺️ Frameworks Architecture (frameworks/README.md)](frameworks/README.md)
+- **MCP Connection Guide**: [🔌 MCP Connect Guide (skills/connect-mcp/SKILL.md)](skills/connect-mcp/SKILL.md)
+- **Backlog**: [📋 Product Backlog (BACKLOG.md)](BACKLOG.md)
+
+---
+
+*AI PM Sidekick — Built with ❤️ for Product Managers who demand strategic rigor, architectural grounding, and zero busywork.*

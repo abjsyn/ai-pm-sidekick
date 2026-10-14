@@ -1,5 +1,5 @@
 ---
-description: >-
+description: Bi-directionally syncs Notion product wikis, databases, and pages. Pulls research into .context/, or publishes PRDs, design briefs, and decision logs to Notion.
 globs: "*"
 ---
 # 📓 Notion Product Wiki & Database Sync Skill

@@ -1,6 +1,6 @@
 # Command: /ingest-context
 
->-
+Ingests raw unstructured inputs (meeting notes, customer interview transcripts, Slack dumps, existing PRDs, codebase READMEs, or MCP pages) and routes structured updates into .context/ product knowledge files.
 
 # 📥 Ingest Context Skill
 

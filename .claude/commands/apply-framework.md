@@ -1,6 +1,6 @@
 # Command: /apply-framework
 
->-
+Executes modular strategic, discovery, or prioritization frameworks from frameworks/ over an idea, backlog, or PRD, and synchronizes results back to .context/.
 
 # 🧠 Apply Framework Skill
 

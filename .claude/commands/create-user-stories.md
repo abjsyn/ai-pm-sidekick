@@ -1,6 +1,6 @@
 # Command: /create-user-stories
 
->-
+Generates user stories adhering to INVEST criteria, Concur format (As a/I want/So that), Gherkin Given-When-Then Acceptance Criteria, Fibonacci story points, and Definition of Done across Lean, Standard Agile, and Enterprise modes.
 
 # 📖 User Story Generation Skill
 

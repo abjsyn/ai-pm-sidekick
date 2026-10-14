@@ -1,6 +1,6 @@
 # Command: /refine-user-stories
 
->-
+Grooms and refines existing user stories. Detects ambiguity, splits large stories using the SPIDR framework, adds missing Gherkin edge cases, and calculates a Grooming Readiness Score (0-100%).
 
 # 🔍 User Story Grooming & Refinement Skill
 

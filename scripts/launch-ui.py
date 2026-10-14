@@ -33,6 +33,7 @@ MOCKUPS_DIR = ROOT_DIR / "mockups"
 CONTEXT_DIR = ROOT_DIR / ".context"
 ENV_FILE = ROOT_DIR / ".env"
 ENV_EXAMPLE = ROOT_DIR / ".env.example"
+DIST_DIR = ROOT_DIR / "dist"
 
 def parse_env_file():
     target = ENV_FILE if ENV_FILE.exists() else ENV_EXAMPLE
@@ -236,6 +237,12 @@ class PMCommandCenterApiHandler(SimpleHTTPRequestHandler):
         if path.startswith('/mockups/stitch/'):
             self.path = '/ui/stitch/' + path[len('/mockups/stitch/'):]
             return super().do_GET()
+
+        if path in ("/api/manifest", "/dist/harness-manifest.json"):
+            manifest_file = DIST_DIR / "harness-manifest.json"
+            if manifest_file.exists():
+                return self.send_json(json.loads(manifest_file.read_text(encoding="utf-8")))
+            return self.send_json({"error": "Manifest not found. Run scripts/export-skills.py first."}, status=404)
 
         if path == "/api/skills":
             return self.send_json({"skills": get_all_skills()})

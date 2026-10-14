@@ -1,6 +1,6 @@
 # Command: /brainstorm
 
->-
+Facilitates structured product & feature brainstorming using SCAMPER, How Might We (HMW), 6 Thinking Hats, and Value vs. Effort matrix.
 
 # 💡 Product & Feature Brainstorming Skill
 

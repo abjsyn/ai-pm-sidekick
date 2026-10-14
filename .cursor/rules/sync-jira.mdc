@@ -1,5 +1,5 @@
 ---
-description: >-
+description: Syncs user stories, acceptance criteria (Gherkin BDD), story points, and epics directly to Jira via Atlassian MCP integration.
 globs: "*"
 ---
 # 🎟️ Jira Backlog Sync Skill
