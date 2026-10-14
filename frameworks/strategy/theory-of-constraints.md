@@ -1,3 +1,26 @@
+---
+id: theory-of-constraints
+name: Theory of Constraints (ToC) & CRT Mapping
+category: strategy
+problem_signatures:
+  - "Engineering delivery velocity stalls despite adding headcount or running more syncs"
+  - "Backlog grows exponentially while deployment throughput remains completely flat"
+  - "Upstream requirements or downstream QA continually starves engineering flow"
+best_for_stage:
+  - growth
+  - scale
+  - enterprise
+data_maturity_required: medium
+when_not_to_use:
+  - "Early 0-to-1 discovery where product-market fit has not been established"
+  - "Environments with no measurable workflow stages or cycle-time metrics"
+paired_skills:
+  - refine-user-stories
+  - create-prd
+  - project-harness
+write_back_target: .context/strategy-and-constraints.md
+---
+
 # ⚙️ Strategic Framework: Theory of Constraints (ToC) & CRT Mapping
 
 ## 1. 🧠 Mental Model & Trigger Conditions

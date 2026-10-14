@@ -372,7 +372,8 @@ def get_all_skills():
         "connect-mcp": "mcp",
         "gui-run": "gui",
         "ingest-context": "context",
-        "apply-framework": "strategy"
+        "apply-framework": "strategy",
+        "recommend-framework": "strategy"
     }
     
     if SKILLS_DIR.exists():

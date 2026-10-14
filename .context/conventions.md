@@ -81,3 +81,22 @@ A story is marked as `Done` when:
 - [ ] Accessibility (WCAG 2.1 AA) and responsive layouts validated.
 - [ ] Associated PRD and technical docs in `docs/` updated to reflect actual release implementation.
 - [ ] Jira ticket transitioned to `Released / Done` and release notes logged.
+
+---
+
+## 🔄 5. Operating Model Conventions (`operating_model`)
+
+AI PM Sidekick supports 4 delivery operating models configured via `operating_model` in [`.context/harness-config.yaml`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/.context/harness-config.yaml). Each model shapes how backlogs, cycles, estimation, and handoffs are executed:
+
+| Operating Model | Core Cadence | Unit of Work | Estimation & Sizing | Primary Delivery Gate |
+| :--- | :--- | :--- | :--- | :--- |
+| **`scrum`** *(Default)* | 1–2 week sprints | INVEST User Stories + Gherkin ACs | Fibonacci story points ($\le 5$ pts) | Definition of Ready ($\ge 85\%$) & Sprint Goal |
+| **`shape-up`** | 6-week cycles + 2-week cooldown | Shaped Pitches & Scopes | Fixed Appetite (Small = 1–2 wks, Big = 6 wks) | Betting Table approval & Circuit Breaker |
+| **`kanban`** | Continuous pull flow | Backlog items with WIP limits | Cycle time & throughput metrics | WIP column limits & SLA throughput |
+| **`gist`** | Iterative experiment loops | Step-projects ($\le 2$ weeks) & Tasks | ICE scoring (Impact, Confidence, Ease) | Metric validation gate to unlock next step |
+
+### Operating Model Selection Heuristics:
+1. **Choose `scrum`** when cross-functional engineering sprints require predictable velocity, sprint commitments, and rigorous DoD sign-off.
+2. **Choose `shape-up`** when teams suffer from backlog bloat and sprint rollover fatigue, and need bounded appetites with high autonomous design/build agency.
+3. **Choose `kanban`** for operational maintenance, ongoing developer platform enhancements, or bug triage queues where work arrives unpredictably.
+4. **Choose `gist`** for high-uncertainty 0-to-1 innovation tracks where committing to a multi-month solution is premature before smoke testing ideas with fast step-projects.

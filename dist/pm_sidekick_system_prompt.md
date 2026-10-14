@@ -42,13 +42,18 @@ The skill dynamically orchestrates any methodology from [`frameworks/`](file:///
 - **`wsjf-cost-of-delay`**: Weighted Shortest Job First economic scheduling ($\frac{\text{User-Business Value} + \text{Time Criticality} + \text{RR/OE}}{\text{Job Size}}$).
 - **`kano-model`**: Non-linear satisfaction classification (Must-Be, Performance, Attractive, Indifferent) using functional/dysfunctional question pairs.
 
+### 4. Operational & Delivery Frameworks ([`frameworks/operations/`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/frameworks/operations/))
+- **`shape-up`**: Fixed-time, variable-scope product development (Shaped Pitches, Appetite budgeting, Breadboards, No-Gos, Hill Charts).
+- **`scrum-sprint-delivery`**: Predictable sprint execution (Sprint Goal, INVEST slicing via SPIDR, Gherkin acceptance criteria, DoR gating).
+- **`gist-planning`**: Iterative high-uncertainty outcome execution (Goals, Ideas backlog, lightweight Step-projects $\le 2$ weeks, Tasks).
+
 ---
 
 ## 🎯 Target Inputs
 Run this skill over any of the following targets:
 1. **Backlog Items**: Prioritize items in [`BACKLOG.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/BACKLOG.md) or sprint tickets using RICE or WSJF.
 2. **Product Requirements**: Evaluate a PRD in [`docs/`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/docs/) using Kano feature classification or Wardley value chain mapping.
-3. **Raw Concepts & Pitches**: Interrogate raw ideas with OST or The Mom Test.
+3. **Raw Concepts & Pitches**: Interrogate raw ideas with OST, The Mom Test, or Shape Up breadboards.
 4. **Engineering / Process Bottlenecks**: Run Theory of Constraints over sprint velocity or grooming friction.
 
 ---
@@ -56,8 +61,10 @@ Run this skill over any of the following targets:
 ## 🛠️ Step-by-Step Execution Workflow
 
 ### 1. Framework Selection & Target Ingestion
-- Prompt user to select a framework (or auto-detect based on user intent):
-  > *"Which framework would you like to run? Options: `rice`, `wsjf-cost-of-delay`, `kano-model`, `opportunity-solution-tree`, `jtbd-and-mom-test`, `wardley-mapping`, `theory-of-constraints`."*
+- **No Specific Framework Named? Delegate to Dispatcher**:
+  If the user describes a problem, bottleneck, or goal without specifying an exact framework name, **immediately invoke [`skills/recommend-framework/SKILL.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/skills/recommend-framework/SKILL.md)** to generate a 4-part Diagnostic Prescription.
+- If a framework is specified, prompt user to confirm or select:
+  > *"Running framework: `<framework-id>`. Available frameworks: `rice`, `wsjf-cost-of-delay`, `kano-model`, `opportunity-solution-tree`, `jtbd-and-mom-test`, `wardley-mapping`, `theory-of-constraints`, `shape-up`, `scrum-sprint-delivery`, `gist-planning`."*
 - Ingest the target content: raw text, a file in `docs/`, `BACKLOG.md`, or user prompt.
 
 ### 2. Context Hydration
@@ -821,6 +828,115 @@ Once context ingestion is complete, ALWAYS recommend the logical next action:
 
 ---
 
+## Skill: recommend-framework (Framework Dispatcher)
+- **Category**: `knowledge`
+- **Trigger**: `/recommend-framework`
+- **Description**: Diagnoses PM bottlenecks, uncertainty, or prioritization challenges, recommends the optimal framework & skill with a lightweight alternative and anti-pattern warning, and guides execution.
+- **Required Context**: .context/harness-config.yaml, .context/product.md
+
+# 🧭 Framework Dispatcher & Recommendation Skill
+
+## Overview
+The `recommend-framework` skill acts as an intelligent product advisor. When a Product Manager describes a challenge, dilemma, bottleneck, or goal without knowing which methodology or skill to use, this skill analyzes the workspace context (`.context/harness-config.yaml`, `.context/product.md`) and the diagnostic frontmatter of all available frameworks in `frameworks/*/*.md` to prescribe the exact best-fit framework, a 15-minute lightweight alternative, and an explicit anti-pattern warning.
+
+---
+
+## ⚙️ Diagnostic Decision Engine
+
+The dispatcher matches problem signatures against the four framework categories:
+
+```
+                          ┌─────────────────────────────┐
+                          │   What is the core issue?   │
+                          └──────────────┬──────────────┘
+                                         │
+       ┌──────────────────┬──────────────┴──────────────┬──────────────────┐
+       ▼                  ▼                             ▼                  ▼
+┌──────────────┐   ┌──────────────┐              ┌──────────────┐   ┌──────────────┐
+│  Strategy &  │   │  Continuous  │              │ Quantitative │   │  Delivery &  │
+│  Value Chain │   │  Discovery   │              │ Prioritize   │   │  Operations  │
+└──────┬───────┘   └──────┬───────┘              └──────┬───────┘   └──────┬───────┘
+       │                  │                             │                  │
+   [Wardley]          [JTBD / Mom]                   [RICE]            [Shape Up]
+   Build vs Buy       Past Behavior              Reach x Impact      Fixed Appetite
+       │                  │                             │                  │
+    [ToC]               [OST]                        [WSJF]             [Scrum]
+  Bottlenecks       Outcomes/Opps                Cost of Delay       INVEST Sprints
+                                                        │                  │
+                                                      [Kano]             [GIST]
+                                                    Delighters       Step-Projects
+```
+
+---
+
+## 🛠️ Step-by-Step Diagnostic Protocol
+
+### Step 1: Ingest Context & Diagnostic Metadata
+1. Read [`.context/harness-config.yaml`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/.context/harness-config.yaml) to identify `mode`, `default_tier`, `operating_model`, and `active_frameworks`.
+2. Read [`.context/product.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/.context/product.md) to determine current company stage (0-to-1, growth, scale, enterprise) and target outcomes.
+3. Parse YAML frontmatter across all files in [`frameworks/`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/frameworks/) (`problem_signatures`, `best_for_stage`, `data_maturity_required`, `when_not_to_use`, `paired_skills`, `write_back_target`).
+
+### Step 2: Diagnostic Clarification Gate
+If the user's inquiry is ambiguous across:
+- **(a) Product Stage**: Is this a brand-new hypothesis (0-to-1) or an established feature (growth/scale)?
+- **(b) Available Data/Evidence**: Do you have quantitative telemetry and interview facts, or pure qualitative intuition?
+- **(c) Time Horizon**: Do you need a decision for tomorrow's sprint or quarterly strategic planning?
+
+Ask at most **1–2 targeted multiple-choice diagnostic questions** before recommending.
+
+### Step 3: Formulate the Diagnostic Prescription
+Synthesize findings into the standardized 4-part **Diagnostic Prescription**:
+
+1. **🏆 Best-Fit Framework & Skill**:
+   - Framework name and path in `frameworks/`.
+   - Paired execution skill in `skills/`.
+   - **Why It Fits**: Concrete rationale linking the user's specific problem signature to the framework's mathematical/qualitative model.
+   - **Exact Command**: The copy-pasteable command to run (e.g., `/apply-framework framework=shape-up` or `/validate-idea`).
+
+2. **⚡ Lightweight Alternative (15-Minute Version)**:
+   - A faster, low-friction heuristic if the PM has immediate deadlines (e.g., 2x2 Value vs. Effort matrix, ICE scoring, or 5-question Mom Test quick scan).
+
+3. **⚠️ Anti-Pattern Warning**:
+   - A widely-used framework that **must be avoided** in this specific situation (referencing `when_not_to_use`).
+   - Explanation of the cognitive trap, false precision, or process overhead it would cause.
+
+4. **Interactive Action Gate**:
+   End with the exact prompt:
+   > *"Reply **'1'** to run the Best-Fit Framework now, or **'2'** for the Lightweight Alternative."*
+
+---
+
+## 📊 Sample Diagnostic Prescription Output
+
+```markdown
+### 🩺 Product Diagnostic Prescription
+
+#### 1. 🏆 Best-Fit Recommendation: Shape Up (Pitches & Appetite Delivery)
+- **Framework**: `frameworks/operations/shape-up.md`
+- **Paired Skill**: `/create-prd` or `/apply-framework framework=shape-up`
+- **Why It Fits**: You mentioned that your 2-week sprints keep rolling over and your developers feel constrained by premature wireframes. Shape Up solves this by fixing appetite (e.g. 6 weeks) and using breadboarding to define boundaries without dictating pixels.
+- **Exact Command**: `/apply-framework framework=shape-up`
+
+#### 2. ⚡ Lightweight Alternative: GIST Step-Project Slicing (15 mins)
+- **Framework**: `frameworks/operations/gist-planning.md`
+- **Alternative**: Slice the feature into a 1-week prototype step-project before doing a full 6-week shaped pitch.
+
+#### 3. ⚠️ Anti-Pattern Warning: Do NOT use RICE Scoring here
+- **Why Avoid**: RICE requires reliable Reach and Impact estimates. For this early-stage feature, assigning numerical Reach and 100% Confidence creates an illusion of mathematical certainty over pure guesswork.
+
+---
+👉 **Reply '1' to run Shape Up now, or '2' for the GIST Step-Project Alternative.**
+```
+
+---
+
+## 🔄 Dynamic Skill Routing & Execution
+When the user replies:
+- **If '1'**: Immediately invoke the best-fit framework using `apply-framework` or its paired skill.
+- **If '2'**: Immediately execute the lightweight alternative.
+
+---
+
 ## Skill: refine-user-stories (Story Refinement & SPIDR)
 - **Category**: `specification`
 - **Trigger**: `/refine-user-stories`
@@ -1515,6 +1631,21 @@ At the end of generating the validation report, ALWAYS recommend the logical nex
 - **Path**: `frameworks/discovery/opportunity-solution-tree.md`
 - **Primary Purpose**: To break the "feature factory" anti-pattern by ensuring teams explore the problem space thoroughly, evaluate multiple competing solutions for each customer pain point, and test assumptions before committing engineering resources.
 
+## Framework: GIST Planning (Goals, Ideas, Step-projects, Tasks) (`gist-planning`)
+- **Category**: `operations`
+- **Path**: `frameworks/operations/gist-planning.md`
+- **Primary Purpose**: To drastically reduce product waste by testing ideas through tiny step-projects before committing full engineering squads to building multi-month feature implementations.
+
+## Framework: Scrum Sprint Delivery & INVEST Execution (`scrum-sprint-delivery`)
+- **Category**: `operations`
+- **Path**: `frameworks/operations/scrum-sprint-delivery.md`
+- **Primary Purpose**: To provide predictable, sustainable, cross-functional engineering throughput with continuous delivery of shippable software increments.
+
+## Framework: Shape Up (Basecamp Product Development) (`shape-up`)
+- **Category**: `operations`
+- **Path**: `frameworks/operations/shape-up.md`
+- **Primary Purpose**: To eliminate endless scope creep, eliminate backlog grooming debt, and empower autonomous cross-functional teams to deliver complete, polished features within bounded timeboxes.
+
 ## Framework: The Kano Model & Customer Delight (`kano-model`)
 - **Category**: `prioritization`
 - **Path**: `frameworks/prioritization/kano-model.md`
@@ -1535,7 +1666,7 @@ At the end of generating the validation report, ALWAYS recommend the logical nex
 - **Path**: `frameworks/strategy/theory-of-constraints.md`
 - **Primary Purpose**: To pinpoint the operational bottleneck choking product delivery, maximize throughput at that specific point, and align all upstream discovery and downstream execution to eliminate waste.
 
-## Framework: Wardley Value Chain Mapping (`wardley-mapping`)
+## Framework: Wardley Value Chain Evolution Mapping (`wardley-mapping`)
 - **Category**: `strategy`
 - **Path**: `frameworks/strategy/wardley-mapping.md`
 - **Primary Purpose**: To prevent catastrophic resource misallocation (e.g., custom-building commoditized components) and explicitly identify where a product's true competitive differentiation resides.

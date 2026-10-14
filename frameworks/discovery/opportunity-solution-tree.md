@@ -1,3 +1,28 @@
+---
+id: opportunity-solution-tree
+name: Opportunity Solution Tree (OST)
+category: discovery
+problem_signatures:
+  - "Team operates as a feature factory shipping random stakeholder solution requests"
+  - "Features lack direct traceability to measurable business outcomes"
+  - "Engineers jump to building the first idea without considering alternative solutions"
+best_for_stage:
+  - 0-to-1
+  - growth
+  - scale
+  - enterprise
+data_maturity_required: medium
+when_not_to_use:
+  - "Immediate production outage triage or critical regulatory compliance deadlines"
+  - "Teams where executive leadership mandates fixed Gantt-chart feature lists"
+paired_skills:
+  - validate-idea
+  - brainstorm
+  - create-prd
+  - sync-miro
+write_back_target: .context/discovery.md
+---
+
 # 🌳 Discovery Framework: Opportunity Solution Tree (OST)
 
 ## 1. 🧠 Mental Model & Trigger Conditions

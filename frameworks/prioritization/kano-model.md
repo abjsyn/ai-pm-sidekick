@@ -1,3 +1,26 @@
+---
+id: kano-model
+name: The Kano Model & Customer Delight
+category: prioritization
+problem_signatures:
+  - "MVP scope suffers from feature creep and lacks differentiation from competitors"
+  - "Unclear distinction between table-stakes basic features and true delighters"
+  - "Customer feedback surveys show mixed signals on what features to build next"
+best_for_stage:
+  - 0-to-1
+  - growth
+  - scale
+data_maturity_required: medium
+when_not_to_use:
+  - "Internal architectural refactors or purely operational workflow optimizations"
+  - "Scenarios where functional and dysfunctional survey data cannot be collected"
+paired_skills:
+  - validate-idea
+  - create-prd
+  - create-user-stories
+write_back_target: .context/discovery.md
+---
+
 # 🎯 Prioritization Framework: The Kano Model & Customer Delight
 
 ## 1. 🧠 Mental Model & Trigger Conditions

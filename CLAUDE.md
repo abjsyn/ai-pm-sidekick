@@ -45,6 +45,7 @@ When assisting product managers, technical PMs, or engineering leads, always fol
 | `/brainstorm` | SCAMPER, HMW, 6 Hats feature ideation |
 | `/validate-idea` | Strategyzer 4-Risk & Mom Test validation |
 | `/apply-framework` | Execute framework from `frameworks/` |
+| `/recommend-framework` | Diagnose PM bottleneck & prescribe best-fit framework |
 | `/ingest-context` | Ingest notes/interviews into `.context/` |
 | `/connect-mcp` | Configure Jira, Confluence, GitHub, Figma, Miro, Notion |
 | `/sync-jira` | Export stories and epics to Jira |
@@ -59,4 +60,4 @@ When assisting product managers, technical PMs, or engineering leads, always fol
 
 - **Python Scripts**: Standard library only (Python 3.10+). No external dependencies.
 - **Manifest**: Live metadata is in `dist/harness-manifest.json`.
-- **Frameworks**: Located in `frameworks/strategy/`, `frameworks/discovery/`, and `frameworks/prioritization/`.
+- **Frameworks**: Located in `frameworks/strategy/`, `frameworks/discovery/`, `frameworks/prioritization/`, and `frameworks/operations/`.
