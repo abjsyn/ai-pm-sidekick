@@ -4,6 +4,20 @@
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
   <title>AI PM Sidekick — PM Command Center UI</title>
+
+  <!-- Early Theme Detection to prevent theme flash -->
+  <script>
+    (function() {
+      try {
+        var theme = localStorage.getItem('pm_theme');
+        if (theme === 'light') {
+          document.documentElement.classList.remove('dark');
+        } else {
+          document.documentElement.classList.add('dark');
+        }
+      } catch (e) {}
+    })();
+  </script>
   
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -106,6 +120,273 @@
     #sidebar-tooltip.visible {
       display: block;
     }
+
+    /* Pinned rows use an amber wash. bg-[#26272e]/60 is not remapped in light mode and paints a grey slab. */
+    .sidebar-favorite-item {
+      background-color: rgba(245, 158, 11, 0.10);
+      border: 1px solid rgba(245, 158, 11, 0.28);
+    }
+    .sidebar-favorite-item:hover {
+      background-color: rgba(245, 158, 11, 0.18);
+    }
+
+    /* ==========================================================================
+       LIGHT MODE HIGH-CONTRAST OVERRIDES (html:not(.dark))
+       Enables seamless switching between Dark Atelier & Clean Light SaaS modes
+       ========================================================================== */
+    html:not(.dark) {
+      color-scheme: light;
+    }
+
+    html:not(.dark) body {
+      background-color: #f8fafc !important;
+      color: #0f172a !important;
+    }
+
+    /* Core Surface Colors */
+    html:not(.dark) .bg-\[\#121316\] {
+      background-color: #f8fafc !important;
+    }
+    html:not(.dark) .bg-\[\#121316\]\/50 {
+      background-color: rgba(241, 245, 249, 0.6) !important;
+    }
+    html:not(.dark) .bg-\[\#121316\]\/80 {
+      background-color: rgba(248, 250, 252, 0.8) !important;
+    }
+    html:not(.dark) .bg-\[\#121316\]\/90 {
+      background-color: rgba(248, 250, 252, 0.9) !important;
+    }
+    html:not(.dark) .bg-\[\#121316\]\/95 {
+      background-color: rgba(248, 250, 252, 0.95) !important;
+    }
+
+    html:not(.dark) .bg-\[\#18191d\] {
+      background-color: #ffffff !important;
+    }
+    html:not(.dark) .bg-\[\#18191d\]\/95 {
+      background-color: rgba(255, 255, 255, 0.95) !important;
+    }
+    html:not(.dark) .bg-\[\#18191d\]\/80 {
+      background-color: rgba(255, 255, 255, 0.8) !important;
+    }
+
+    html:not(.dark) .bg-\[\#1f2025\] {
+      background-color: #f1f5f9 !important;
+    }
+    html:not(.dark) .bg-\[\#1f2025\]\/60 {
+      background-color: rgba(241, 245, 249, 0.6) !important;
+    }
+    html:not(.dark) .bg-\[\#1e1f24\] {
+      background-color: #f1f5f9 !important;
+    }
+    html:not(.dark) .bg-\[\#131417\] {
+      background-color: #f1f5f9 !important;
+    }
+    html:not(.dark) .bg-\[\#090a0c\] {
+      background-color: #e2e8f0 !important;
+    }
+
+    html:not(.dark) .bg-\[\#26272e\] {
+      background-color: #e2e8f0 !important;
+    }
+    html:not(.dark) .bg-\[\#31323a\] {
+      background-color: #cbd5e1 !important;
+    }
+
+    /* Hover States */
+    html:not(.dark) .hover\:bg-\[\#31323a\]:hover {
+      background-color: #cbd5e1 !important;
+    }
+    html:not(.dark) .hover\:bg-\[\#26272e\]:hover {
+      background-color: #e2e8f0 !important;
+    }
+    html:not(.dark) .hover\:bg-\[\#1f2025\]:hover {
+      background-color: #f1f5f9 !important;
+    }
+    html:not(.dark) .sidebar-favorite-item {
+      background-color: #fffbeb;
+      border-color: #f6d98a;
+    }
+    html:not(.dark) .sidebar-favorite-item:hover {
+      background-color: #fef3c7;
+    }
+
+    /* Borders */
+    html:not(.dark) .border-\[\#2a2b30\] {
+      border-color: #e2e8f0 !important;
+    }
+    html:not(.dark) .border-\[\#3f424d\] {
+      border-color: #cbd5e1 !important;
+    }
+    html:not(.dark) .border-\[\#3b3d45\] {
+      border-color: #cbd5e1 !important;
+    }
+    html:not(.dark) .hover\:border-zinc-600:hover {
+      border-color: #cbd5e1 !important;
+    }
+    html:not(.dark) .border-zinc-700 {
+      border-color: #cbd5e1 !important;
+    }
+
+    /* Typography & Contrasts */
+    html:not(.dark) .text-zinc-100,
+    html:not(.dark) .text-zinc-200,
+    html:not(.dark) .text-\[\#f4f4f5\] {
+      color: #0f172a !important;
+    }
+    html:not(.dark) .text-zinc-300 {
+      color: #334155 !important;
+    }
+    html:not(.dark) .text-zinc-400 {
+      color: #64748b !important;
+    }
+    html:not(.dark) .text-zinc-500 {
+      color: #94a3b8 !important;
+    }
+    html:not(.dark) .hover\:text-zinc-100:hover,
+    html:not(.dark) .hover\:text-zinc-200:hover {
+      color: #0f172a !important;
+    }
+    html:not(.dark) .text-white {
+      color: #ffffff !important;
+    }
+
+    /* Colored accents adjusted for high contrast on light backgrounds */
+    html:not(.dark) .text-amber-400 {
+      color: #d97706 !important;
+    }
+    html:not(.dark) .text-emerald-400 {
+      color: #059669 !important;
+    }
+    html:not(.dark) .text-blue-400 {
+      color: #2563eb !important;
+    }
+    html:not(.dark) .text-purple-400 {
+      color: #7c3aed !important;
+    }
+    html:not(.dark) .text-red-400 {
+      color: #dc2626 !important;
+    }
+
+    /* Form Controls: Inputs, Textareas, Selects */
+    html:not(.dark) input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+    html:not(.dark) textarea,
+    html:not(.dark) select {
+      background-color: #ffffff !important;
+      color: #0f172a !important;
+      border-color: #cbd5e1 !important;
+    }
+    html:not(.dark) input:focus,
+    html:not(.dark) textarea:focus,
+    html:not(.dark) select:focus {
+      border-color: #d97706 !important;
+      outline: none !important;
+      box-shadow: 0 0 0 1px #d97706 !important;
+    }
+    html:not(.dark) input::placeholder,
+    html:not(.dark) textarea::placeholder {
+      color: #94a3b8 !important;
+    }
+    html:not(.dark) select option {
+      background-color: #ffffff !important;
+      color: #0f172a !important;
+    }
+
+    /* Navigation & Tabs */
+    html:not(.dark) .nav-tab.active {
+      background-color: #e2e8f0 !important;
+      color: #0f172a !important;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+    }
+    html:not(.dark) .nav-tab:not(.active) {
+      color: #64748b !important;
+    }
+    html:not(.dark) .nav-tab:not(.active):hover {
+      background-color: #f1f5f9 !important;
+      color: #0f172a !important;
+    }
+
+    /* Scrollbars */
+    html:not(.dark) ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    html:not(.dark) ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    html:not(.dark) ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+
+    /* Sidebar Tooltip */
+    html:not(.dark) #sidebar-tooltip {
+      background: #ffffff !important;
+      border: 1px solid #cbd5e1 !important;
+      color: #0f172a !important;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+    }
+
+    /* Markdown & Prose Rendering */
+    html:not(.dark) .prose-invert,
+    html:not(.dark) .prose {
+      --tw-prose-body: #334155;
+      --tw-prose-headings: #0f172a;
+      --tw-prose-lead: #475569;
+      --tw-prose-links: #d97706;
+      --tw-prose-bold: #0f172a;
+      --tw-prose-counters: #64748b;
+      --tw-prose-bullets: #94a3b8;
+      --tw-prose-hr: #e2e8f0;
+      --tw-prose-quotes: #0f172a;
+      --tw-prose-quote-borders: #cbd5e1;
+      --tw-prose-captions: #64748b;
+      --tw-prose-code: #0f172a;
+      --tw-prose-pre-code: #0f172a;
+      --tw-prose-pre-bg: #f1f5f9;
+      --tw-prose-th-borders: #e2e8f0;
+      --tw-prose-td-borders: #e2e8f0;
+      --tw-prose-invert-body: #334155;
+      --tw-prose-invert-headings: #0f172a;
+      --tw-prose-invert-lead: #475569;
+      --tw-prose-invert-links: #d97706;
+      --tw-prose-invert-bold: #0f172a;
+      --tw-prose-invert-counters: #64748b;
+      --tw-prose-invert-bullets: #94a3b8;
+      --tw-prose-invert-hr: #e2e8f0;
+      --tw-prose-invert-quotes: #0f172a;
+      --tw-prose-invert-quote-borders: #cbd5e1;
+      --tw-prose-invert-captions: #64748b;
+      --tw-prose-invert-code: #0f172a;
+      --tw-prose-invert-pre-code: #0f172a;
+      --tw-prose-invert-pre-bg: #f1f5f9;
+      --tw-prose-invert-th-borders: #e2e8f0;
+      --tw-prose-invert-td-borders: #e2e8f0;
+      color: #334155 !important;
+    }
+    html:not(.dark) .prose-invert code,
+    html:not(.dark) .prose code {
+      color: #0f172a !important;
+      background-color: #e2e8f0 !important;
+      border-radius: 4px;
+      padding: 2px 6px;
+    }
+    html:not(.dark) .prose-invert pre,
+    html:not(.dark) .prose pre {
+      background-color: #f1f5f9 !important;
+      color: #0f172a !important;
+      border: 1px solid #e2e8f0 !important;
+    }
+    html:not(.dark) .prose-invert pre code,
+    html:not(.dark) .prose pre code {
+      background-color: transparent !important;
+      padding: 0;
+    }
+
+    /* Modal Backdrop */
+    html:not(.dark) #context-editor-modal,
+    html:not(.dark) #quick-append-modal {
+      background-color: rgba(15, 23, 42, 0.45) !important;
+    }
   </style>
 </head>
 <body class="bg-[#121316] text-[#f4f4f5] font-body antialiased min-h-screen flex flex-col justify-between selection:bg-amber-600 selection:text-white transition-colors duration-200">
@@ -135,25 +416,39 @@
 
         <!-- Navigation Tabs -->
         <nav class="hidden lg:flex items-center gap-1 px-1.5 py-1 rounded-lg bg-[#18191d] border border-[#2a2b30]">
-          <button onclick="switchTab('dashboard-skills')" id="tab-dashboard-skills" class="nav-tab active px-3.5 py-1 rounded text-zinc-100 font-medium bg-[#26272e] shadow-xs transition-colors text-[13px] flex items-center gap-1.5">
-            <span class="material-symbols-outlined text-[16px]">dashboard</span> Dashboard & Skills
+          <button onclick="switchTab('dashboard-skills')" id="tab-dashboard-skills" class="nav-tab active px-3 py-1 rounded text-zinc-100 font-medium bg-[#26272e] shadow-xs transition-colors text-[13px] flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">dashboard</span> Dashboard
           </button>
-          <button onclick="switchTab('skill-wizard')" id="tab-skill-wizard" class="nav-tab px-3.5 py-1 rounded text-zinc-400 hover:text-zinc-100 hover:bg-[#1f2025] transition-colors text-[13px] flex items-center gap-1.5">
-            <span class="material-symbols-outlined text-[16px]">auto_awesome</span> Skill Wizard
+          <button onclick="switchTab('skill-wizard')" id="tab-skill-wizard" class="nav-tab px-3 py-1 rounded text-zinc-400 hover:text-zinc-100 hover:bg-[#1f2025] transition-colors text-[13px] flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">play_circle</span> Skill Studio
           </button>
-          <button onclick="switchTab('deliverable-hub')" id="tab-deliverable-hub" class="nav-tab px-3.5 py-1 rounded text-zinc-400 hover:text-zinc-100 hover:bg-[#1f2025] transition-colors text-[13px] flex items-center gap-1.5">
-            <span class="material-symbols-outlined text-[16px]">folder</span> Deliverable Hub
+          <button onclick="switchTab('product-brain')" id="tab-product-brain" class="nav-tab px-3 py-1 rounded text-zinc-400 hover:text-zinc-100 hover:bg-[#1f2025] transition-colors text-[13px] flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">psychology</span> Product Brain
           </button>
-          <button onclick="switchTab('mcp-connections')" id="tab-mcp-connections" class="nav-tab px-3.5 py-1 rounded text-zinc-400 hover:text-zinc-100 hover:bg-[#1f2025] transition-colors text-[13px] flex items-center gap-1.5">
-            <span class="material-symbols-outlined text-[16px]">hub</span> MCP Connections
+          <button onclick="switchTab('deliverable-hub')" id="tab-deliverable-hub" class="nav-tab px-3 py-1 rounded text-zinc-400 hover:text-zinc-100 hover:bg-[#1f2025] transition-colors text-[13px] flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">folder_special</span> Artifacts Library
           </button>
-          <button onclick="switchTab('user-settings')" id="tab-user-settings" class="nav-tab px-3.5 py-1 rounded text-zinc-400 hover:text-zinc-100 hover:bg-[#1f2025] transition-colors text-[13px] flex items-center gap-1.5">
-            <span class="material-symbols-outlined text-[16px]">settings</span> User & Settings
+          <button onclick="switchTab('mcp-connections')" id="tab-mcp-connections" class="nav-tab px-3 py-1 rounded text-zinc-400 hover:text-zinc-100 hover:bg-[#1f2025] transition-colors text-[13px] flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">hub</span> MCP
+          </button>
+          <button onclick="switchTab('user-settings')" id="tab-user-settings" class="nav-tab px-3 py-1 rounded text-zinc-400 hover:text-zinc-100 hover:bg-[#1f2025] transition-colors text-[13px] flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">settings</span> Settings
           </button>
         </nav>
 
         <!-- Right Controls -->
         <div class="flex items-center gap-3 shrink-0">
+          <!-- Engine Status Badge & Selector Dropdown -->
+          <div id="header-engine-container" class="inline-flex items-center gap-2 px-2.5 py-1 rounded-lg bg-[#1f2025] border border-[#2a2b30] text-zinc-300 font-mono text-[11px] shadow-xs">
+            <span id="header-engine-indicator" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
+            <span class="text-zinc-400 font-medium text-[11px] hidden sm:inline shrink-0">Engine:</span>
+            <select id="header-engine-select" onchange="onHeaderEngineChange(this.value)" class="bg-transparent text-emerald-400 font-semibold text-[11px] border-0 py-0 pl-0.5 pr-4 focus:ring-0 focus:outline-none cursor-pointer">
+              <option value="cli:agy" class="bg-[#18191d] text-zinc-100">agy CLI (Local Session)</option>
+              <option value="companion:cursor" class="bg-[#18191d] text-zinc-100">IDE Companion (Cursor / Terminal)</option>
+              <option value="api:gemini" class="bg-[#18191d] text-zinc-100">.env API Keys</option>
+            </select>
+          </div>
+
           <button id="theme-toggle-btn" type="button" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#1f2025] hover:bg-[#26272e] border border-[#2a2b30] text-zinc-300 transition-colors font-mono text-[11px]">
             <span class="material-symbols-outlined text-[15px] text-amber-400" id="theme-icon">dark_mode</span>
             <span class="hidden sm:inline font-medium" id="theme-label">Dark</span>
@@ -423,91 +718,459 @@
 
           </div>
 
-          <!-- ================= TAB 2: SKILL WIZARD ================= -->
+          <!-- ================= TAB 2: GUIDED SKILL RUNNER STUDIO ================= -->
           <div id="view-skill-wizard" class="tab-view hidden space-y-6">
-            <section class="w-full rounded-2xl bg-[#18191d] p-6 border border-[#2a2b30] shadow-sm">
-              <div class="flex items-center justify-between mb-4 pb-4 border-b border-[#2a2b30]">
-                <div>
-                  <h2 class="font-headline text-xl text-zinc-100 font-bold flex items-center gap-2">
-                    <span class="material-symbols-outlined text-amber-500">auto_awesome</span>
-                    Interactive Skill Execution Wizard
-                  </h2>
-                  <p class="text-sm text-zinc-400 mt-0.5">Select a product skill from the left sidepanel or dropdown below.</p>
+            <section class="w-full rounded-2xl bg-[#18191d] p-5 sm:p-6 border border-[#2a2b30] shadow-sm">
+              
+              <!-- Header Bar with Mode Toggle -->
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#2a2b30]">
+                <div class="flex items-center gap-3">
+                  <div id="studio-header-icon-wrap" class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0">
+                    <span class="material-symbols-outlined text-[24px]" id="studio-header-icon">auto_awesome</span>
+                  </div>
+                  <div>
+                    <div class="flex items-center gap-2 flex-wrap">
+                      <h2 class="font-headline text-xl text-zinc-100 font-bold" id="studio-header-title">PRD Generator</h2>
+                      <span id="studio-header-category" class="px-2 py-0.5 rounded bg-[#26272e] text-amber-400 font-mono text-[10px] uppercase border border-amber-500/20">specification</span>
+                    </div>
+                    <p class="text-xs text-zinc-400 mt-0.5" id="studio-header-desc">Generate comprehensive PRDs grounded in your product brain.</p>
+                  </div>
+                </div>
+
+                <!-- Mode Toggle: [▶️ Run Skill] (Default) vs [⚙️ Customize Skill Prompt] -->
+                <div class="flex items-center p-1 rounded-xl bg-[#121316] border border-[#2a2b30] shrink-0 self-start sm:self-auto">
+                  <button id="btn-mode-run" onclick="setStudioMode('runner')" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all bg-[#26272e] text-amber-400 shadow-xs">
+                    <span class="material-symbols-outlined text-[16px]">play_arrow</span> Run Skill
+                  </button>
+                  <button id="btn-mode-custom" onclick="setStudioMode('customizer')" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all text-zinc-400 hover:text-zinc-200">
+                    <span class="material-symbols-outlined text-[16px]">tune</span> Customize Prompt
+                  </button>
                 </div>
               </div>
 
-              <!-- Wizard Dual Pane -->
-              <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+              <!-- RUNNER MODE CONTAINER (Default) -->
+              <div id="studio-runner-view" class="pt-5 grid grid-cols-1 lg:grid-cols-12 gap-6">
                 
+                <!-- LEFT COLUMN: Guided Briefing & Context Bar (col-span-5) -->
                 <div class="lg:col-span-5 space-y-4">
+                  
+                  <!-- Skill Selector Dropdown -->
                   <div>
-                    <label class="block text-xs font-mono uppercase text-zinc-400 mb-1.5">Selected Skill</label>
-                    <select id="wizard-skill-select" onchange="updateWizardForm()" class="w-full py-2 px-3 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-[13px] focus:outline-none focus:border-amber-500">
-                      <option value="create-prd">create-prd — PRD Generator</option>
-                      <option value="create-user-stories">create-user-stories — INVEST Breakdown</option>
-                      <option value="refine-user-stories">refine-user-stories — SPIDR Grooming</option>
-                      <option value="create-mockup">create-mockup — Tailwind Wireframe</option>
-                      <option value="create-design-brief">create-design-brief — UX Specs</option>
-                      <option value="create-documentation">create-documentation — Tech Specs</option>
-                      <option value="brainstorm">brainstorm — SCAMPER / HMW Ideation</option>
-                      <option value="validate-idea">validate-idea — Risk Analysis</option>
-                      <option value="sync-jira">sync-jira — Sync to Jira</option>
-                      <option value="sync-confluence">sync-confluence — Publish Confluence</option>
+                    <label class="block text-xs font-mono uppercase text-zinc-400 mb-1.5 flex items-center justify-between">
+                      <span>Active Product Skill</span>
+                      <span class="text-[10px] text-amber-400 cursor-pointer hover:underline" onclick="toggleFavoriteFromStudio()">⭐ Pin / Unpin</span>
+                    </label>
+                    <select id="studio-skill-select" onchange="onStudioSkillSelect(this.value)" class="w-full py-2 px-3 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-xs focus:outline-none focus:border-amber-500">
+                      <!-- Hydrated dynamically -->
                     </select>
                   </div>
 
-                  <div>
-                    <label class="block text-xs font-mono uppercase text-zinc-400 mb-1.5">Feature Name / Subject</label>
-                    <input type="text" id="wizard-feature-name" value="Sidepanel Favorites Navigation" class="w-full py-2 px-3 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-[13px] focus:outline-none focus:border-amber-500"/>
+                  <!-- Context Grounding Pills -->
+                  <div class="space-y-1.5">
+                    <div class="flex items-center justify-between text-xs">
+                      <span class="font-mono uppercase text-zinc-400 text-[11px] flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[14px] text-amber-400">psychology</span> Grounding Context (.context/)
+                      </span>
+                      <div class="flex items-center gap-2">
+                        <button onclick="toggleAllContextPills(true)" class="text-[10px] text-amber-400 hover:underline">All</button>
+                        <span class="text-zinc-600">|</span>
+                        <button onclick="toggleAllContextPills(false)" class="text-[10px] text-zinc-500 hover:underline">None</button>
+                      </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-2" id="context-grounding-pills">
+                      <!-- Context Pills with green/amber dots hydrated dynamically -->
+                    </div>
+                    <p class="text-[10px] text-zinc-500 flex items-center gap-1 mt-1">
+                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block"></span> Populated (>150w)
+                      <span class="w-1.5 h-1.5 rounded-full bg-amber-500 inline-block ml-2"></span> Needs Enrichment / Template
+                    </p>
                   </div>
 
-                  <div class="grid grid-cols-2 gap-3">
+                  <!-- Tier & Framework Selectors -->
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                    <!-- Template Tier Selector -->
                     <div>
-                      <label class="block text-xs font-mono uppercase text-zinc-400 mb-1.5">Agile Mode</label>
-                      <select id="wizard-mode" class="w-full py-2 px-3 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-[13px]">
-                        <option value="standard">Standard Agile</option>
-                        <option value="lean">Lean MVP</option>
-                        <option value="enterprise">Enterprise</option>
+                      <label class="block text-[11px] font-mono uppercase text-zinc-400 mb-1.5">Template Tier</label>
+                      <div class="grid grid-cols-3 p-1 rounded-lg bg-[#121316] border border-[#2a2b30] text-center" id="studio-tier-buttons">
+                        <button type="button" onclick="setStudioTier('lean')" data-tier="lean" class="tier-btn py-1 rounded text-[11px] font-medium text-zinc-400 hover:text-zinc-100 transition-colors">Lean</button>
+                        <button type="button" onclick="setStudioTier('standard')" data-tier="standard" class="tier-btn active py-1 rounded text-[11px] font-semibold bg-[#26272e] text-amber-400 shadow-xs transition-colors">Standard</button>
+                        <button type="button" onclick="setStudioTier('enterprise')" data-tier="enterprise" class="tier-btn py-1 rounded text-[11px] font-medium text-zinc-400 hover:text-zinc-100 transition-colors">Enterprise</button>
+                      </div>
+                    </div>
+
+                    <!-- Thinking Lens (Framework) Selector -->
+                    <div>
+                      <label class="block text-[11px] font-mono uppercase text-zinc-400 mb-1.5">Thinking Lens (Framework)</label>
+                      <select id="studio-framework-select" class="w-full py-1.5 px-2.5 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-xs focus:outline-none focus:border-amber-500">
+                        <option value="">None (Standard Skill Execution)</option>
+                        <optgroup label="Strategy">
+                          <option value="opportunity-solution-trees">Opportunity Solution Tree</option>
+                          <option value="wardley-mapping">Wardley Mapping</option>
+                          <option value="theory-of-constraints">Theory of Constraints</option>
+                        </optgroup>
+                        <optgroup label="Continuous Discovery">
+                          <option value="continuous-discovery-habits">Continuous Discovery Habits</option>
+                          <option value="jobs-to-be-done">Jobs-to-be-Done (JTBD)</option>
+                        </optgroup>
+                        <optgroup label="Prioritization">
+                          <option value="rice-scoring">RICE Prioritization</option>
+                          <option value="wsjf">WSJF (Weighted Shortest Job First)</option>
+                          <option value="kano-model">Kano Model</option>
+                        </optgroup>
+                        <optgroup label="Operations & Delivery">
+                          <option value="shape-up">Shape Up (Pitches & Hill Charts)</option>
+                          <option value="scrum-sprint-delivery">Scrum Sprint Delivery</option>
+                          <option value="gist-planning">GIST Planning</option>
+                        </optgroup>
                       </select>
                     </div>
-                    <div>
-                      <label class="block text-xs font-mono uppercase text-zinc-400 mb-1.5">Persona</label>
-                      <input type="text" id="wizard-persona" value="Paula (Lead PM)" class="w-full py-2 px-3 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-[13px]"/>
+                  </div>
+
+                  <!-- Task / Problem Input Textarea -->
+                  <div>
+                    <label class="block text-[11px] font-mono uppercase text-zinc-400 mb-1.5 flex items-center justify-between">
+                      <span>Task Briefing / Requirements</span>
+                      <span class="text-[10px] text-zinc-500 font-normal">Markdown supported</span>
+                    </label>
+                    <textarea id="studio-user-input" rows="5" class="w-full p-3 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-xs font-mono leading-relaxed focus:outline-none focus:border-amber-500 resize-y" placeholder="Describe the feature, user problem, or paste raw notes..."></textarea>
+                  </div>
+
+                  <!-- Primary Action Buttons -->
+                  <div class="space-y-2 pt-1">
+                    <button id="btn-studio-run-ai" onclick="runStudioAI('clarify')" class="w-full py-2.5 px-4 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-semibold text-xs shadow-md transition-all flex items-center justify-center gap-2">
+                      <span class="material-symbols-outlined text-[18px]">auto_awesome</span>
+                      <span>✨ Run with AI (Socratic Gate & Spec)</span>
+                    </button>
+                    
+                    <button id="btn-studio-copy-prompt" onclick="copyHydratedPromptBundle()" class="w-full py-2 px-4 rounded-xl bg-[#1f2025] hover:bg-[#26272e] border border-[#2a2b30] text-zinc-200 font-medium text-xs transition-colors flex items-center justify-center gap-2">
+                      <span class="material-symbols-outlined text-[16px] text-amber-400">content_copy</span>
+                      <span>📋 Copy Hydrated Prompt for Cursor / CLI</span>
+                    </button>
+                  </div>
+
+                  <div id="ai-provider-badge-container" class="text-[11px] font-mono text-zinc-500 flex items-center justify-between px-1">
+                    <span class="flex items-center gap-1.5">
+                      <span id="ai-active-indicator" class="w-2 h-2 rounded-full bg-zinc-600"></span>
+                      <span id="ai-active-label">Checking AI Engine status...</span>
+                    </span>
+                    <button onclick="switchTab('user-settings'); switchSettingsSection('sec-ai-engine')" class="text-amber-400 hover:underline">Config Keys</button>
+                  </div>
+
+                </div>
+
+                <!-- RIGHT COLUMN: 3-Step Execution & Artifact Canvas (col-span-7) -->
+                <div class="lg:col-span-7 space-y-4 flex flex-col justify-between">
+                  
+                  <!-- STEP 1: SOCRATIC CLARIFYING GATE CARD -->
+                  <div id="studio-socratic-card" class="rounded-xl bg-[#121316] border border-[#2a2b30] p-4 space-y-3 transition-all">
+                    <div class="flex items-center justify-between">
+                      <div class="flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-xs font-mono">1</span>
+                        <h3 class="font-semibold text-zinc-200 text-xs">Socratic Clarifying Gate</h3>
+                      </div>
+                      <span id="socratic-status-badge" class="px-2 py-0.5 rounded text-[10px] font-mono bg-[#1f2025] text-zinc-400 border border-[#2a2b30]">Ready</span>
+                    </div>
+
+                    <div id="socratic-content-area" class="text-xs text-zinc-400 space-y-2">
+                      <p class="text-zinc-500 italic">Click <strong class="text-amber-400">Run with AI</strong> to analyze requirements for ambiguities, or click <strong class="text-zinc-300">Copy Hydrated Prompt</strong> to execute in your external IDE terminal.</p>
+                    </div>
+
+                    <div id="socratic-actions" class="hidden flex flex-wrap items-center gap-2 pt-2 border-t border-[#2a2b30]">
+                      <button onclick="runStudioAI('generate')" class="px-3.5 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-500 text-white font-medium text-xs transition-colors flex items-center gap-1.5 shadow-sm">
+                        <span class="material-symbols-outlined text-[16px]">verified</span> Generate Final Artifact with Answers
+                      </button>
+                      <button onclick="runStudioAI('generate', true)" class="px-3 py-1.5 rounded-lg bg-[#26272e] hover:bg-[#31323a] text-zinc-300 text-xs transition-colors">
+                        Skip & Proceed with Assumptions
+                      </button>
                     </div>
                   </div>
 
-                  <div>
-                    <label class="block text-xs font-mono uppercase text-zinc-400 mb-1.5">Requirements & Objectives</label>
-                    <textarea id="wizard-requirements" rows="4" class="w-full py-2 px-3 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-[13px]" placeholder="Enter feature requirements...">Left side panel navigation with ability to pin favorite skills with star icons.</textarea>
+                  <!-- STEP 2: ARTIFACT CANVAS & LIVE PREVIEW -->
+                  <div class="flex-1 rounded-xl bg-[#121316] border border-[#2a2b30] flex flex-col min-h-[420px] overflow-hidden">
+                    <!-- Canvas Top Action Bar -->
+                    <div class="bg-[#18191d] border-b border-[#2a2b30] px-4 py-2 flex flex-wrap items-center justify-between gap-2 text-xs font-mono">
+                      <div class="flex items-center gap-2 flex-1 min-w-[200px]">
+                        <span class="w-5 h-5 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-[11px]">2</span>
+                        <span class="text-zinc-500">Destination:</span>
+                        <input type="text" id="studio-artifact-path" value="docs/prds/new_feature.md" class="px-2 py-1 rounded bg-[#121316] border border-[#2a2b30] text-zinc-200 text-xs font-mono flex-1 focus:outline-none focus:border-amber-500"/>
+                      </div>
+
+                      <div class="flex items-center gap-2">
+                        <!-- Mode Toggle: Formatted vs Edit -->
+                        <div class="flex items-center rounded-lg bg-[#121316] border border-[#2a2b30] p-0.5">
+                          <button id="btn-canvas-view-preview" onclick="toggleCanvasMode('preview')" class="px-2 py-0.5 rounded text-[11px] font-semibold bg-[#26272e] text-amber-400">Preview</button>
+                          <button id="btn-canvas-view-edit" onclick="toggleCanvasMode('edit')" class="px-2 py-0.5 rounded text-[11px] font-medium text-zinc-400 hover:text-zinc-200">Edit</button>
+                        </div>
+
+                        <!-- Device Switcher for Mockups (hidden by default) -->
+                        <div id="mockup-viewport-switcher" class="hidden flex items-center rounded-lg bg-[#121316] border border-[#2a2b30] p-0.5">
+                          <button onclick="setMockupPreviewDevice('mobile')" class="px-2 py-0.5 text-[10px] text-zinc-400 hover:text-white" title="Mobile 375px"><span class="material-symbols-outlined text-[14px]">smartphone</span></button>
+                          <button onclick="setMockupPreviewDevice('tablet')" class="px-2 py-0.5 text-[10px] text-zinc-400 hover:text-white" title="Tablet 768px"><span class="material-symbols-outlined text-[14px]">tablet</span></button>
+                          <button onclick="setMockupPreviewDevice('desktop')" class="px-2 py-0.5 text-[10px] text-amber-400 font-bold" title="Desktop 100%"><span class="material-symbols-outlined text-[14px]">desktop_windows</span></button>
+                        </div>
+
+                        <button onclick="copyCanvasContent()" class="px-2.5 py-1 rounded bg-[#26272e] hover:bg-[#31323a] text-zinc-300 text-xs flex items-center gap-1" title="Copy Content">
+                          <span class="material-symbols-outlined text-[14px]">content_copy</span>
+                        </button>
+
+                        <button onclick="saveCanvasArtifact()" id="btn-save-canvas" class="px-3 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs flex items-center gap-1 shadow-sm transition-colors">
+                          <span class="material-symbols-outlined text-[14px]">save</span> Save to Disk
+                        </button>
+                      </div>
+                    </div>
+
+                    <!-- Canvas Content Area -->
+                    <div class="p-4 flex-1 overflow-y-auto relative bg-[#121316]">
+                      <!-- Markdown Preview Element -->
+                      <div id="studio-canvas-preview" class="prose prose-invert max-w-none text-xs text-zinc-300 leading-relaxed">
+                        <div class="h-64 flex flex-col items-center justify-center text-center text-zinc-500 space-y-2">
+                          <span class="material-symbols-outlined text-[36px] text-zinc-600">article</span>
+                          <p>Generated artifact content will be rendered here.</p>
+                          <span class="text-[11px] text-zinc-600">Run with AI or paste external terminal outputs to preview and save.</span>
+                        </div>
+                      </div>
+
+                      <!-- Editable Textarea Element (Hidden by default) -->
+                      <textarea id="studio-canvas-textarea" oninput="onCanvasTextareaChange()" class="hidden w-full h-full min-h-[360px] p-2 bg-transparent text-zinc-200 font-mono text-xs leading-relaxed focus:outline-none resize-none" placeholder="Artifact markdown or HTML content..."></textarea>
+
+                      <!-- HTML Mockup Iframe Container (Hidden by default) -->
+                      <div id="studio-mockup-frame-container" class="hidden w-full h-full min-h-[380px] flex items-center justify-center p-2 bg-[#090a0c] rounded-lg">
+                        <iframe id="studio-mockup-iframe" class="w-full h-[460px] rounded border border-[#2a2b30] bg-white transition-all shadow-xl"></iframe>
+                      </div>
+                    </div>
                   </div>
 
-                  <button onclick="executeWizardSkill()" class="w-full py-2.5 rounded-lg bg-amber-600 hover:bg-amber-500 text-white font-semibold text-[13px] transition-colors flex items-center justify-center gap-2">
-                    <span class="material-symbols-outlined text-[18px]">auto_awesome</span>
-                    Generate & Save to Disk
-                  </button>
-                </div>
+                  <!-- STEP 3: COMPOUNDING KNOWLEDGE WRITE-BACK CARD -->
+                  <div id="studio-writeback-card" class="rounded-xl bg-[#121316] border border-[#2a2b30] p-4 space-y-3">
+                    <div class="flex items-center justify-between">
+                      <div class="flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 flex items-center justify-center font-bold text-xs font-mono">3</span>
+                        <h3 class="font-semibold text-zinc-200 text-xs">Compounding Knowledge Write-Back</h3>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <span class="text-[11px] font-mono text-zinc-500">Route to:</span>
+                        <select id="writeback-target-file" class="py-0.5 px-2 rounded bg-[#1f2025] border border-[#2a2b30] text-zinc-200 text-[11px] font-mono focus:outline-none focus:border-purple-400">
+                          <option value="decisions.md">.context/decisions.md</option>
+                          <option value="discovery.md">.context/discovery.md</option>
+                          <option value="strategy-and-constraints.md">.context/strategy-and-constraints.md</option>
+                        </select>
+                      </div>
+                    </div>
 
-                <div class="lg:col-span-7 flex flex-col h-[520px] rounded-xl bg-[#121316] border border-[#2a2b30] overflow-hidden">
-                  <div class="h-10 bg-[#18191d] border-b border-[#2a2b30] px-4 flex items-center justify-between text-xs font-mono text-zinc-400">
-                    <span id="preview-filename">OUTPUT_SPEC.md</span>
-                    <button onclick="copyPreviewContent()" class="text-amber-500 hover:underline">Copy</button>
+                    <textarea id="writeback-snippet" rows="2" class="w-full p-2.5 rounded-lg bg-[#18191d] border border-[#2a2b30] text-zinc-200 text-xs font-mono leading-relaxed focus:outline-none focus:border-purple-400 resize-y" placeholder="Proposed decisions or newly validated facts to persist into your product brain..."></textarea>
+
+                    <div class="flex items-center justify-between">
+                      <span class="text-[10px] text-zinc-500 font-mono">Prevents context drift by compounding learnings across sessions.</span>
+                      <button onclick="appendWritebackSnippet()" class="px-3 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white font-medium text-xs transition-colors flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-[16px]">psychology</span> 1-Click Append to Product Brain
+                      </button>
+                    </div>
                   </div>
-                  <div id="wizard-preview-body" class="p-5 flex-1 overflow-y-auto text-sm text-zinc-300 prose prose-invert max-w-none">
-                    <p class="text-zinc-500 italic">Select a skill from the left sidepanel to generate output here.</p>
-                  </div>
+
                 </div>
 
               </div>
+
+              <!-- CUSTOMIZER MODE CONTAINER (Raw SKILL.md editor) -->
+              <div id="studio-customizer-view" class="hidden pt-5 space-y-4">
+                <div class="flex items-center justify-between bg-[#121316] p-3 rounded-xl border border-[#2a2b30]">
+                  <div class="flex items-center gap-2 font-mono text-xs text-zinc-300">
+                    <span class="text-zinc-500">Editing:</span>
+                    <span id="customizer-file-path" class="text-amber-400 font-bold">skills/create-prd/SKILL.md</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <button onclick="saveSkillMarkdownChanges()" class="px-3.5 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-500 text-white font-medium text-xs transition-colors flex items-center gap-1 shadow-sm">
+                      <span class="material-symbols-outlined text-[16px]">save</span> Save Custom Prompt
+                    </button>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 h-[550px]">
+                  <div class="flex flex-col h-full rounded-xl bg-[#121316] border border-[#2a2b30] overflow-hidden">
+                    <div class="px-3 py-1.5 bg-[#18191d] border-b border-[#2a2b30] text-[11px] font-mono text-zinc-400">System Prompt Markdown Editor</div>
+                    <textarea id="customizer-markdown-editor" oninput="updateCustomizerPreview()" class="w-full h-full p-4 bg-transparent text-zinc-200 font-mono text-xs leading-relaxed focus:outline-none resize-none"></textarea>
+                  </div>
+                  <div class="flex flex-col h-full rounded-xl bg-[#121316] border border-[#2a2b30] overflow-hidden">
+                    <div class="px-3 py-1.5 bg-[#18191d] border-b border-[#2a2b30] text-[11px] font-mono text-zinc-400">Live Markdown Preview</div>
+                    <div id="customizer-markdown-preview" class="p-4 flex-1 overflow-y-auto prose prose-invert max-w-none text-xs text-zinc-300"></div>
+                  </div>
+                </div>
+              </div>
+
             </section>
           </div>
 
-          <!-- ================= TAB 3: DELIVERABLE HUB ================= -->
-          <div id="view-deliverable-hub" class="tab-view hidden space-y-6">
-            <section class="w-full rounded-2xl bg-[#18191d] p-6 border border-[#2a2b30] shadow-sm">
-              <h2 class="font-headline text-xl text-zinc-100 font-bold mb-4">Deliverable Repository</h2>
-              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="deliverables-grid">
-                <div class="col-span-3 py-6 text-center text-zinc-500 text-xs">Loading artifacts from server...</div>
+          <!-- ================= TAB: PRODUCT BRAIN (.context/) MANAGER ================= -->
+          <div id="view-product-brain" class="tab-view hidden space-y-6">
+            <!-- Header & Aggregate Health Card -->
+            <section class="w-full rounded-2xl bg-[#18191d] p-6 border border-[#2a2b30] shadow-sm space-y-5">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#2a2b30]">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400">
+                    <span class="material-symbols-outlined text-[24px]">psychology</span>
+                  </div>
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <h2 class="font-headline text-xl text-zinc-100 font-bold">Product Brain & Living Knowledge Base</h2>
+                      <span class="px-2 py-0.5 rounded bg-purple-500/10 text-purple-400 font-mono text-[10px] uppercase border border-purple-500/20">.context/</span>
+                    </div>
+                    <p class="text-xs text-zinc-400 mt-0.5">Persistent knowledge compounding system across strategy, discovery, architecture, conventions, and decisions.</p>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                  <button onclick="openQuickAppendModal()" class="px-3.5 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white font-medium text-xs transition-colors flex items-center gap-1.5 shadow-sm">
+                    <span class="material-symbols-outlined text-[16px]">add</span> Quick Append Decision / Insight
+                  </button>
+                  <button onclick="loadProductBrainHealth()" class="p-1.5 rounded-lg bg-[#26272e] hover:bg-[#31323a] text-zinc-300 text-xs flex items-center gap-1 transition-colors" title="Reload Health Metrics">
+                    <span class="material-symbols-outlined text-[16px]">refresh</span>
+                  </button>
+                </div>
               </div>
+
+              <!-- Health Metrics Grid -->
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="p-4 rounded-xl bg-[#1f2025] border border-[#2a2b30]">
+                  <span class="block text-[11px] font-mono text-zinc-400 uppercase">Knowledge Grounding</span>
+                  <div class="flex items-baseline gap-2 mt-1">
+                    <span id="pb-grounding-pct" class="font-headline text-2xl font-bold text-emerald-400">--%</span>
+                    <span class="text-[11px] text-zinc-500">readiness</span>
+                  </div>
+                </div>
+                <div class="p-4 rounded-xl bg-[#1f2025] border border-[#2a2b30]">
+                  <span class="block text-[11px] font-mono text-zinc-400 uppercase">Grounded Context Files</span>
+                  <div class="flex items-baseline gap-2 mt-1">
+                    <span id="pb-grounded-count" class="font-headline text-2xl font-bold text-zinc-100">-- / 6</span>
+                    <span class="text-[11px] text-zinc-500">active</span>
+                  </div>
+                </div>
+                <div class="p-4 rounded-xl bg-[#1f2025] border border-[#2a2b30]">
+                  <span class="block text-[11px] font-mono text-zinc-400 uppercase">Total Word Count</span>
+                  <div class="flex items-baseline gap-2 mt-1">
+                    <span id="pb-total-words" class="font-headline text-2xl font-bold text-amber-400">--</span>
+                    <span class="text-[11px] text-zinc-500">words</span>
+                  </div>
+                </div>
+                <div class="p-4 rounded-xl bg-[#1f2025] border border-[#2a2b30]">
+                  <span class="block text-[11px] font-mono text-zinc-400 uppercase">Operating Model</span>
+                  <div class="flex items-baseline gap-2 mt-1">
+                    <span id="pb-operating-model" class="font-headline text-2xl font-bold text-indigo-400 capitalize">Scrum</span>
+                    <span class="text-[11px] text-zinc-500">delivery</span>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- 6 Visual Health Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="product-brain-cards-container">
+              <!-- Populated dynamically via renderProductBrainCards() -->
+            </div>
+          </div>
+
+          <!-- ================= TAB: ARTIFACTS & DELIVERABLES LIBRARY ================= -->
+          <div id="view-deliverable-hub" class="tab-view hidden space-y-6">
+            <section class="w-full rounded-2xl bg-[#18191d] p-6 border border-[#2a2b30] shadow-sm space-y-5">
+              
+              <!-- Header with Search & Filter Bar -->
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#2a2b30]">
+                <div>
+                  <h2 class="font-headline text-xl text-zinc-100 font-bold flex items-center gap-2">
+                    <span class="material-symbols-outlined text-amber-500">folder_special</span>
+                    Artifacts & Deliverables Library
+                  </h2>
+                  <p class="text-xs text-zinc-400 mt-0.5">Explore, inspect, edit, and preview all generated PRDs, stories, validation reports, and interactive HTML mockups.</p>
+                </div>
+
+                <div class="flex items-center gap-2">
+                  <button onclick="loadArtifactsFromApi()" class="p-1.5 rounded-lg bg-[#26272e] hover:bg-[#31323a] text-zinc-300 text-xs flex items-center gap-1.5 transition-colors">
+                    <span class="material-symbols-outlined text-[16px]">refresh</span>
+                    <span class="font-mono text-[11px]">Refresh</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Filter Toolbar -->
+              <div class="flex flex-wrap items-center justify-between gap-3 bg-[#121316] p-3 rounded-xl border border-[#2a2b30]">
+                <!-- Category Filter Chips -->
+                <div class="flex flex-wrap items-center gap-1.5" id="artifact-filter-chips">
+                  <button onclick="filterArtifactsCategory('all')" data-cat="all" class="art-chip active px-3 py-1 rounded-lg text-xs font-semibold bg-[#26272e] text-amber-400 border border-amber-500/30 transition-all">All (<span id="count-chip-all">0</span>)</button>
+                  <button onclick="filterArtifactsCategory('PRD')" data-cat="PRD" class="art-chip px-3 py-1 rounded-lg text-xs font-medium text-zinc-400 hover:text-zinc-200 transition-all">PRDs (<span id="count-chip-prd">0</span>)</button>
+                  <button onclick="filterArtifactsCategory('User Stories')" data-cat="User Stories" class="art-chip px-3 py-1 rounded-lg text-xs font-medium text-zinc-400 hover:text-zinc-200 transition-all">Stories (<span id="count-chip-stories">0</span>)</button>
+                  <button onclick="filterArtifactsCategory('Validation')" data-cat="Validation" class="art-chip px-3 py-1 rounded-lg text-xs font-medium text-zinc-400 hover:text-zinc-200 transition-all">Validation (<span id="count-chip-val">0</span>)</button>
+                  <button onclick="filterArtifactsCategory('Mockup')" data-cat="Mockup" class="art-chip px-3 py-1 rounded-lg text-xs font-medium text-zinc-400 hover:text-zinc-200 transition-all">Mockups (<span id="count-chip-mockups">0</span>)</button>
+                  <button onclick="filterArtifactsCategory('Backlog')" data-cat="Backlog" class="art-chip px-3 py-1 rounded-lg text-xs font-medium text-zinc-400 hover:text-zinc-200 transition-all">Backlog (<span id="count-chip-backlog">0</span>)</button>
+                </div>
+
+                <!-- Real-time Search Box -->
+                <div class="relative min-w-[220px]">
+                  <span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-500 text-[16px]">search</span>
+                  <input type="text" id="artifact-search-input" onkeyup="filterArtifactsBySearch()" placeholder="Search artifacts..." class="w-full py-1.5 pl-8 pr-3 rounded-lg bg-[#18191d] border border-[#2a2b30] text-zinc-200 text-xs focus:outline-none focus:border-amber-500"/>
+                </div>
+              </div>
+
+              <!-- Dual-Pane Split Layout (Artifacts List on Left, Live Viewer on Right) -->
+              <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-[560px]">
+                
+                <!-- Left Pane: Artifact Cards List (col-span-5) -->
+                <div class="lg:col-span-5 rounded-xl bg-[#121316] border border-[#2a2b30] p-3 flex flex-col h-[560px]">
+                  <div class="px-2 py-1.5 flex items-center justify-between text-xs font-mono text-zinc-400 border-b border-[#2a2b30] mb-2">
+                    <span>Files on Disk</span>
+                    <span id="filtered-artifacts-counter">0 items</span>
+                  </div>
+                  <div class="flex-1 overflow-y-auto space-y-1.5 pr-1" id="artifacts-list-container">
+                    <!-- Dynamically populated -->
+                  </div>
+                </div>
+
+                <!-- Right Pane: Interactive Viewer & Live Preview (col-span-7) -->
+                <div class="lg:col-span-7 rounded-xl bg-[#121316] border border-[#2a2b30] flex flex-col h-[560px] overflow-hidden">
+                  <!-- Viewer Top Header -->
+                  <div class="bg-[#18191d] border-b border-[#2a2b30] px-4 py-2.5 flex items-center justify-between gap-2 text-xs font-mono">
+                    <div class="flex items-center gap-2 truncate">
+                      <span class="material-symbols-outlined text-amber-500 text-[18px]" id="viewer-file-icon">description</span>
+                      <span id="viewer-file-path" class="text-zinc-200 font-semibold truncate">Select an artifact to preview</span>
+                    </div>
+
+                    <div class="flex items-center gap-2 shrink-0">
+                      <!-- Mockup responsive device switcher (shown only when viewing HTML mockups) -->
+                      <div id="viewer-mockup-device-switcher" class="hidden flex items-center rounded-lg bg-[#121316] border border-[#2a2b30] p-0.5">
+                        <button onclick="setLibraryMockupDevice('mobile')" class="px-2 py-0.5 text-[10px] text-zinc-400 hover:text-white" title="Mobile 375px"><span class="material-symbols-outlined text-[14px]">smartphone</span></button>
+                        <button onclick="setLibraryMockupDevice('tablet')" class="px-2 py-0.5 text-[10px] text-zinc-400 hover:text-white" title="Tablet 768px"><span class="material-symbols-outlined text-[14px]">tablet</span></button>
+                        <button onclick="setLibraryMockupDevice('desktop')" class="px-2 py-0.5 text-[10px] text-amber-400 font-bold" title="Desktop 100%"><span class="material-symbols-outlined text-[14px]">desktop_windows</span></button>
+                        <a id="viewer-mockup-newtab" href="#" target="_blank" class="px-2 py-0.5 text-[10px] text-zinc-400 hover:text-amber-400" title="Open in New Tab"><span class="material-symbols-outlined text-[14px]">open_in_new</span></a>
+                      </div>
+
+                      <button id="viewer-mode-btn" onclick="toggleViewerMode()" class="px-2.5 py-1 rounded bg-[#26272e] hover:bg-[#31323a] text-zinc-300 text-xs transition-colors">Edit</button>
+                      <button id="viewer-save-btn" onclick="saveActiveViewerArtifact()" class="hidden px-3 py-1 rounded bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs transition-colors flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[14px]">save</span> Save
+                      </button>
+                      <button onclick="copyActiveViewerContent()" class="p-1 rounded bg-[#26272e] hover:bg-[#31323a] text-zinc-300 text-xs" title="Copy Content">
+                        <span class="material-symbols-outlined text-[16px]">content_copy</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Viewer Content Canvas -->
+                  <div class="flex-1 p-5 overflow-y-auto relative bg-[#121316] prose prose-invert max-w-none text-xs" id="viewer-canvas-body">
+                    <div class="h-full flex flex-col items-center justify-center text-center text-zinc-500 space-y-2">
+                      <span class="material-symbols-outlined text-[42px] text-zinc-600">article</span>
+                      <p class="text-sm text-zinc-400">Select any file from the left to view or edit.</p>
+                      <span class="text-xs text-zinc-600">HTML mockups render inside an interactive sandbox iframe.</span>
+                    </div>
+                  </div>
+
+                  <!-- Editable Textarea (Hidden by default) -->
+                  <textarea id="viewer-canvas-textarea" class="hidden w-full h-full p-4 bg-[#121316] text-zinc-200 font-mono text-xs leading-relaxed focus:outline-none resize-none"></textarea>
+
+                  <!-- HTML Mockup Iframe (Hidden by default) -->
+                  <div id="viewer-mockup-container" class="hidden w-full h-full p-2 bg-[#090a0c] flex items-center justify-center">
+                    <iframe id="viewer-mockup-iframe" class="w-full h-full rounded border border-[#2a2b30] bg-white transition-all shadow-xl"></iframe>
+                  </div>
+                </div>
+
+              </div>
+
             </section>
           </div>
 
@@ -650,6 +1313,16 @@
                     <div class="text-left">
                       <span class="block font-semibold text-sm">MCP Connections</span>
                       <span class="block text-[11px] text-zinc-500 font-normal">Stitch, Atlassian, Figma, Miro</span>
+                    </div>
+                  </div>
+                </button>
+
+                <button onclick="switchSettingsSection('sec-ai-engine')" id="nav-sec-ai-engine" class="settings-nav-btn w-full p-3 rounded-xl hover:bg-[#1f2025] text-zinc-400 hover:text-zinc-100 font-medium text-xs flex items-center justify-between border border-transparent transition-all">
+                  <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-[20px] text-amber-500">smart_toy</span>
+                    <div class="text-left">
+                      <span class="block font-semibold text-sm">AI Execution Engine</span>
+                      <span class="block text-[11px] text-zinc-500 font-normal">Gemini, Claude, OpenAI</span>
                     </div>
                   </div>
                 </button>
@@ -822,6 +1495,83 @@
                   </div>
                 </div>
 
+                <!-- SECTION: AI EXECUTION ENGINE -->
+                <div id="sec-ai-engine" class="settings-section hidden space-y-6">
+                  <div>
+                    <h3 class="font-headline text-base font-bold text-zinc-100 flex items-center gap-2">
+                      <span class="material-symbols-outlined text-amber-500 text-[20px]">smart_toy</span> AI Execution Engine (In-Browser SaaS Mode)
+                    </h3>
+                    <p class="text-xs text-zinc-400 mt-0.5">Configure your LLM API keys to run Socratic Question Gates and generate artifacts directly in this web UI without touching a terminal.</p>
+                  </div>
+
+                  <div class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-zinc-300 space-y-1">
+                    <div class="font-semibold text-amber-400 flex items-center gap-1.5">
+                      <span class="material-symbols-outlined text-[16px]">info</span> Zero-Config Fallback & Privacy
+                    </div>
+                    <p class="text-[11px] text-zinc-400 leading-relaxed">Keys are stored locally in `.env` and sent directly to LLM provider REST endpoints via Python's built-in `urllib.request`. If no keys are configured, the UI automatically operates in <strong>Smart Prompt Bundle mode</strong> so you can 1-click copy hydrated prompts for Cursor, Claude Code, or Antigravity CLI.</p>
+                  </div>
+
+                  <div class="space-y-4">
+                    <!-- Default Provider Selector -->
+                    <div class="space-y-1.5">
+                      <label class="block text-xs font-medium text-zinc-300">Default LLM Provider</label>
+                      <select id="setting-default-provider" class="w-full px-3 py-2 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-xs focus:outline-none focus:border-amber-500">
+                        <option value="gemini">Google Gemini (gemini-2.5-pro / 2.5-flash via Gemini REST API)</option>
+                        <option value="anthropic">Anthropic Claude (claude-3-7-sonnet via Messages REST API)</option>
+                        <option value="openai">OpenAI (gpt-4o / o3-mini via Chat Completions REST API)</option>
+                      </select>
+                    </div>
+
+                    <!-- Gemini Key -->
+                    <div class="p-4 rounded-xl bg-[#1f2025] border border-[#2a2b30] space-y-2">
+                      <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                          <span class="material-symbols-outlined text-blue-400 text-[18px]">bolt</span>
+                          <span class="font-semibold text-zinc-100 text-xs">Google Gemini API Key</span>
+                        </div>
+                        <span id="badge-gemini-status" class="px-2 py-0.5 rounded text-[10px] font-mono bg-[#121316] text-zinc-400 border border-[#2a2b30]">Unconfigured</span>
+                      </div>
+                      <div class="flex gap-2">
+                        <input type="password" id="input-gemini-key" placeholder="AIzaSy..." class="flex-1 px-3 py-1.5 rounded bg-[#121316] border border-[#2a2b30] text-zinc-200 text-xs font-mono focus:outline-none focus:border-amber-500"/>
+                        <button onclick="saveSingleApiKey('gemini')" class="px-3 py-1.5 rounded bg-[#26272e] hover:bg-[#31323a] text-zinc-300 text-xs font-mono">Save</button>
+                      </div>
+                      <span class="text-[10px] text-zinc-500 font-mono" id="preview-gemini-key"></span>
+                    </div>
+
+                    <!-- Anthropic Key -->
+                    <div class="p-4 rounded-xl bg-[#1f2025] border border-[#2a2b30] space-y-2">
+                      <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                          <span class="material-symbols-outlined text-amber-400 text-[18px]">psychology</span>
+                          <span class="font-semibold text-zinc-100 text-xs">Anthropic Claude API Key</span>
+                        </div>
+                        <span id="badge-anthropic-status" class="px-2 py-0.5 rounded text-[10px] font-mono bg-[#121316] text-zinc-400 border border-[#2a2b30]">Unconfigured</span>
+                      </div>
+                      <div class="flex gap-2">
+                        <input type="password" id="input-anthropic-key" placeholder="sk-ant-api..." class="flex-1 px-3 py-1.5 rounded bg-[#121316] border border-[#2a2b30] text-zinc-200 text-xs font-mono focus:outline-none focus:border-amber-500"/>
+                        <button onclick="saveSingleApiKey('anthropic')" class="px-3 py-1.5 rounded bg-[#26272e] hover:bg-[#31323a] text-zinc-300 text-xs font-mono">Save</button>
+                      </div>
+                      <span class="text-[10px] text-zinc-500 font-mono" id="preview-anthropic-key"></span>
+                    </div>
+
+                    <!-- OpenAI Key -->
+                    <div class="p-4 rounded-xl bg-[#1f2025] border border-[#2a2b30] space-y-2">
+                      <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                          <span class="material-symbols-outlined text-emerald-400 text-[18px]">memory</span>
+                          <span class="font-semibold text-zinc-100 text-xs">OpenAI API Key</span>
+                        </div>
+                        <span id="badge-openai-status" class="px-2 py-0.5 rounded text-[10px] font-mono bg-[#121316] text-zinc-400 border border-[#2a2b30]">Unconfigured</span>
+                      </div>
+                      <div class="flex gap-2">
+                        <input type="password" id="input-openai-key" placeholder="sk-proj-..." class="flex-1 px-3 py-1.5 rounded bg-[#121316] border border-[#2a2b30] text-zinc-200 text-xs font-mono focus:outline-none focus:border-amber-500"/>
+                        <button onclick="saveSingleApiKey('openai')" class="px-3 py-1.5 rounded bg-[#26272e] hover:bg-[#31323a] text-zinc-300 text-xs font-mono">Save</button>
+                      </div>
+                      <span class="text-[10px] text-zinc-500 font-mono" id="preview-openai-key"></span>
+                    </div>
+                  </div>
+                </div>
+
                 <!-- SECTION 3: SKILL DEFAULTS -->
                 <div id="sec-skills" class="settings-section hidden space-y-6">
                   <div>
@@ -946,6 +1696,47 @@
     </div>
   </div>
 
+  <!-- ================= QUICK APPEND DECISION / INSIGHT MODAL ================= -->
+  <div id="quick-append-modal" class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="w-full max-w-xl rounded-2xl bg-[#18191d] border border-[#2a2b30] shadow-2xl p-6 space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-[#2a2b30]">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-purple-400 text-[20px]">psychology</span>
+          <h3 class="font-headline text-base font-bold text-zinc-100">Quick Append to Product Brain</h3>
+        </div>
+        <button onclick="closeQuickAppendModal()" class="text-zinc-400 hover:text-zinc-100">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <div class="space-y-3">
+        <div>
+          <label class="block text-xs font-mono uppercase text-zinc-400 mb-1">Target Knowledge File</label>
+          <select id="modal-append-target" class="w-full py-2 px-3 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-xs font-mono focus:outline-none focus:border-purple-400">
+            <option value="decisions.md">.context/decisions.md (Architecture & Product Decisions / ADR)</option>
+            <option value="discovery.md">.context/discovery.md (Customer Discovery & Validated Insights)</option>
+            <option value="strategy-and-constraints.md">.context/strategy-and-constraints.md (Strategy & Scope Bounds)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-mono uppercase text-zinc-400 mb-1">Session Insight or Decision Note</label>
+          <textarea id="modal-append-content" rows="6" class="w-full p-3 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-200 text-xs font-mono leading-relaxed focus:outline-none focus:border-purple-400" placeholder="e.g.: Decided to use standard library urllib.request for zero external dependencies..."></textarea>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between pt-3 border-t border-[#2a2b30]">
+        <span class="text-[11px] text-zinc-500 font-mono">Appends timestamped markdown block</span>
+        <div class="flex items-center gap-2">
+          <button onclick="closeQuickAppendModal()" class="px-3.5 py-1.5 rounded-lg bg-[#26272e] hover:bg-[#31323a] text-zinc-300 text-xs">Cancel</button>
+          <button onclick="submitQuickAppendModal()" class="px-4 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white font-medium text-xs shadow-sm flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">add_circle</span> Append to File
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- FLOATING TOAST CONTAINER -->
   <div id="global-toast" class="fixed bottom-5 right-5 z-50 hidden max-w-md p-3.5 rounded-xl bg-[#1f2025] border border-amber-500/40 text-zinc-100 text-xs font-mono shadow-2xl flex items-center gap-2.5 transition-all">
     <span class="material-symbols-outlined text-[18px] text-amber-400" id="global-toast-icon">check_circle</span>
@@ -1021,7 +1812,15 @@
             };
           });
 
-          // Update wizard skill dropdown options
+          // Update studio skill dropdown options
+          const studioSelect = document.getElementById('studio-skill-select');
+          if (studioSelect) {
+            studioSelect.innerHTML = manifest.skills.map(s => 
+              `<option value="${s.id}">${s.id} — ${s.name}</option>`
+            ).join('');
+            if (studioActiveSkill) studioSelect.value = studioActiveSkill;
+          }
+
           const wizardSelect = document.getElementById('wizard-skill-select');
           if (wizardSelect) {
             wizardSelect.innerHTML = manifest.skills.map(s => 
@@ -1272,7 +2071,7 @@
       container.innerHTML = favs.map(skillId => {
         const info = SKILL_DETAILS[skillId] || { name: skillId, icon: 'star', color: 'text-amber-400' };
         return `
-          <div data-skill-id="${skillId}" class="sidebar-skill-item w-full p-2 rounded-lg bg-[#26272e]/60 hover:bg-[#26272e] text-zinc-200 hover:text-zinc-100 flex items-center justify-between transition-colors group cursor-pointer border border-amber-500/20" onclick="triggerSkillFromSidepanel('${skillId}')">
+          <div data-skill-id="${skillId}" class="sidebar-skill-item sidebar-favorite-item w-full p-2 rounded-lg text-zinc-200 hover:text-zinc-100 flex items-center justify-between transition-colors group cursor-pointer" onclick="triggerSkillFromSidepanel('${skillId}')">
             <div class="sidebar-skill-main flex items-center gap-2.5 min-w-0">
               <span class="material-symbols-outlined text-[18px] ${info.color} shrink-0">${info.icon}</span>
               <span class="text-[13px] font-semibold truncate sidebar-label text-zinc-100">${info.name}</span>
@@ -1331,7 +2130,8 @@
         }
 
         if (!container) return;
-        if (!Array.isArray(data.files) || data.files.length === 0) {
+        const filesList = data.files_list || (Array.isArray(data.files) ? data.files : Object.values(data.files || {}));
+        if (!filesList || filesList.length === 0) {
           container.innerHTML = `<div class="col-span-full py-4 text-center text-zinc-500 text-xs">No .context/ files found.</div>`;
           return;
         }
@@ -1345,11 +2145,12 @@
           'conventions.md': 'rule'
         };
 
-        container.innerHTML = data.files.map(file => {
-          const icon = FILE_ICONS[file.name] || 'description';
-          const score = file.completeness_score || 0;
-          const statusColor = file.status === 'Healthy' ? 'emerald' : file.status === 'In Progress' ? 'amber' : 'red';
-          const prompt = file.suggested_prompt || `/ingest-context`;
+        container.innerHTML = filesList.map(file => {
+          const fileName = file.filename || file.name;
+          const icon = FILE_ICONS[fileName] || 'description';
+          const score = file.completeness_score || file.score || 0;
+          const statusColor = (file.status === 'Healthy' || file.status === 'Complete') ? 'emerald' : file.status === 'In Progress' ? 'amber' : 'red';
+          const prompt = file.suggested_prompt || file.cli_prompt || `/ingest-context`;
 
           return `
             <div class="p-4 rounded-xl bg-[#1f2025] border border-[#2a2b30] flex flex-col justify-between space-y-3 hover:border-amber-500/30 transition-all">
@@ -1609,6 +2410,228 @@
       }
     }
 
+    // Global State
+    let activeViewerArtifact = null;
+    let currentArtifactFilter = 'all';
+    let currentArtifactSearch = '';
+    let viewerMode = 'preview'; // 'preview' | 'edit'
+
+    // Guided Skill Studio State
+    let studioActiveSkill = 'create-prd';
+    let studioActiveTier = 'standard';
+    let studioActiveFramework = '';
+    let studioActiveMode = 'runner'; // 'runner' | 'customizer'
+    let studioContextFiles = ['product.md', 'discovery.md', 'strategy-and-constraints.md', 'architecture.md', 'conventions.md', 'decisions.md'];
+    let studioContextCache = [];
+    let studioCanvasMode = 'preview'; // 'preview' | 'edit'
+
+    const SKILL_PLACEHOLDERS = {
+      'create-prd': 'Describe the feature, user problem, target audience, or paste raw meeting notes...',
+      'create-user-stories': 'Describe the feature or epic to slice into INVEST user stories with Gherkin acceptance criteria...',
+      'refine-user-stories': 'Paste draft user stories or backlog items to refine, SPIDR split, and check for acceptance edge cases...',
+      'create-mockup': 'Describe the screen layout, key user actions, Tailwind visual elements, and modal interactions...',
+      'create-design-brief': 'Describe the UI/UX problem, user flow steps, component requirements, and WCAG accessibility bounds...',
+      'create-documentation': 'Describe the system architecture, API endpoints, or user workflows to document with Mermaid diagrams...',
+      'brainstorm': 'Describe the opportunity area, user bottleneck, or problem to ideate with SCAMPER / HMW / 6 Thinking Hats...',
+      'validate-idea': 'Describe the product hypothesis, customer segment, or business model risk to de-risk with Strategyzer & Mom Test...',
+      'recommend-framework': 'Describe your current product dilemma, prioritization hurdle, or team delivery bottleneck...',
+      'ingest-context': 'Paste raw meeting transcripts, customer interview notes, Slack dump, or product wikis to compound knowledge...',
+      'apply-framework': 'Describe the product problem or backlog to evaluate through a structured product management framework...',
+      'sync-jira': 'Specify Jira project key, issue keys, or sprint scope to pull context or export refined stories...',
+      'sync-confluence': 'Specify Confluence space and page title to publish PRD or pull existing company documentation...',
+      'sync-github-issues': 'Specify repository and issue labels or milestones to synchronize with BACKLOG.md...',
+      'sync-figma': 'Specify Figma file key or node URL to extract design tokens or post UX specifications...',
+      'sync-miro': 'Specify Miro whiteboard URL to pull brainstorm stickies or export roadmap frames...',
+      'sync-notion': 'Specify Notion database or page URL to pull user research or publish product specifications...'
+    };
+
+    const SKILL_DEST_MAP = {
+      'create-prd': 'docs/prds/',
+      'create-user-stories': 'docs/stories/',
+      'refine-user-stories': 'docs/stories/',
+      'validate-idea': 'docs/validation/',
+      'create-mockup': 'mockups/',
+      'create-design-brief': 'docs/specs/',
+      'create-documentation': 'docs/specs/',
+      'brainstorm': 'docs/ideation/'
+    };
+
+    let currentActiveEngine = 'cli:agy';
+    let detectedClis = [];
+
+    // ================= LOAD & SAVE SETTINGS =================
+    async function loadEnvStatus() {
+      try {
+        const res = await fetch('/api/env-status');
+        if (!res.ok) return;
+        const data = await res.json();
+        detectedClis = data.detected_clis || [];
+        if (data.active_engine) currentActiveEngine = data.active_engine;
+
+        const llm = data.llm || {};
+
+        const updateLlmBadge = (badgeId, previewId, keyConfigured, previewText) => {
+          const badge = document.getElementById(badgeId);
+          const preview = document.getElementById(previewId);
+          if (badge) {
+            if (keyConfigured) {
+              badge.className = 'px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px] font-mono font-semibold flex items-center gap-1';
+              badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Active';
+            } else {
+              badge.className = 'px-2.5 py-0.5 rounded-full bg-zinc-500/10 text-zinc-400 border border-zinc-500/30 text-[10px] font-mono font-semibold';
+              badge.textContent = 'Unconfigured';
+            }
+          }
+          if (preview) {
+            preview.textContent = previewText ? `Configured: ${previewText}` : 'No key detected';
+          }
+        };
+
+        updateLlmBadge('badge-gemini-status', 'preview-gemini-key', llm.gemini?.configured, llm.gemini?.preview);
+        updateLlmBadge('badge-anthropic-status', 'preview-anthropic-key', llm.anthropic?.configured, llm.anthropic?.preview);
+        updateLlmBadge('badge-openai-status', 'preview-openai-key', llm.openai?.configured, llm.openai?.preview);
+
+        // Update Header Engine Selector & Status Badge
+        renderHeaderEngineSelector(data);
+
+      } catch (e) {
+        console.warn('Could not load env status', e);
+      }
+    }
+
+    function renderHeaderEngineSelector(data) {
+      const select = document.getElementById('header-engine-select');
+      const indicator = document.getElementById('header-engine-indicator');
+      if (!select) return;
+
+      const clis = data.detected_clis || [];
+      const active = data.active_engine || currentActiveEngine;
+      const llm = data.llm || {};
+
+      let optionsHtml = '';
+      // 1. Detected Local CLIs
+      clis.forEach(c => {
+        if (c.can_execute) {
+          optionsHtml += `<option value="cli:${c.id}" class="bg-[#18191d] text-zinc-100" ${active === 'cli:' + c.id ? 'selected' : ''}>Local CLI: ${c.name} (${c.id})</option>`;
+        }
+      });
+
+      // 2. IDE Companion Mode
+      const hasCursor = clis.some(c => c.id === 'cursor' || c.id === 'agent');
+      optionsHtml += `<option value="companion:cursor" class="bg-[#18191d] text-zinc-100" ${active === 'companion:cursor' ? 'selected' : ''}>IDE Companion (${hasCursor ? 'Cursor' : 'Terminal'})</option>`;
+
+      // 3. REST API options
+      const gemKey = llm.gemini?.configured ? ' (Key Set)' : '';
+      const antKey = llm.anthropic?.configured ? ' (Key Set)' : '';
+      const oaiKey = llm.openai?.configured ? ' (Key Set)' : '';
+      optionsHtml += `<option value="api:gemini" class="bg-[#18191d] text-zinc-100" ${active === 'api:gemini' ? 'selected' : ''}>REST API: Google Gemini${gemKey}</option>`;
+      optionsHtml += `<option value="api:anthropic" class="bg-[#18191d] text-zinc-100" ${active === 'api:anthropic' ? 'selected' : ''}>REST API: Anthropic Claude${antKey}</option>`;
+      optionsHtml += `<option value="api:openai" class="bg-[#18191d] text-zinc-100" ${active === 'api:openai' ? 'selected' : ''}>REST API: OpenAI${oaiKey}</option>`;
+
+      // 4. Smart Prompt Bundle fallback
+      optionsHtml += `<option value="bundle_only" class="bg-[#18191d] text-zinc-100" ${active === 'bundle_only' ? 'selected' : ''}>Smart Prompt Bundle (Manual Copy)</option>`;
+
+      select.innerHTML = optionsHtml;
+      select.value = active;
+
+      // Update badge styling in header
+      if (indicator) {
+        if (active.startsWith('cli:')) {
+          indicator.className = 'w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0';
+          select.className = 'bg-transparent text-emerald-400 font-semibold text-[11px] border-0 py-0 pl-0.5 pr-4 focus:ring-0 focus:outline-none cursor-pointer';
+        } else if (active.startsWith('api:')) {
+          const prov = active.replace('api:', '');
+          const isSet = llm[prov]?.configured;
+          indicator.className = isSet ? 'w-2 h-2 rounded-full bg-emerald-400 shrink-0' : 'w-2 h-2 rounded-full bg-amber-500 shrink-0';
+          select.className = isSet ? 'bg-transparent text-emerald-300 font-semibold text-[11px] border-0 py-0 pl-0.5 pr-4 focus:ring-0 focus:outline-none cursor-pointer' : 'bg-transparent text-amber-400 font-semibold text-[11px] border-0 py-0 pl-0.5 pr-4 focus:ring-0 focus:outline-none cursor-pointer';
+        } else if (active === 'companion:cursor') {
+          indicator.className = 'w-2 h-2 rounded-full bg-blue-400 shrink-0';
+          select.className = 'bg-transparent text-blue-400 font-semibold text-[11px] border-0 py-0 pl-0.5 pr-4 focus:ring-0 focus:outline-none cursor-pointer';
+        } else {
+          indicator.className = 'w-2 h-2 rounded-full bg-amber-500 shrink-0';
+          select.className = 'bg-transparent text-amber-400 font-semibold text-[11px] border-0 py-0 pl-0.5 pr-4 focus:ring-0 focus:outline-none cursor-pointer';
+        }
+      }
+
+      // Update Skill Studio active AI indicator
+      const activeLabel = document.getElementById('ai-active-label');
+      const activeDot = document.getElementById('ai-active-indicator');
+      if (activeLabel && activeDot) {
+        if (active.startsWith('cli:')) {
+          const cliId = active.replace('cli:', '');
+          const cliObj = clis.find(c => c.id === cliId);
+          const cliName = cliObj ? cliObj.name : cliId;
+          activeDot.className = 'w-2 h-2 rounded-full bg-emerald-400 animate-pulse';
+          activeLabel.innerHTML = `<span class="text-emerald-400 font-semibold">🟢 Engine: ${cliName} (Local Session • Authenticated)</span>`;
+        } else if (active.startsWith('api:')) {
+          const prov = active.replace('api:', '');
+          const isConfigured = llm[prov]?.configured;
+          if (isConfigured) {
+            activeDot.className = 'w-2 h-2 rounded-full bg-emerald-400';
+            activeLabel.innerHTML = `<span class="text-emerald-400 font-semibold">Active API: ${prov.toUpperCase()} (${llm[prov]?.preview || 'Configured'})</span>`;
+          } else {
+            activeDot.className = 'w-2 h-2 rounded-full bg-amber-500';
+            activeLabel.innerHTML = `<span class="text-amber-400 font-semibold">API Key Required in .env for ${prov.toUpperCase()}</span>`;
+          }
+        } else if (active === 'companion:cursor') {
+          activeDot.className = 'w-2 h-2 rounded-full bg-blue-400';
+          activeLabel.innerHTML = `<span class="text-blue-400 font-semibold">IDE Companion Mode (${hasCursor ? 'Cursor' : 'Terminal'})</span>`;
+        } else {
+          activeDot.className = 'w-2 h-2 rounded-full bg-amber-500';
+          activeLabel.innerHTML = `<span class="text-zinc-400 font-semibold">Smart Prompt Bundle Mode (Zero Config)</span>`;
+        }
+      }
+    }
+
+    async function onHeaderEngineChange(newEngine) {
+      currentActiveEngine = newEngine;
+      try {
+        const res = await fetch('/api/set-engine', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ engine: newEngine })
+        });
+        const d = await res.json();
+        showGlobalToast(`Active engine set to ${newEngine}`, 'check_circle');
+        if (d.env_status) {
+          renderHeaderEngineSelector(d.env_status);
+        } else {
+          loadEnvStatus();
+        }
+      } catch (e) {
+        console.error('Failed to set active engine:', e);
+      }
+    }
+
+    async function saveSingleApiKey(provider) {
+      const input = document.getElementById(`input-${provider}-key`);
+      if (!input || !input.value.trim()) {
+        showGlobalToast(`Please enter an API key for ${provider.toUpperCase()}`, 'warning');
+        return;
+      }
+      const payload = { default_llm_provider: provider };
+      if (provider === 'gemini') payload.gemini_api_key = input.value.trim();
+      if (provider === 'anthropic') payload.anthropic_api_key = input.value.trim();
+      if (provider === 'openai') payload.openai_api_key = input.value.trim();
+
+      try {
+        const res = await fetch('/api/env-config', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+          input.value = '';
+          showGlobalToast(`${provider.toUpperCase()} API key saved to .env!`, 'check_circle');
+          loadEnvStatus();
+        } else {
+          showGlobalToast('Failed to save API key', 'error');
+        }
+      } catch (e) {
+        showGlobalToast(`Error saving key: ${e.message}`, 'error');
+      }
+    }
+
     async function saveAllSettings() {
       const userName = document.getElementById('setting-user-name')?.value || 'Marcin';
       const userEmail = document.getElementById('setting-user-email')?.value || '';
@@ -1618,18 +2641,7 @@
       const storyScale = document.getElementById('setting-points-scale')?.value || 'fibonacci';
       const uiTheme = document.getElementById('setting-ui-theme')?.value || 'stitch';
       const harnessMode = document.getElementById('setting-harness-mode')?.value || 'standalone';
-
-      const stitchToken = document.getElementById('input-stitch-token')?.value || '';
-      const atlassianHost = document.getElementById('input-atlassian-host')?.value || '';
-      const atlassianEmail = document.getElementById('input-atlassian-email')?.value || '';
-      const atlassianToken = document.getElementById('input-atlassian-token')?.value || '';
-      const githubOwner = document.getElementById('input-github-owner')?.value || '';
-      const githubRepo = document.getElementById('input-github-repo')?.value || '';
-      const githubToken = document.getElementById('input-github-token')?.value || '';
-      const figmaToken = document.getElementById('input-figma-token')?.value || '';
-      const miroToken = document.getElementById('input-miro-token')?.value || '';
-      const notionPage = document.getElementById('input-notion-page')?.value || '';
-      const notionToken = document.getElementById('input-notion-token')?.value || '';
+      const defaultProvider = document.getElementById('setting-default-provider')?.value || 'gemini';
 
       const envPayload = {
         user_name: userName,
@@ -1639,17 +2651,21 @@
         ac_format: acFormat,
         story_scale: storyScale,
         ui_theme: uiTheme,
-        stitch_token: stitchToken,
-        atlassian_host: atlassianHost,
-        atlassian_email: atlassianEmail,
-        atlassian_token: atlassianToken,
-        github_owner: githubOwner,
-        github_repo: githubRepo,
-        github_token: githubToken,
-        figma_token: figmaToken,
-        miro_token: miroToken,
-        notion_page: notionPage,
-        notion_token: notionToken
+        default_llm_provider: defaultProvider,
+        gemini_api_key: document.getElementById('input-gemini-key')?.value || '',
+        anthropic_api_key: document.getElementById('input-anthropic-key')?.value || '',
+        openai_api_key: document.getElementById('input-openai-key')?.value || '',
+        stitch_token: document.getElementById('input-stitch-token')?.value || '',
+        atlassian_host: document.getElementById('input-atlassian-host')?.value || '',
+        atlassian_email: document.getElementById('input-atlassian-email')?.value || '',
+        atlassian_token: document.getElementById('input-atlassian-token')?.value || '',
+        github_owner: document.getElementById('input-github-owner')?.value || '',
+        github_repo: document.getElementById('input-github-repo')?.value || '',
+        github_token: document.getElementById('input-github-token')?.value || '',
+        figma_token: document.getElementById('input-figma-token')?.value || '',
+        miro_token: document.getElementById('input-miro-token')?.value || '',
+        notion_page: document.getElementById('input-notion-page')?.value || '',
+        notion_token: document.getElementById('input-notion-token')?.value || ''
       };
 
       try {
@@ -1668,8 +2684,9 @@
           })
         });
 
-        showGlobalToast('Settings saved to .env & harness-config.yaml!', 'check_circle');
+        showGlobalToast('Settings & credentials saved to .env!', 'check_circle');
         loadUserSettingsInDashboard();
+        loadEnvStatus();
         loadContextOverview();
         refreshMcpStatusBadges();
       } catch (err) {
@@ -1690,7 +2707,6 @@
           const headerName = document.getElementById('header-user-name');
           const headerAvatar = document.getElementById('header-user-avatar');
           const welcomeName = document.getElementById('dashboard-welcome-name');
-          const wizardPersona = document.getElementById('wizard-persona');
 
           const settingsBadge = document.getElementById('settings-avatar-badge');
           const settingsTitle = document.getElementById('settings-profile-title');
@@ -1701,7 +2717,6 @@
           if (headerName) headerName.textContent = firstName;
           if (headerAvatar) headerAvatar.textContent = initial;
           if (welcomeName) welcomeName.textContent = `Welcome back, ${firstName}`;
-          if (wizardPersona) wizardPersona.value = data.user_name;
 
           if (settingsBadge) settingsBadge.textContent = initial;
           if (settingsTitle) settingsTitle.textContent = data.user_name;
@@ -1715,7 +2730,7 @@
           if (data.story_scale && document.getElementById('setting-points-scale')) document.getElementById('setting-points-scale').value = data.story_scale;
           if (data.ui_theme && document.getElementById('setting-ui-theme')) document.getElementById('setting-ui-theme').value = data.ui_theme;
           if (data.mode && document.getElementById('setting-harness-mode')) document.getElementById('setting-harness-mode').value = data.mode;
-          if (data.workspace_path && document.getElementById('setting-workspace-path')) document.getElementById('setting-workspace-path').value = data.workspace_path;
+          if (data.default_llm_provider && document.getElementById('setting-default-provider')) document.getElementById('setting-default-provider').value = data.default_llm_provider;
 
           if (data.atlassian_host && document.getElementById('input-atlassian-host')) document.getElementById('input-atlassian-host').value = data.atlassian_host;
           if (data.atlassian_email && document.getElementById('input-atlassian-email')) document.getElementById('input-atlassian-email').value = data.atlassian_email;
@@ -1723,24 +2738,929 @@
           if (data.github_repo && document.getElementById('input-github-repo')) document.getElementById('input-github-repo').value = data.github_repo;
           if (data.notion_root_page_id && document.getElementById('input-notion-page')) document.getElementById('input-notion-page').value = data.notion_root_page_id;
         }
+
+        loadEnvStatus();
       } catch (err) {
         console.warn('Could not load user settings in dashboard');
       }
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      loadHarnessManifest();
-      loadContextOverview();
-      loadUserSettingsInDashboard();
-      loadArtifactsFromApi();
-      refreshMcpStatusBadges();
-      renderFavoritesSection();
-      updateFavoriteIcons();
-      initSidebarTooltips();
+    // ================= GUIDED SKILL RUNNER STUDIO CONTROLLER =================
+    function initStudioContextPills(files) {
+      const container = document.getElementById('context-grounding-pills');
+      if (!container) return;
+      studioContextCache = files || studioContextCache;
+      
+      const fileMap = {};
+      studioContextCache.forEach(f => { fileMap[f.name] = f; });
 
-      const themeBtn = document.getElementById('theme-toggle-btn');
-      if (themeBtn) themeBtn.addEventListener('click', toggleAppTheme);
-    });
+      const allContextNames = [
+        'product.md', 'discovery.md', 'strategy-and-constraints.md',
+        'architecture.md', 'conventions.md', 'decisions.md'
+      ];
+
+      container.innerHTML = allContextNames.map(filename => {
+        const file = fileMap[filename] || { words: 0, title: filename.replace('.md', '') };
+        const isPopulated = file.words > 150;
+        const isSelected = studioContextFiles.includes(filename);
+        const dotColor = isPopulated ? 'bg-emerald-400' : 'bg-amber-400';
+        const titleShort = filename.replace('.md', '');
+
+        return `
+          <div onclick="toggleContextPill('${filename}')" class="cursor-pointer p-2 rounded-lg border transition-all flex items-center justify-between text-xs font-mono ${isSelected ? 'bg-[#1f2025] border-amber-500/50 text-zinc-100 shadow-xs' : 'bg-[#121316] border-[#2a2b30] text-zinc-500 hover:text-zinc-300'}">
+            <div class="flex items-center gap-1.5 truncate">
+              <span class="w-2 h-2 rounded-full ${dotColor} shrink-0"></span>
+              <span class="truncate">${titleShort}</span>
+            </div>
+            <button onclick="event.stopPropagation(); openContextEditor('${filename}')" title="Edit .context/${filename}" class="text-zinc-500 hover:text-amber-400 p-0.5">
+              <span class="material-symbols-outlined text-[13px]">edit</span>
+            </button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function toggleContextPill(filename) {
+      if (studioContextFiles.includes(filename)) {
+        studioContextFiles = studioContextFiles.filter(f => f !== filename);
+      } else {
+        studioContextFiles.push(filename);
+      }
+      initStudioContextPills();
+    }
+
+    function toggleAllContextPills(includeAll) {
+      if (includeAll) {
+        studioContextFiles = ['product.md', 'discovery.md', 'strategy-and-constraints.md', 'architecture.md', 'conventions.md', 'decisions.md'];
+      } else {
+        studioContextFiles = [];
+      }
+      initStudioContextPills();
+    }
+
+    function onStudioSkillSelect(skillId) {
+      studioActiveSkill = skillId;
+      const select = document.getElementById('studio-skill-select');
+      if (select && select.value !== skillId) select.value = skillId;
+
+      const info = SKILL_DETAILS[skillId] || { name: skillId, icon: 'auto_awesome', category: 'specification', description: 'Grounded product skill execution.' };
+      
+      const titleEl = document.getElementById('studio-header-title');
+      const iconEl = document.getElementById('studio-header-icon');
+      const catEl = document.getElementById('studio-header-category');
+      const descEl = document.getElementById('studio-header-desc');
+      const inputEl = document.getElementById('studio-user-input');
+      const pathEl = document.getElementById('studio-artifact-path');
+
+      if (titleEl) titleEl.textContent = info.name;
+      if (iconEl) iconEl.textContent = info.icon || 'auto_awesome';
+      if (catEl) catEl.textContent = info.category || 'specification';
+      if (descEl) descEl.textContent = info.description || '';
+
+      if (inputEl) {
+        inputEl.placeholder = SKILL_PLACEHOLDERS[skillId] || 'Describe your objectives, user requirements, or paste notes...';
+      }
+
+      if (pathEl) {
+        const folder = SKILL_DEST_MAP[skillId] || 'docs/';
+        const ext = skillId === 'create-mockup' ? '.html' : '.md';
+        const slug = skillId.replace('-', '_');
+        pathEl.value = `${folder}new_${slug}${ext}`;
+      }
+
+      if (studioActiveMode === 'customizer') {
+        loadSkillCustomizerContent(skillId);
+      }
+    }
+
+    function setStudioTier(tier) {
+      studioActiveTier = tier;
+      document.querySelectorAll('#studio-tier-buttons .tier-btn').forEach(btn => {
+        if (btn.dataset.tier === tier) {
+          btn.className = 'tier-btn active py-1 rounded text-[11px] font-semibold bg-[#26272e] text-amber-400 shadow-xs transition-colors';
+        } else {
+          btn.className = 'tier-btn py-1 rounded text-[11px] font-medium text-zinc-400 hover:text-zinc-100 transition-colors';
+        }
+      });
+    }
+
+    function setStudioMode(mode) {
+      studioActiveMode = mode;
+      const runnerBtn = document.getElementById('btn-mode-run');
+      const customBtn = document.getElementById('btn-mode-custom');
+      const runnerView = document.getElementById('studio-runner-view');
+      const customView = document.getElementById('studio-customizer-view');
+
+      if (mode === 'runner') {
+        runnerBtn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all bg-[#26272e] text-amber-400 shadow-xs';
+        customBtn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all text-zinc-400 hover:text-zinc-200';
+        runnerView.classList.remove('hidden');
+        customView.classList.add('hidden');
+      } else {
+        customBtn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all bg-[#26272e] text-amber-400 shadow-xs';
+        runnerBtn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all text-zinc-400 hover:text-zinc-200';
+        runnerView.classList.add('hidden');
+        customView.classList.remove('hidden');
+        loadSkillCustomizerContent(studioActiveSkill);
+      }
+    }
+
+    function toggleFavoriteFromStudio() {
+      toggleFavorite(studioActiveSkill);
+    }
+
+    async function copyHydratedPromptBundle() {
+      const userInput = document.getElementById('studio-user-input')?.value.trim() || 'Generate standard specification grounded in product context.';
+      const fw = document.getElementById('studio-framework-select')?.value || '';
+
+      const payload = {
+        skill_id: studioActiveSkill,
+        user_input: userInput,
+        tier: studioActiveTier,
+        framework_id: fw,
+        context_files: studioContextFiles,
+        stage: 'clarify'
+      };
+
+      try {
+        const res = await fetch('/api/compile-prompt', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (data.full_bundle) {
+          navigator.clipboard.writeText(data.full_bundle);
+          showGlobalToast('📋 Hydrated Prompt Bundle copied to clipboard for Cursor / CLI!', 'content_copy');
+        } else {
+          showGlobalToast('Could not compile prompt bundle', 'warning');
+        }
+      } catch (err) {
+        showGlobalToast(`Compilation error: ${err.message}`, 'error');
+      }
+    }
+
+    async function runStudioAI(stage, skipAssumptions = false) {
+      const userInput = document.getElementById('studio-user-input')?.value.trim() || '';
+      const fw = document.getElementById('studio-framework-select')?.value || '';
+      const socraticArea = document.getElementById('socratic-content-area');
+      const socraticBadge = document.getElementById('socratic-status-badge');
+      const socraticActions = document.getElementById('socratic-actions');
+
+      if (!userInput && stage === 'clarify') {
+        showGlobalToast('Please describe your feature or task in the briefing box first.', 'warning');
+        document.getElementById('studio-user-input')?.focus();
+        return;
+      }
+
+      // Gather answers if in generate stage
+      const answers = [];
+      if (stage === 'generate' && !skipAssumptions) {
+        document.querySelectorAll('.socratic-answer-input').forEach((input, idx) => {
+          if (input.value.trim()) answers.push(`Answer ${idx + 1}: ${input.value.trim()}`);
+        });
+      }
+
+      if (stage === 'clarify') {
+        socraticBadge.textContent = 'Reasoning...';
+        socraticBadge.className = 'px-2 py-0.5 rounded text-[10px] font-mono bg-amber-500/10 text-amber-400 border border-amber-500/30';
+        socraticArea.innerHTML = `
+          <div class="py-6 flex flex-col items-center justify-center space-y-2 text-center text-zinc-400 font-mono text-xs">
+            <span class="w-5 h-5 border-2 border-amber-500/30 border-t-amber-500 rounded-full animate-spin"></span>
+            <span>Running Stage 1 Socratic Gate (checking ambiguities & grounding)...</span>
+          </div>
+        `;
+      } else {
+        const canvasPreview = document.getElementById('studio-canvas-preview');
+        canvasPreview.innerHTML = `
+          <div class="h-64 flex flex-col items-center justify-center space-y-3 text-center text-zinc-400 font-mono text-xs">
+            <span class="w-6 h-6 border-2 border-amber-500/30 border-t-amber-500 rounded-full animate-spin"></span>
+            <span class="text-amber-400 font-semibold">Generating artifact grounded in .context/ & template...</span>
+            <span class="text-[11px] text-zinc-500">Executing local AI REST pipeline</span>
+          </div>
+        `;
+      }
+
+      try {
+        const res = await fetch('/api/execute-ai', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            skill_id: studioActiveSkill,
+            user_input: userInput,
+            tier: studioActiveTier,
+            framework_id: fw,
+            context_files: studioContextFiles,
+            stage,
+            answers,
+            engine: currentActiveEngine
+          })
+        });
+
+        const data = await res.json();
+
+        // Check for bundle_only mode (no API key in .env and no CLI, or IDE Companion selected)
+        if (data.mode === 'bundle_only') {
+          const isCompanion = currentActiveEngine === 'companion:cursor';
+          socraticBadge.textContent = isCompanion ? 'IDE Companion' : 'Bundle Mode';
+          socraticBadge.className = 'px-2 py-0.5 rounded text-[10px] font-mono bg-amber-500/10 text-amber-400 border border-amber-500/30';
+          const title = isCompanion ? 'IDE Companion Mode (Cursor / Terminal Active)' : 'Smart Prompt Bundle Mode';
+          const desc = isCompanion
+            ? 'Copy the fully hydrated prompt bundle below to run directly in your terminal (e.g. <strong class="text-amber-400">agy</strong> or <strong class="text-amber-400">claude</strong>) or <strong>Cursor IDE chat</strong>, then paste the output below to render and save.'
+            : 'Neither a local CLI (<code class="text-amber-400 font-mono">agy</code>/<code class="text-amber-400 font-mono">gemini</code>/<code class="text-amber-400 font-mono">claude</code>) nor a REST API key was found in <code class="text-amber-400 font-mono">.env</code>. You can copy the prompt bundle below to run in your AI assistant, or configure a local engine in Settings.';
+
+          socraticArea.innerHTML = `
+            <div class="p-3.5 rounded-lg bg-[#18191d] border border-amber-500/30 space-y-3">
+              <div class="flex items-center gap-2 text-amber-400 font-semibold text-xs">
+                <span class="material-symbols-outlined text-[16px]">content_copy</span>
+                <span>${title}</span>
+              </div>
+              <p class="text-[11px] text-zinc-300 leading-relaxed">${desc}</p>
+              <div class="flex items-center gap-2">
+                <button onclick="copyHydratedPromptBundle()" class="px-3 py-1.5 rounded bg-amber-600 hover:bg-amber-500 text-white font-medium text-xs flex items-center gap-1.5 transition-colors">
+                  <span class="material-symbols-outlined text-[14px]">content_copy</span> Copy Hydrated Prompt Bundle
+                </button>
+                <button onclick="switchTab('user-settings'); switchSettingsSection('sec-ai-engine')" class="px-3 py-1.5 rounded bg-[#26272e] hover:bg-[#31323a] text-zinc-300 text-xs">
+                  Configure Engine / Keys
+                </button>
+              </div>
+              <div class="pt-2 border-t border-[#2a2b30] space-y-1.5">
+                <label class="block text-[10px] font-mono uppercase text-zinc-400">Or Paste AI Output Here to Save:</label>
+                <textarea id="bundle-paste-input" rows="3" class="w-full p-2 rounded bg-[#121316] border border-[#2a2b30] text-zinc-200 text-xs font-mono focus:outline-none focus:border-amber-500" placeholder="Paste generated markdown or HTML here..."></textarea>
+                <button onclick="loadPastedBundleContent()" class="px-3 py-1 rounded bg-[#26272e] hover:bg-[#31323a] text-zinc-200 text-xs">Load into Canvas</button>
+              </div>
+            </div>
+          `;
+          socraticActions.classList.add('hidden');
+          return;
+        }
+
+        if (stage === 'clarify') {
+          socraticBadge.textContent = 'Questions Ready';
+          socraticBadge.className = 'px-2 py-0.5 rounded text-[10px] font-mono bg-purple-500/10 text-purple-400 border border-purple-500/30';
+          
+          const questions = data.questions || [];
+          if (questions.length === 0) {
+            socraticArea.innerHTML = `<p class="text-emerald-400 text-xs font-mono">✅ Requirements are well specified! Ready to generate artifact.</p>`;
+          } else {
+            socraticArea.innerHTML = `
+              <div class="space-y-2.5">
+                <p class="text-[11px] text-zinc-400">Clarify the following ambiguities to ground your artifact:</p>
+                ${questions.map((q, idx) => `
+                  <div class="p-3 rounded-lg bg-[#18191d] border border-[#2a2b30] space-y-1.5">
+                    <span class="font-semibold text-zinc-200 text-xs block">${idx + 1}. ${q.question}</span>
+                    ${q.why_it_matters ? `<p class="text-[10px] text-zinc-500 font-mono">Why: ${q.why_it_matters}</p>` : ''}
+                    <input type="text" placeholder="Your answer or clarification..." class="socratic-answer-input w-full px-2.5 py-1.5 rounded bg-[#121316] border border-[#2a2b30] text-zinc-200 text-xs focus:outline-none focus:border-amber-500"/>
+                  </div>
+                `).join('')}
+              </div>
+            `;
+          }
+          socraticActions.classList.remove('hidden');
+        } else {
+          // Stage: generate
+          const artifactText = data.artifact || data.raw_content || '';
+          const writeBackText = data.write_back || '';
+          renderStudioArtifact(artifactText, writeBackText);
+          showGlobalToast('✨ Artifact generated and grounded!', 'check_circle');
+        }
+
+      } catch (err) {
+        if (stage === 'clarify') {
+          socraticBadge.textContent = 'Error';
+          socraticArea.innerHTML = `<div class="p-3 rounded bg-red-500/10 border border-red-500/30 text-red-400 text-xs">Execution Error: ${err.message}</div>`;
+        } else {
+          document.getElementById('studio-canvas-preview').innerHTML = `<div class="p-4 text-red-400 text-xs">Generation Error: ${err.message}</div>`;
+        }
+      }
+    }
+
+    function loadPastedBundleContent() {
+      const input = document.getElementById('bundle-paste-input');
+      if (input && input.value.trim()) {
+        renderStudioArtifact(input.value.trim(), '');
+        showGlobalToast('Pasted content loaded into canvas!', 'check_circle');
+      }
+    }
+
+    function renderStudioArtifact(content, writeBackSnippet) {
+      const preview = document.getElementById('studio-canvas-preview');
+      const textarea = document.getElementById('studio-canvas-textarea');
+      const mockupContainer = document.getElementById('studio-mockup-frame-container');
+      const mockupIframe = document.getElementById('studio-mockup-iframe');
+      const deviceSwitcher = document.getElementById('mockup-viewport-switcher');
+
+      textarea.value = content;
+
+      // Check if mockup HTML
+      const isHtml = content.includes('<!DOCTYPE html>') || (content.includes('<html') && content.includes('</html>'));
+
+      if (isHtml) {
+        preview.classList.add('hidden');
+        textarea.classList.add('hidden');
+        mockupContainer.classList.remove('hidden');
+        deviceSwitcher.classList.remove('hidden');
+        mockupIframe.srcdoc = content;
+      } else {
+        mockupContainer.classList.add('hidden');
+        deviceSwitcher.classList.add('hidden');
+        if (studioCanvasMode === 'preview') {
+          preview.classList.remove('hidden');
+          textarea.classList.add('hidden');
+          preview.innerHTML = typeof marked !== 'undefined' ? marked.parse(content) : `<pre>${content}</pre>`;
+        } else {
+          preview.classList.add('hidden');
+          textarea.classList.remove('hidden');
+        }
+      }
+
+      // Populate compounding write-back card if snippet provided
+      if (writeBackSnippet) {
+        document.getElementById('writeback-snippet').value = writeBackSnippet;
+      } else if (content.includes('## 🧠 Proposed Compounding Knowledge Write-Back')) {
+        const parts = content.split('## 🧠 Proposed Compounding Knowledge Write-Back');
+        if (parts.length > 1) {
+          document.getElementById('writeback-snippet').value = parts[1].trim();
+        }
+      }
+    }
+
+    function toggleCanvasMode(mode) {
+      studioCanvasMode = mode;
+      const preview = document.getElementById('studio-canvas-preview');
+      const textarea = document.getElementById('studio-canvas-textarea');
+      const btnPreview = document.getElementById('btn-canvas-view-preview');
+      const btnEdit = document.getElementById('btn-canvas-view-edit');
+
+      if (mode === 'preview') {
+        btnPreview.className = 'px-2 py-0.5 rounded text-[11px] font-semibold bg-[#26272e] text-amber-400';
+        btnEdit.className = 'px-2 py-0.5 rounded text-[11px] font-medium text-zinc-400 hover:text-zinc-200';
+        preview.classList.remove('hidden');
+        textarea.classList.add('hidden');
+        preview.innerHTML = typeof marked !== 'undefined' ? marked.parse(textarea.value || '*No content*') : `<pre>${textarea.value}</pre>`;
+      } else {
+        btnEdit.className = 'px-2 py-0.5 rounded text-[11px] font-semibold bg-[#26272e] text-amber-400';
+        btnPreview.className = 'px-2 py-0.5 rounded text-[11px] font-medium text-zinc-400 hover:text-zinc-200';
+        preview.classList.add('hidden');
+        textarea.classList.remove('hidden');
+      }
+    }
+
+    function onCanvasTextareaChange() {
+      // Keep state sync
+    }
+
+    function copyCanvasContent() {
+      const textarea = document.getElementById('studio-canvas-textarea');
+      if (textarea && textarea.value) {
+        navigator.clipboard.writeText(textarea.value);
+        showGlobalToast('Artifact content copied to clipboard!', 'content_copy');
+      }
+    }
+
+    async function saveCanvasArtifact() {
+      const pathInput = document.getElementById('studio-artifact-path');
+      const textarea = document.getElementById('studio-canvas-textarea');
+      const path = pathInput ? pathInput.value.trim() : '';
+      const content = textarea ? textarea.value : '';
+
+      if (!path) {
+        showGlobalToast('Please enter a destination file path', 'warning');
+        return;
+      }
+      if (!content) {
+        showGlobalToast('Canvas has no content to save', 'warning');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/artifacts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ path, content })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showGlobalToast(`💾 Saved ${path} to disk!`, 'check_circle');
+          loadArtifactsFromApi();
+        } else {
+          showGlobalToast(`Save failed: ${data.error}`, 'error');
+        }
+      } catch (e) {
+        showGlobalToast(`Error saving file: ${e.message}`, 'error');
+      }
+    }
+
+    async function appendWritebackSnippet() {
+      const targetFile = document.getElementById('writeback-target-file')?.value || 'decisions.md';
+      const snippet = document.getElementById('writeback-snippet')?.value.trim();
+
+      if (!snippet) {
+        showGlobalToast('Snippet text is empty', 'warning');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/context-append', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ target_file: targetFile, entry: snippet })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showGlobalToast(`🧠 Appended insight to .context/${targetFile}!`, 'psychology');
+          document.getElementById('writeback-snippet').value = '';
+          loadProductBrainHealth();
+          loadContextOverview();
+        } else {
+          showGlobalToast(`Append failed: ${data.error}`, 'error');
+        }
+      } catch (e) {
+        showGlobalToast(`Error: ${e.message}`, 'error');
+      }
+    }
+
+    function setMockupPreviewDevice(device) {
+      const iframe = document.getElementById('studio-mockup-iframe');
+      if (!iframe) return;
+      if (device === 'mobile') iframe.style.maxWidth = '375px';
+      else if (device === 'tablet') iframe.style.maxWidth = '768px';
+      else iframe.style.maxWidth = '100%';
+    }
+
+    async function loadSkillCustomizerContent(skillId) {
+      const pathLabel = document.getElementById('customizer-file-path');
+      const editor = document.getElementById('customizer-markdown-editor');
+      const preview = document.getElementById('customizer-markdown-preview');
+
+      if (pathLabel) pathLabel.textContent = `skills/${skillId}/SKILL.md`;
+      if (editor) editor.value = 'Loading skill prompt...';
+
+      try {
+        const res = await fetch(`/api/skill-content?skill=${encodeURIComponent(skillId)}`);
+        const data = await res.json();
+        if (editor) editor.value = data.content || '';
+        if (preview && typeof marked !== 'undefined') preview.innerHTML = marked.parse(data.content || '');
+      } catch (e) {
+        if (editor) editor.value = `Error loading skill: ${e.message}`;
+      }
+    }
+
+    function updateCustomizerPreview() {
+      const editor = document.getElementById('customizer-markdown-editor');
+      const preview = document.getElementById('customizer-markdown-preview');
+      if (editor && preview && typeof marked !== 'undefined') {
+        preview.innerHTML = marked.parse(editor.value);
+      }
+    }
+
+    async function saveSkillMarkdownChanges() {
+      const editor = document.getElementById('customizer-markdown-editor');
+      if (!editor) return;
+
+      try {
+        const res = await fetch('/api/skill-content', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ skill: studioActiveSkill, content: editor.value })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showGlobalToast(`Saved custom prompt for ${studioActiveSkill}!`, 'check_circle');
+        } else {
+          showGlobalToast(`Error: ${data.error}`, 'error');
+        }
+      } catch (e) {
+        showGlobalToast(`Save failed: ${e.message}`, 'error');
+      }
+    }
+
+    // ================= PRODUCT BRAIN (.context/) MANAGER =================
+    async function loadProductBrainHealth() {
+      try {
+        const res = await fetch('/api/context-health');
+        if (!res.ok) return;
+        const data = await res.json();
+
+        const files = data.files || [];
+        const totalWords = files.reduce((acc, f) => acc + (f.words || 0), 0);
+        const groundedFiles = files.filter(f => (f.words || 0) > 150).length;
+        const avgScore = files.length > 0 ? Math.round(files.reduce((acc, f) => acc + (f.completeness_score || 0), 0) / files.length) : 0;
+
+        const groundingEl = document.getElementById('pb-grounding-pct');
+        const groundedCountEl = document.getElementById('pb-grounded-count');
+        const totalWordsEl = document.getElementById('pb-total-words');
+        const operatingModelEl = document.getElementById('pb-operating-model');
+
+        if (groundingEl) groundingEl.textContent = `${avgScore}%`;
+        if (groundedCountEl) groundedCountEl.textContent = `${groundedFiles} / ${files.length}`;
+        if (totalWordsEl) totalWordsEl.textContent = totalWords.toLocaleString();
+        if (operatingModelEl && data.config) operatingModelEl.textContent = data.config.operating_model || 'Scrum';
+
+        renderProductBrainCards(files);
+        initStudioContextPills(files);
+      } catch (err) {
+        console.warn('Could not load product brain health', err);
+      }
+    }
+
+    function renderProductBrainCards(files) {
+      const container = document.getElementById('product-brain-cards-container');
+      if (!container) return;
+
+      const FILE_ICONS = {
+        'product.md': { icon: 'flag', color: 'text-amber-500' },
+        'discovery.md': { icon: 'explore', color: 'text-blue-400' },
+        'strategy-and-constraints.md': { icon: 'map', color: 'text-purple-400' },
+        'architecture.md': { icon: 'account_tree', color: 'text-teal-400' },
+        'conventions.md': { icon: 'rule', color: 'text-indigo-400' },
+        'decisions.md': { icon: 'gavel', color: 'text-emerald-400' }
+      };
+
+      container.innerHTML = files.map(file => {
+        const meta = FILE_ICONS[file.name] || { icon: 'description', color: 'text-zinc-400' };
+        const score = file.completeness_score || 0;
+        const isHealthy = file.status === 'Healthy';
+        const statusColor = isHealthy ? 'emerald' : file.status === 'In Progress' ? 'amber' : 'red';
+
+        return `
+          <div class="p-5 rounded-2xl bg-[#18191d] border border-[#2a2b30] hover:border-amber-500/40 transition-all flex flex-col justify-between space-y-4 shadow-sm">
+            <div class="space-y-2">
+              <div class="flex items-start justify-between gap-2">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-8 h-8 rounded-lg bg-[#1f2025] flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[20px] ${meta.color}">${meta.icon}</span>
+                  </div>
+                  <div>
+                    <h3 class="font-headline font-semibold text-zinc-100 text-sm">${file.title}</h3>
+                    <code class="text-[10px] text-zinc-500 font-mono">.context/${file.name}</code>
+                  </div>
+                </div>
+                <span class="px-2 py-0.5 rounded-full bg-${statusColor}-500/10 text-${statusColor}-400 border border-${statusColor}-500/20 text-[10px] font-mono font-medium flex items-center gap-1 shrink-0">
+                  <span class="w-1.5 h-1.5 rounded-full bg-${statusColor}-400"></span> ${file.status}
+                </span>
+              </div>
+              <p class="text-xs text-zinc-400 leading-relaxed line-clamp-2">${file.description}</p>
+            </div>
+
+            <div class="space-y-2.5 pt-3 border-t border-[#2a2b30]/60">
+              <div class="flex items-center justify-between text-[11px] font-mono text-zinc-400">
+                <span>${file.words} words • ${file.lines} lines</span>
+                <span class="text-amber-400 font-bold">${score}%</span>
+              </div>
+
+              <div class="w-full bg-[#121316] h-1.5 rounded-full overflow-hidden">
+                <div class="bg-amber-500 h-full rounded-full transition-all duration-500" style="width: ${score}%"></div>
+              </div>
+
+              <div class="flex items-center justify-between pt-1 gap-2">
+                <button onclick="openQuickAppendModal('${file.name}')" class="flex-1 py-1 px-2.5 rounded-lg bg-[#26272e] hover:bg-[#31323a] text-zinc-300 hover:text-white font-medium text-xs flex items-center justify-center gap-1 transition-colors">
+                  <span class="material-symbols-outlined text-[14px] text-purple-400">add</span> Append
+                </button>
+                <button onclick="openContextEditor('${file.name}')" class="flex-1 py-1 px-2.5 rounded-lg bg-amber-600/20 hover:bg-amber-600 text-amber-400 hover:text-white border border-amber-500/30 font-medium text-xs flex items-center justify-center gap-1 transition-all">
+                  <span class="material-symbols-outlined text-[14px]">edit_note</span> Full Editor
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openQuickAppendModal(defaultTarget = 'decisions.md') {
+      const modal = document.getElementById('quick-append-modal');
+      const select = document.getElementById('modal-append-target');
+      const content = document.getElementById('modal-append-content');
+      if (select) select.value = defaultTarget;
+      if (content) content.value = '';
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeQuickAppendModal() {
+      const modal = document.getElementById('quick-append-modal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    async function submitQuickAppendModal() {
+      const select = document.getElementById('modal-append-target');
+      const textarea = document.getElementById('modal-append-content');
+      const targetFile = select ? select.value : 'decisions.md';
+      const content = textarea ? textarea.value.trim() : '';
+
+      if (!content) {
+        showGlobalToast('Please enter content to append', 'warning');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/context-append', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ target_file: targetFile, entry: content })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showGlobalToast(`🧠 Successfully appended entry to .context/${targetFile}!`, 'check_circle');
+          closeQuickAppendModal();
+          loadProductBrainHealth();
+          loadContextOverview();
+        } else {
+          showGlobalToast(`Error: ${data.error}`, 'error');
+        }
+      } catch (e) {
+        showGlobalToast(`Append failed: ${e.message}`, 'error');
+      }
+    }
+
+    // ================= ARTIFACTS & DELIVERABLES LIBRARY =================
+    async function loadArtifactsFromApi() {
+      try {
+        const res = await fetch('/api/artifacts');
+        if (!res.ok) return;
+        const data = await res.json();
+        globalArtifacts = data.artifacts || [];
+
+        const countBadge = document.getElementById('stat-artifact-count');
+        if (countBadge) countBadge.textContent = globalArtifacts.length;
+
+        renderRecentArtifacts(globalArtifacts);
+        renderDeliverableHub();
+      } catch (err) {
+        console.error('Failed to load artifacts:', err);
+      }
+    }
+
+    function filterArtifactsCategory(cat) {
+      currentArtifactFilter = cat;
+      document.querySelectorAll('#artifact-filter-chips .art-chip').forEach(chip => {
+        if (chip.dataset.cat === cat) {
+          chip.className = 'art-chip active px-3 py-1 rounded-lg text-xs font-semibold bg-[#26272e] text-amber-400 border border-amber-500/30 transition-all';
+        } else {
+          chip.className = 'art-chip px-3 py-1 rounded-lg text-xs font-medium text-zinc-400 hover:text-zinc-200 transition-all';
+        }
+      });
+      renderDeliverableHub();
+    }
+
+    function filterArtifactsBySearch() {
+      currentArtifactSearch = document.getElementById('artifact-search-input')?.value.toLowerCase().trim() || '';
+      renderDeliverableHub();
+    }
+
+    function renderDeliverableHub() {
+      const container = document.getElementById('artifacts-list-container');
+      const counter = document.getElementById('filtered-artifacts-counter');
+      if (!container) return;
+
+      // Update chip counters
+      const counts = { all: globalArtifacts.length, PRD: 0, 'User Stories': 0, Validation: 0, Mockup: 0, Backlog: 0 };
+      globalArtifacts.forEach(a => {
+        if (counts[a.type] !== undefined) counts[a.type]++;
+      });
+      const elAll = document.getElementById('count-chip-all');
+      const elPrd = document.getElementById('count-chip-prd');
+      const elStories = document.getElementById('count-chip-stories');
+      const elVal = document.getElementById('count-chip-val');
+      const elMockups = document.getElementById('count-chip-mockups');
+      const elBacklog = document.getElementById('count-chip-backlog');
+      if (elAll) elAll.textContent = counts.all;
+      if (elPrd) elPrd.textContent = counts.PRD;
+      if (elStories) elStories.textContent = counts['User Stories'];
+      if (elVal) elVal.textContent = counts.Validation;
+      if (elMockups) elMockups.textContent = counts.Mockup;
+      if (elBacklog) elBacklog.textContent = counts.Backlog;
+
+      // Filter artifacts
+      const filtered = globalArtifacts.filter(a => {
+        const matchesCat = currentArtifactFilter === 'all' || a.type === currentArtifactFilter;
+        const matchesSearch = !currentArtifactSearch || a.filename.toLowerCase().includes(currentArtifactSearch) || a.path.toLowerCase().includes(currentArtifactSearch);
+        return matchesCat && matchesSearch;
+      });
+
+      if (counter) counter.textContent = `${filtered.length} items`;
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<div class="py-8 text-center text-zinc-500 text-xs italic">No matching artifacts found.</div>`;
+        return;
+      }
+
+      const TYPE_ICONS = {
+        'PRD': 'description',
+        'User Stories': 'splitscreen',
+        'Validation': 'fact_check',
+        'Mockup': 'web',
+        'Backlog': 'list_alt',
+        'Spec': 'article'
+      };
+
+      container.innerHTML = filtered.map(item => {
+        const isSelected = activeViewerArtifact && activeViewerArtifact.path === item.path;
+        const icon = TYPE_ICONS[item.type] || 'article';
+
+        return `
+          <div onclick="openArtifactInViewer('${item.path}')" class="p-3 rounded-xl border transition-all cursor-pointer flex items-center justify-between ${isSelected ? 'bg-[#1f2025] border-amber-500/50 shadow-sm' : 'bg-[#18191d] border-[#2a2b30] hover:border-zinc-600'}">
+            <div class="flex items-center gap-3 min-w-0">
+              <span class="material-symbols-outlined text-[20px] text-amber-500 shrink-0">${icon}</span>
+              <div class="min-w-0">
+                <span class="font-semibold text-zinc-100 text-xs truncate block">${item.filename}</span>
+                <span class="font-mono text-[10px] text-zinc-400 block">${item.modified_iso} • ${item.size_kb} KB</span>
+              </div>
+            </div>
+            <span class="px-2 py-0.5 rounded bg-[#121316] text-[10px] font-mono text-zinc-400 border border-[#2a2b30] shrink-0">${item.type}</span>
+          </div>
+        `;
+      }).join('');
+
+      // Auto open first file if none selected
+      if (!activeViewerArtifact && filtered.length > 0) {
+        openArtifactInViewer(filtered[0].path);
+      }
+    }
+
+    async function openArtifactInViewer(filepath) {
+      activeViewerArtifact = globalArtifacts.find(a => a.path === filepath) || { path: filepath, filename: filepath.split('/').pop(), type: 'Spec' };
+      renderDeliverableHub();
+
+      const pathLabel = document.getElementById('viewer-file-path');
+      const iconEl = document.getElementById('viewer-file-icon');
+      const canvasBody = document.getElementById('viewer-canvas-body');
+      const textarea = document.getElementById('viewer-canvas-textarea');
+      const mockupContainer = document.getElementById('viewer-mockup-container');
+      const mockupIframe = document.getElementById('viewer-mockup-iframe');
+      const deviceSwitcher = document.getElementById('viewer-mockup-device-switcher');
+      const newTabLink = document.getElementById('viewer-mockup-newtab');
+      const modeBtn = document.getElementById('viewer-mode-btn');
+      const saveBtn = document.getElementById('viewer-save-btn');
+
+      if (pathLabel) pathLabel.textContent = filepath;
+      if (iconEl) iconEl.textContent = activeViewerArtifact.type === 'Mockup' ? 'web' : 'description';
+
+      viewerMode = 'preview';
+      if (modeBtn) modeBtn.textContent = 'Edit';
+      if (saveBtn) saveBtn.classList.add('hidden');
+
+      canvasBody.innerHTML = `<div class="h-64 flex items-center justify-center text-zinc-400 font-mono text-xs">Loading ${filepath}...</div>`;
+
+      try {
+        const res = await fetch('/api/artifact-content?file=' + encodeURIComponent(filepath));
+        const data = await res.json();
+        currentPreviewContent = data.content;
+        textarea.value = data.content;
+
+        if (data.is_html || filepath.endsWith('.html')) {
+          canvasBody.classList.add('hidden');
+          textarea.classList.add('hidden');
+          mockupContainer.classList.remove('hidden');
+          deviceSwitcher.classList.remove('hidden');
+          if (newTabLink) newTabLink.href = '/' + filepath;
+          mockupIframe.srcdoc = data.content;
+        } else {
+          mockupContainer.classList.add('hidden');
+          deviceSwitcher.classList.add('hidden');
+          canvasBody.classList.remove('hidden');
+          textarea.classList.add('hidden');
+          canvasBody.innerHTML = typeof marked !== 'undefined' ? marked.parse(data.content) : `<pre>${data.content}</pre>`;
+        }
+      } catch (err) {
+        canvasBody.innerHTML = `<div class="p-4 text-red-400 text-xs">Error loading file: ${err.message}</div>`;
+      }
+    }
+
+    function toggleViewerMode() {
+      const canvasBody = document.getElementById('viewer-canvas-body');
+      const textarea = document.getElementById('viewer-canvas-textarea');
+      const modeBtn = document.getElementById('viewer-mode-btn');
+      const saveBtn = document.getElementById('viewer-save-btn');
+
+      if (viewerMode === 'preview') {
+        viewerMode = 'edit';
+        modeBtn.textContent = 'Preview';
+        saveBtn.classList.remove('hidden');
+        canvasBody.classList.add('hidden');
+        textarea.classList.remove('hidden');
+      } else {
+        viewerMode = 'preview';
+        modeBtn.textContent = 'Edit';
+        saveBtn.classList.add('hidden');
+        textarea.classList.add('hidden');
+        canvasBody.classList.remove('hidden');
+        canvasBody.innerHTML = typeof marked !== 'undefined' ? marked.parse(textarea.value) : `<pre>${textarea.value}</pre>`;
+      }
+    }
+
+    async function saveActiveViewerArtifact() {
+      if (!activeViewerArtifact) return;
+      const textarea = document.getElementById('viewer-canvas-textarea');
+      const content = textarea.value;
+
+      try {
+        const res = await fetch('/api/artifacts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ path: activeViewerArtifact.path, content })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showGlobalToast(`Saved ${activeViewerArtifact.filename}!`, 'check_circle');
+          toggleViewerMode();
+          loadArtifactsFromApi();
+        } else {
+          showGlobalToast(`Save failed: ${data.error}`, 'error');
+        }
+      } catch (e) {
+        showGlobalToast(`Error: ${e.message}`, 'error');
+      }
+    }
+
+    function copyActiveViewerContent() {
+      const textarea = document.getElementById('viewer-canvas-textarea');
+      if (textarea && textarea.value) {
+        navigator.clipboard.writeText(textarea.value);
+        showGlobalToast('Artifact content copied to clipboard!', 'content_copy');
+      }
+    }
+
+    function setLibraryMockupDevice(device) {
+      const iframe = document.getElementById('viewer-mockup-iframe');
+      if (!iframe) return;
+      if (device === 'mobile') iframe.style.maxWidth = '375px';
+      else if (device === 'tablet') iframe.style.maxWidth = '768px';
+      else iframe.style.maxWidth = '100%';
+    }
+
+    function renderRecentArtifacts(artifacts) {
+      const container = document.getElementById('recent-artifacts-list');
+      if (!container) return;
+      if (artifacts.length === 0) {
+        container.innerHTML = `<div class="py-4 text-center text-zinc-500 text-xs">No artifacts found.</div>`;
+        return;
+      }
+      container.innerHTML = artifacts.slice(0, 4).map(item => `
+        <div class="py-3 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-[20px] text-amber-500">${item.type === 'Mockup' ? 'web' : 'description'}</span>
+            <div>
+              <span class="font-semibold text-zinc-100 text-[13px] block">${item.filename}</span>
+              <span class="font-mono text-[11px] text-zinc-400">${item.modified_iso} • ${item.size_kb} KB</span>
+            </div>
+          </div>
+          <button onclick="previewArtifact('${item.path}')" class="px-3 py-1 rounded bg-[#26272e] text-zinc-200 text-xs">Preview</button>
+        </div>
+      `).join('');
+    }
+
+    function switchTab(tabId) {
+      loadUserSettingsInDashboard();
+      document.querySelectorAll('.tab-view').forEach(view => view.classList.add('hidden'));
+      document.querySelectorAll('.nav-tab').forEach(tab => {
+        tab.classList.remove('active', 'bg-[#26272e]', 'text-zinc-100');
+        tab.classList.add('text-zinc-400');
+      });
+
+      const activeView = document.getElementById('view-' + tabId);
+      const activeTab = document.getElementById('tab-' + tabId);
+      if (activeView) activeView.classList.remove('hidden');
+      if (activeTab) {
+        activeTab.classList.add('active', 'bg-[#26272e]', 'text-zinc-100');
+        activeTab.classList.remove('text-zinc-400');
+      }
+
+      if (tabId === 'product-brain') {
+        loadProductBrainHealth();
+      } else if (tabId === 'deliverable-hub') {
+        loadArtifactsFromApi();
+      } else if (tabId === 'skill-wizard') {
+        loadEnvStatus();
+      }
+    }
+
+    function triggerSkillFromSidepanel(skillId) {
+      switchTab('skill-wizard');
+      onStudioSkillSelect(skillId);
+      document.getElementById('studio-user-input')?.focus();
+    }
+
+    function launchSkillWizard(skillName) {
+      triggerSkillFromSidepanel(skillName);
+    }
+
+    function previewArtifact(filepath) {
+      switchTab('deliverable-hub');
+      openArtifactInViewer(filepath);
+    }
+
+    function filterSidebarSkills() {
+      const q = document.getElementById('sidepanel-search').value.toLowerCase().trim();
+      const items = document.querySelectorAll('.sidebar-skill-item');
+      items.forEach(item => {
+        const text = item.innerText.toLowerCase();
+        item.style.display = text.includes(q) ? 'flex' : 'none';
+      });
+    }
+
+    function copyPreviewContent() {
+      if (currentPreviewContent) navigator.clipboard.writeText(currentPreviewContent);
+    }
 
     function toggleAppTheme() {
       const isDark = document.documentElement.classList.contains('dark');
@@ -1748,13 +3668,23 @@
       const icon = document.getElementById('theme-icon');
       if (isDark) {
         document.documentElement.classList.remove('dark');
+        try { localStorage.setItem('pm_theme', 'light'); } catch (e) {}
         if (label) label.textContent = 'Light';
         if (icon) icon.textContent = 'light_mode';
       } else {
         document.documentElement.classList.add('dark');
+        try { localStorage.setItem('pm_theme', 'dark'); } catch (e) {}
         if (label) label.textContent = 'Dark';
         if (icon) icon.textContent = 'dark_mode';
       }
+    }
+
+    function syncThemeToggleUI() {
+      const isDark = document.documentElement.classList.contains('dark');
+      const label = document.getElementById('theme-label');
+      const icon = document.getElementById('theme-icon');
+      if (label) label.textContent = isDark ? 'Dark' : 'Light';
+      if (icon) icon.textContent = isDark ? 'dark_mode' : 'light_mode';
     }
 
     function initSidebarTooltips() {
@@ -1811,160 +3741,82 @@
       }
     }
 
-    function triggerSkillFromSidepanel(skillId) {
-      switchTab('skill-wizard');
-      const select = document.getElementById('wizard-skill-select');
-      if (select) {
-        select.value = skillId;
-        updateWizardForm();
-      }
-      executeWizardSkill();
-    }
+    let liveCompanionInterval = null;
+    let lastArtifactsHash = '';
+    let lastContextHash = '';
 
-    async function loadArtifactsFromApi() {
-      try {
-        const res = await fetch('/api/artifacts');
-        if (!res.ok) return;
-        const data = await res.json();
-        globalArtifacts = data.artifacts || [];
+    function startLiveCompanionPolling() {
+      if (liveCompanionInterval) clearInterval(liveCompanionInterval);
 
-        const countBadge = document.getElementById('stat-artifact-count');
-        if (countBadge) countBadge.textContent = globalArtifacts.length;
+      const pollSync = async () => {
+        try {
+          // Poll artifacts
+          const artRes = await fetch('/api/artifacts');
+          if (artRes.ok) {
+            const artData = await artRes.json();
+            const arts = artData.artifacts || [];
+            const newHash = arts.map(a => `${a.path}:${a.modified_iso}`).join('|');
+            if (newHash !== lastArtifactsHash) {
+              lastArtifactsHash = newHash;
+              globalArtifacts = arts;
+              const countBadge = document.getElementById('stat-artifact-count');
+              if (countBadge) countBadge.textContent = globalArtifacts.length;
+              renderRecentArtifacts(globalArtifacts);
+              renderDeliverableHub();
+            }
+          }
 
-        renderRecentArtifacts(globalArtifacts);
-        renderDeliverableHub(globalArtifacts);
-      } catch (err) {
-        console.error('Failed to load artifacts:', err);
-      }
-    }
-
-    function renderRecentArtifacts(artifacts) {
-      const container = document.getElementById('recent-artifacts-list');
-      if (!container) return;
-      if (artifacts.length === 0) {
-        container.innerHTML = `<div class="py-4 text-center text-zinc-500 text-xs">No artifacts found.</div>`;
-        return;
-      }
-      container.innerHTML = artifacts.slice(0, 4).map(item => `
-        <div class="py-3 flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <span class="material-symbols-outlined text-[20px] text-amber-500">${item.type === 'Mockup' ? 'web' : 'description'}</span>
-            <div>
-              <span class="font-semibold text-zinc-100 text-[13px] block">${item.filename}</span>
-              <span class="font-mono text-[11px] text-zinc-400">${item.modified_iso} • ${item.size_kb} KB</span>
-            </div>
-          </div>
-          <button onclick="previewArtifact('${item.path}')" class="px-3 py-1 rounded bg-[#26272e] text-zinc-200 text-xs">Preview</button>
-        </div>
-      `).join('');
-    }
-
-    function renderDeliverableHub(artifacts) {
-      const grid = document.getElementById('deliverables-grid');
-      if (!grid) return;
-      grid.innerHTML = artifacts.map(item => `
-        <div class="p-4 rounded-xl bg-[#1f2025] border border-[#2a2b30] flex flex-col justify-between space-y-2">
-          <span class="text-xs text-amber-400 font-mono">${item.type}</span>
-          <h3 class="font-semibold text-zinc-100 text-sm truncate">${item.filename}</h3>
-          <button onclick="previewArtifact('${item.path}')" class="text-amber-500 text-xs font-medium text-left">View File</button>
-        </div>
-      `).join('');
-    }
-
-    function switchTab(tabId) {
-      loadUserSettingsInDashboard();
-      document.querySelectorAll('.tab-view').forEach(view => view.classList.add('hidden'));
-      document.querySelectorAll('.nav-tab').forEach(tab => {
-        tab.classList.remove('active', 'bg-[#26272e]', 'text-zinc-100');
-        tab.classList.add('text-zinc-400');
-      });
-
-      const activeView = document.getElementById('view-' + tabId);
-      const activeTab = document.getElementById('tab-' + tabId);
-      if (activeView) activeView.classList.remove('hidden');
-      if (activeTab) {
-        activeTab.classList.add('active', 'bg-[#26272e]', 'text-zinc-100');
-        activeTab.classList.remove('text-zinc-400');
-      }
-    }
-
-    function setViewport(device) {
-      const wrapper = document.getElementById('viewport-wrapper');
-      if (device === 'mobile') wrapper.style.maxWidth = '375px';
-      else if (device === 'tablet') wrapper.style.maxWidth = '768px';
-      else wrapper.style.maxWidth = '100%';
-    }
-
-    function launchSkillWizard(skillName) {
-      triggerSkillFromSidepanel(skillName);
-    }
-
-    function updateWizardForm() {
-      const select = document.getElementById('wizard-skill-select');
-      const filename = document.getElementById('preview-filename');
-      if (select && filename) filename.textContent = select.value.toUpperCase() + '_SPEC.md';
-    }
-
-    async function executeWizardSkill() {
-      const skillName = document.getElementById('wizard-skill-select').value;
-      const featureName = document.getElementById('wizard-feature-name').value || 'Sidepanel Favorites Navigation';
-      const mode = document.getElementById('wizard-mode').value;
-      const persona = document.getElementById('wizard-persona').value;
-      const requirements = document.getElementById('wizard-requirements').value;
-      const preview = document.getElementById('wizard-preview-body');
-
-      preview.innerHTML = `<div class="text-amber-500 font-mono text-xs py-4">Generating ${skillName}...</div>`;
-
-      try {
-        const res = await fetch('/api/generate-deliverable', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ skill: skillName, feature_name: featureName, mode, persona, requirements })
-        });
-        const data = await res.json();
-        currentPreviewContent = data.content;
-        document.getElementById('preview-filename').textContent = data.filename;
-        if (typeof marked !== 'undefined') preview.innerHTML = marked.parse(data.content);
-        else preview.innerHTML = `<pre class="font-mono text-xs">${data.content}</pre>`;
-        loadArtifactsFromApi();
-      } catch (err) {
-        preview.innerHTML = `<div class="text-red-400 text-xs">Error: ${err.message}</div>`;
-      }
-    }
-
-    async function previewArtifact(filepath) {
-      switchTab('skill-wizard');
-      const preview = document.getElementById('wizard-preview-body');
-      preview.innerHTML = `<div class="text-zinc-400 text-xs py-4">Loading ${filepath}...</div>`;
-      try {
-        const res = await fetch('/api/artifact-content?file=' + encodeURIComponent(filepath));
-        const data = await res.json();
-        currentPreviewContent = data.content;
-        document.getElementById('preview-filename').textContent = data.filename;
-        if (data.is_html) {
-          preview.innerHTML = `<iframe src="/${data.path}" class="w-full h-[460px] rounded border border-[#2a2b30] bg-white"></iframe>`;
-        } else if (typeof marked !== 'undefined') {
-          preview.innerHTML = marked.parse(data.content);
-        } else {
-          preview.innerHTML = `<pre class="font-mono text-xs">${data.content}</pre>`;
+          // Poll context
+          const ctxRes = await fetch('/api/context');
+          if (ctxRes.ok) {
+            const ctxData = await ctxRes.json();
+            const files = ctxData.files_list || (Array.isArray(ctxData.files) ? ctxData.files : Object.values(ctxData.files || {}));
+            const newCtxHash = files.map(f => `${f.filename || f.name}:${f.modified_iso || f.words}`).join('|');
+            if (newCtxHash !== lastContextHash) {
+              lastContextHash = newCtxHash;
+              const modal = document.getElementById('context-editor-modal');
+              if (!modal || modal.classList.contains('hidden')) {
+                loadContextOverview();
+                loadProductBrainHealth();
+              }
+            }
+          }
+        } catch (e) {
+          // Silent polling error catch
         }
-      } catch (err) {
-        preview.innerHTML = `<div class="text-red-400 text-xs">Error loading file</div>`;
-      }
-    }
+      };
 
-    function filterSidebarSkills() {
-      const q = document.getElementById('sidepanel-search').value.toLowerCase().trim();
-      const items = document.querySelectorAll('.sidebar-skill-item');
-      items.forEach(item => {
-        const text = item.innerText.toLowerCase();
-        item.style.display = text.includes(q) ? 'flex' : 'none';
+      // Poll every 4 seconds
+      liveCompanionInterval = setInterval(() => {
+        if (!document.hidden) {
+          pollSync();
+        }
+      }, 4000);
+
+      // Trigger immediate check when browser tab regains focus or visibility
+      window.addEventListener('focus', pollSync);
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) pollSync();
       });
     }
 
-    function copyPreviewContent() {
-      if (currentPreviewContent) navigator.clipboard.writeText(currentPreviewContent);
-    }
+    document.addEventListener('DOMContentLoaded', () => {
+      syncThemeToggleUI();
+      loadHarnessManifest();
+      loadContextOverview();
+      loadProductBrainHealth();
+      loadUserSettingsInDashboard();
+      loadArtifactsFromApi();
+      refreshMcpStatusBadges();
+      renderFavoritesSection();
+      updateFavoriteIcons();
+      initSidebarTooltips();
+      onStudioSkillSelect('create-prd');
+      startLiveCompanionPolling();
+
+      const themeBtn = document.getElementById('theme-toggle-btn');
+      if (themeBtn) themeBtn.addEventListener('click', toggleAppTheme);
+    });
   </script>
 
 </body>

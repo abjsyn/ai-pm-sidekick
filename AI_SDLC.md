@@ -204,12 +204,12 @@ Publish with zero manual copy-pasting:
 
 ```mermaid
 flowchart LR
-    REPO[📦 Codebase Repo] -->|Scan Manifests| INIT[init-workspace.py --mode embedded]
-    INIT --> ARCH[.context/architecture.md<br/>Live Schemas, Tech Stack & APIs]
-    ARCH --> PRD[/create-prd<br/>Feasibility Grounded]
-    PRD --> TEST[Edge-Case & DB Feasibility Check]
-    TEST --> STORIES[/create-user-stories<br/>Schema-Aligned BDD]
-    STORIES --> GH[/sync-github-issues<br/>Push Issues & Milestones]
+    REPO["📦 Codebase Repo"] -->|Scan Manifests| INIT["init-workspace.py --mode embedded"]
+    INIT --> ARCH[".context/architecture.md<br/>Live Schemas, Tech Stack & APIs"]
+    ARCH --> PRD["/create-prd<br/>Feasibility Grounded"]
+    PRD --> TEST["Edge-Case & DB Feasibility Check"]
+    TEST --> STORIES["/create-user-stories<br/>Schema-Aligned BDD"]
+    STORIES --> GH["/sync-github-issues<br/>Push Issues & Milestones"]
 ```
 
 ### Step-by-Step Walkthrough
