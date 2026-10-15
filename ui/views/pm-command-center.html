@@ -121,6 +121,15 @@
       display: block;
     }
 
+    /* Pinned rows use an amber wash. bg-[#26272e]/60 is not remapped in light mode and paints a grey slab. */
+    .sidebar-favorite-item {
+      background-color: rgba(245, 158, 11, 0.10);
+      border: 1px solid rgba(245, 158, 11, 0.28);
+    }
+    .sidebar-favorite-item:hover {
+      background-color: rgba(245, 158, 11, 0.18);
+    }
+
     /* ==========================================================================
        LIGHT MODE HIGH-CONTRAST OVERRIDES (html:not(.dark))
        Enables seamless switching between Dark Atelier & Clean Light SaaS modes
@@ -193,6 +202,13 @@
     }
     html:not(.dark) .hover\:bg-\[\#1f2025\]:hover {
       background-color: #f1f5f9 !important;
+    }
+    html:not(.dark) .sidebar-favorite-item {
+      background-color: #fffbeb;
+      border-color: #f6d98a;
+    }
+    html:not(.dark) .sidebar-favorite-item:hover {
+      background-color: #fef3c7;
     }
 
     /* Borders */
@@ -2055,7 +2071,7 @@
       container.innerHTML = favs.map(skillId => {
         const info = SKILL_DETAILS[skillId] || { name: skillId, icon: 'star', color: 'text-amber-400' };
         return `
-          <div data-skill-id="${skillId}" class="sidebar-skill-item w-full p-2 rounded-lg bg-[#26272e]/60 hover:bg-[#26272e] text-zinc-200 hover:text-zinc-100 flex items-center justify-between transition-colors group cursor-pointer border border-amber-500/20" onclick="triggerSkillFromSidepanel('${skillId}')">
+          <div data-skill-id="${skillId}" class="sidebar-skill-item sidebar-favorite-item w-full p-2 rounded-lg text-zinc-200 hover:text-zinc-100 flex items-center justify-between transition-colors group cursor-pointer" onclick="triggerSkillFromSidepanel('${skillId}')">
             <div class="sidebar-skill-main flex items-center gap-2.5 min-w-0">
               <span class="material-symbols-outlined text-[18px] ${info.color} shrink-0">${info.icon}</span>
               <span class="text-[13px] font-semibold truncate sidebar-label text-zinc-100">${info.name}</span>
