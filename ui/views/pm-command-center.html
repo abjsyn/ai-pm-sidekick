@@ -157,6 +157,17 @@
 
         <!-- Right Controls -->
         <div class="flex items-center gap-3 shrink-0">
+          <!-- Engine Status Badge & Selector Dropdown -->
+          <div id="header-engine-container" class="inline-flex items-center gap-2 px-2.5 py-1 rounded-lg bg-[#1f2025] border border-[#2a2b30] text-zinc-300 font-mono text-[11px] shadow-xs">
+            <span id="header-engine-indicator" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
+            <span class="text-zinc-400 font-medium text-[11px] hidden sm:inline shrink-0">Engine:</span>
+            <select id="header-engine-select" onchange="onHeaderEngineChange(this.value)" class="bg-transparent text-emerald-400 font-semibold text-[11px] border-0 py-0 pl-0.5 pr-4 focus:ring-0 focus:outline-none cursor-pointer">
+              <option value="cli:agy" class="bg-[#18191d] text-zinc-100">agy CLI (Local Session)</option>
+              <option value="companion:cursor" class="bg-[#18191d] text-zinc-100">IDE Companion (Cursor / Terminal)</option>
+              <option value="api:gemini" class="bg-[#18191d] text-zinc-100">.env API Keys</option>
+            </select>
+          </div>
+
           <button id="theme-toggle-btn" type="button" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#1f2025] hover:bg-[#26272e] border border-[#2a2b30] text-zinc-300 transition-colors font-mono text-[11px]">
             <span class="material-symbols-outlined text-[15px] text-amber-400" id="theme-icon">dark_mode</span>
             <span class="hidden sm:inline font-medium" id="theme-label">Dark</span>
@@ -1838,7 +1849,8 @@
         }
 
         if (!container) return;
-        if (!Array.isArray(data.files) || data.files.length === 0) {
+        const filesList = data.files_list || (Array.isArray(data.files) ? data.files : Object.values(data.files || {}));
+        if (!filesList || filesList.length === 0) {
           container.innerHTML = `<div class="col-span-full py-4 text-center text-zinc-500 text-xs">No .context/ files found.</div>`;
           return;
         }
@@ -1852,11 +1864,12 @@
           'conventions.md': 'rule'
         };
 
-        container.innerHTML = data.files.map(file => {
-          const icon = FILE_ICONS[file.name] || 'description';
-          const score = file.completeness_score || 0;
-          const statusColor = file.status === 'Healthy' ? 'emerald' : file.status === 'In Progress' ? 'amber' : 'red';
-          const prompt = file.suggested_prompt || `/ingest-context`;
+        container.innerHTML = filesList.map(file => {
+          const fileName = file.filename || file.name;
+          const icon = FILE_ICONS[fileName] || 'description';
+          const score = file.completeness_score || file.score || 0;
+          const statusColor = (file.status === 'Healthy' || file.status === 'Complete') ? 'emerald' : file.status === 'In Progress' ? 'amber' : 'red';
+          const prompt = file.suggested_prompt || file.cli_prompt || `/ingest-context`;
 
           return `
             <div class="p-4 rounded-xl bg-[#1f2025] border border-[#2a2b30] flex flex-col justify-between space-y-3 hover:border-amber-500/30 transition-all">
@@ -2162,12 +2175,18 @@
       'brainstorm': 'docs/ideation/'
     };
 
+    let currentActiveEngine = 'cli:agy';
+    let detectedClis = [];
+
     // ================= LOAD & SAVE SETTINGS =================
     async function loadEnvStatus() {
       try {
         const res = await fetch('/api/env-status');
         if (!res.ok) return;
         const data = await res.json();
+        detectedClis = data.detected_clis || [];
+        if (data.active_engine) currentActiveEngine = data.active_engine;
+
         const llm = data.llm || {};
 
         const updateLlmBadge = (badgeId, previewId, keyConfigured, previewText) => {
@@ -2191,23 +2210,115 @@
         updateLlmBadge('badge-anthropic-status', 'preview-anthropic-key', llm.anthropic?.configured, llm.anthropic?.preview);
         updateLlmBadge('badge-openai-status', 'preview-openai-key', llm.openai?.configured, llm.openai?.preview);
 
-        // Update studio active AI provider indicator
-        const activeLabel = document.getElementById('ai-active-label');
-        const activeDot = document.getElementById('ai-active-indicator');
-        const defaultProv = llm.default_provider || 'gemini';
-        const isConfigured = llm[defaultProv]?.configured;
+        // Update Header Engine Selector & Status Badge
+        renderHeaderEngineSelector(data);
 
-        if (activeLabel && activeDot) {
-          if (isConfigured) {
-            activeDot.className = 'w-2 h-2 rounded-full bg-emerald-400 animate-pulse';
-            activeLabel.textContent = `Active: ${defaultProv.toUpperCase()} (${llm[defaultProv]?.preview})`;
-          } else {
-            activeDot.className = 'w-2 h-2 rounded-full bg-amber-500';
-            activeLabel.textContent = 'Smart Prompt Bundle Mode (No API key in .env)';
-          }
-        }
       } catch (e) {
         console.warn('Could not load env status', e);
+      }
+    }
+
+    function renderHeaderEngineSelector(data) {
+      const select = document.getElementById('header-engine-select');
+      const indicator = document.getElementById('header-engine-indicator');
+      if (!select) return;
+
+      const clis = data.detected_clis || [];
+      const active = data.active_engine || currentActiveEngine;
+      const llm = data.llm || {};
+
+      let optionsHtml = '';
+      // 1. Detected Local CLIs
+      clis.forEach(c => {
+        if (c.can_execute) {
+          optionsHtml += `<option value="cli:${c.id}" class="bg-[#18191d] text-zinc-100" ${active === 'cli:' + c.id ? 'selected' : ''}>Local CLI: ${c.name} (${c.id})</option>`;
+        }
+      });
+
+      // 2. IDE Companion Mode
+      const hasCursor = clis.some(c => c.id === 'cursor' || c.id === 'agent');
+      optionsHtml += `<option value="companion:cursor" class="bg-[#18191d] text-zinc-100" ${active === 'companion:cursor' ? 'selected' : ''}>IDE Companion (${hasCursor ? 'Cursor' : 'Terminal'})</option>`;
+
+      // 3. REST API options
+      const gemKey = llm.gemini?.configured ? ' (Key Set)' : '';
+      const antKey = llm.anthropic?.configured ? ' (Key Set)' : '';
+      const oaiKey = llm.openai?.configured ? ' (Key Set)' : '';
+      optionsHtml += `<option value="api:gemini" class="bg-[#18191d] text-zinc-100" ${active === 'api:gemini' ? 'selected' : ''}>REST API: Google Gemini${gemKey}</option>`;
+      optionsHtml += `<option value="api:anthropic" class="bg-[#18191d] text-zinc-100" ${active === 'api:anthropic' ? 'selected' : ''}>REST API: Anthropic Claude${antKey}</option>`;
+      optionsHtml += `<option value="api:openai" class="bg-[#18191d] text-zinc-100" ${active === 'api:openai' ? 'selected' : ''}>REST API: OpenAI${oaiKey}</option>`;
+
+      // 4. Smart Prompt Bundle fallback
+      optionsHtml += `<option value="bundle_only" class="bg-[#18191d] text-zinc-100" ${active === 'bundle_only' ? 'selected' : ''}>Smart Prompt Bundle (Manual Copy)</option>`;
+
+      select.innerHTML = optionsHtml;
+      select.value = active;
+
+      // Update badge styling in header
+      if (indicator) {
+        if (active.startsWith('cli:')) {
+          indicator.className = 'w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0';
+          select.className = 'bg-transparent text-emerald-400 font-semibold text-[11px] border-0 py-0 pl-0.5 pr-4 focus:ring-0 focus:outline-none cursor-pointer';
+        } else if (active.startsWith('api:')) {
+          const prov = active.replace('api:', '');
+          const isSet = llm[prov]?.configured;
+          indicator.className = isSet ? 'w-2 h-2 rounded-full bg-emerald-400 shrink-0' : 'w-2 h-2 rounded-full bg-amber-500 shrink-0';
+          select.className = isSet ? 'bg-transparent text-emerald-300 font-semibold text-[11px] border-0 py-0 pl-0.5 pr-4 focus:ring-0 focus:outline-none cursor-pointer' : 'bg-transparent text-amber-400 font-semibold text-[11px] border-0 py-0 pl-0.5 pr-4 focus:ring-0 focus:outline-none cursor-pointer';
+        } else if (active === 'companion:cursor') {
+          indicator.className = 'w-2 h-2 rounded-full bg-blue-400 shrink-0';
+          select.className = 'bg-transparent text-blue-400 font-semibold text-[11px] border-0 py-0 pl-0.5 pr-4 focus:ring-0 focus:outline-none cursor-pointer';
+        } else {
+          indicator.className = 'w-2 h-2 rounded-full bg-amber-500 shrink-0';
+          select.className = 'bg-transparent text-amber-400 font-semibold text-[11px] border-0 py-0 pl-0.5 pr-4 focus:ring-0 focus:outline-none cursor-pointer';
+        }
+      }
+
+      // Update Skill Studio active AI indicator
+      const activeLabel = document.getElementById('ai-active-label');
+      const activeDot = document.getElementById('ai-active-indicator');
+      if (activeLabel && activeDot) {
+        if (active.startsWith('cli:')) {
+          const cliId = active.replace('cli:', '');
+          const cliObj = clis.find(c => c.id === cliId);
+          const cliName = cliObj ? cliObj.name : cliId;
+          activeDot.className = 'w-2 h-2 rounded-full bg-emerald-400 animate-pulse';
+          activeLabel.innerHTML = `<span class="text-emerald-400 font-semibold">🟢 Engine: ${cliName} (Local Session • Authenticated)</span>`;
+        } else if (active.startsWith('api:')) {
+          const prov = active.replace('api:', '');
+          const isConfigured = llm[prov]?.configured;
+          if (isConfigured) {
+            activeDot.className = 'w-2 h-2 rounded-full bg-emerald-400';
+            activeLabel.innerHTML = `<span class="text-emerald-400 font-semibold">Active API: ${prov.toUpperCase()} (${llm[prov]?.preview || 'Configured'})</span>`;
+          } else {
+            activeDot.className = 'w-2 h-2 rounded-full bg-amber-500';
+            activeLabel.innerHTML = `<span class="text-amber-400 font-semibold">API Key Required in .env for ${prov.toUpperCase()}</span>`;
+          }
+        } else if (active === 'companion:cursor') {
+          activeDot.className = 'w-2 h-2 rounded-full bg-blue-400';
+          activeLabel.innerHTML = `<span class="text-blue-400 font-semibold">IDE Companion Mode (${hasCursor ? 'Cursor' : 'Terminal'})</span>`;
+        } else {
+          activeDot.className = 'w-2 h-2 rounded-full bg-amber-500';
+          activeLabel.innerHTML = `<span class="text-zinc-400 font-semibold">Smart Prompt Bundle Mode (Zero Config)</span>`;
+        }
+      }
+    }
+
+    async function onHeaderEngineChange(newEngine) {
+      currentActiveEngine = newEngine;
+      try {
+        const res = await fetch('/api/set-engine', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ engine: newEngine })
+        });
+        const d = await res.json();
+        showGlobalToast(`Active engine set to ${newEngine}`, 'check_circle');
+        if (d.env_status) {
+          renderHeaderEngineSelector(d.env_status);
+        } else {
+          loadEnvStatus();
+        }
+      } catch (e) {
+        console.error('Failed to set active engine:', e);
       }
     }
 
@@ -2560,31 +2671,36 @@
             framework_id: fw,
             context_files: studioContextFiles,
             stage,
-            answers
+            answers,
+            engine: currentActiveEngine
           })
         });
 
         const data = await res.json();
 
-        // Check for bundle_only mode (no API key in .env)
+        // Check for bundle_only mode (no API key in .env and no CLI, or IDE Companion selected)
         if (data.mode === 'bundle_only') {
-          socraticBadge.textContent = 'Bundle Mode';
+          const isCompanion = currentActiveEngine === 'companion:cursor';
+          socraticBadge.textContent = isCompanion ? 'IDE Companion' : 'Bundle Mode';
           socraticBadge.className = 'px-2 py-0.5 rounded text-[10px] font-mono bg-amber-500/10 text-amber-400 border border-amber-500/30';
+          const title = isCompanion ? 'IDE Companion Mode (Cursor / Terminal Active)' : 'Smart Prompt Bundle Mode';
+          const desc = isCompanion
+            ? 'Copy the fully hydrated prompt bundle below to run directly in your terminal (e.g. <strong class="text-amber-400">agy</strong> or <strong class="text-amber-400">claude</strong>) or <strong>Cursor IDE chat</strong>, then paste the output below to render and save.'
+            : 'Neither a local CLI (<code class="text-amber-400 font-mono">agy</code>/<code class="text-amber-400 font-mono">gemini</code>/<code class="text-amber-400 font-mono">claude</code>) nor a REST API key was found in <code class="text-amber-400 font-mono">.env</code>. You can copy the prompt bundle below to run in your AI assistant, or configure a local engine in Settings.';
+
           socraticArea.innerHTML = `
             <div class="p-3.5 rounded-lg bg-[#18191d] border border-amber-500/30 space-y-3">
               <div class="flex items-center gap-2 text-amber-400 font-semibold text-xs">
                 <span class="material-symbols-outlined text-[16px]">content_copy</span>
-                <span>Smart Prompt Bundle Mode (Zero API Keys Configured)</span>
+                <span>${title}</span>
               </div>
-              <p class="text-[11px] text-zinc-300 leading-relaxed">
-                No LLM API keys were detected in your <code class="text-amber-400 font-mono">.env</code>. You can copy the fully hydrated prompt bundle to run directly in <strong>Cursor</strong>, <strong>Claude Code</strong>, or <strong>Antigravity CLI</strong>, then paste the output below to render and save.
-              </p>
+              <p class="text-[11px] text-zinc-300 leading-relaxed">${desc}</p>
               <div class="flex items-center gap-2">
                 <button onclick="copyHydratedPromptBundle()" class="px-3 py-1.5 rounded bg-amber-600 hover:bg-amber-500 text-white font-medium text-xs flex items-center gap-1.5 transition-colors">
                   <span class="material-symbols-outlined text-[14px]">content_copy</span> Copy Hydrated Prompt Bundle
                 </button>
                 <button onclick="switchTab('user-settings'); switchSettingsSection('sec-ai-engine')" class="px-3 py-1.5 rounded bg-[#26272e] hover:bg-[#31323a] text-zinc-300 text-xs">
-                  Configure API Keys
+                  Configure Engine / Keys
                 </button>
               </div>
               <div class="pt-2 border-t border-[#2a2b30] space-y-1.5">
@@ -3334,6 +3450,65 @@
       }
     }
 
+    let liveCompanionInterval = null;
+    let lastArtifactsHash = '';
+    let lastContextHash = '';
+
+    function startLiveCompanionPolling() {
+      if (liveCompanionInterval) clearInterval(liveCompanionInterval);
+
+      const pollSync = async () => {
+        try {
+          // Poll artifacts
+          const artRes = await fetch('/api/artifacts');
+          if (artRes.ok) {
+            const artData = await artRes.json();
+            const arts = artData.artifacts || [];
+            const newHash = arts.map(a => `${a.path}:${a.modified_iso}`).join('|');
+            if (newHash !== lastArtifactsHash) {
+              lastArtifactsHash = newHash;
+              globalArtifacts = arts;
+              const countBadge = document.getElementById('stat-artifact-count');
+              if (countBadge) countBadge.textContent = globalArtifacts.length;
+              renderRecentArtifacts(globalArtifacts);
+              renderDeliverableHub();
+            }
+          }
+
+          // Poll context
+          const ctxRes = await fetch('/api/context');
+          if (ctxRes.ok) {
+            const ctxData = await ctxRes.json();
+            const files = ctxData.files_list || (Array.isArray(ctxData.files) ? ctxData.files : Object.values(ctxData.files || {}));
+            const newCtxHash = files.map(f => `${f.filename || f.name}:${f.modified_iso || f.words}`).join('|');
+            if (newCtxHash !== lastContextHash) {
+              lastContextHash = newCtxHash;
+              const modal = document.getElementById('context-editor-modal');
+              if (!modal || modal.classList.contains('hidden')) {
+                loadContextOverview();
+                loadProductBrainHealth();
+              }
+            }
+          }
+        } catch (e) {
+          // Silent polling error catch
+        }
+      };
+
+      // Poll every 4 seconds
+      liveCompanionInterval = setInterval(() => {
+        if (!document.hidden) {
+          pollSync();
+        }
+      }, 4000);
+
+      // Trigger immediate check when browser tab regains focus or visibility
+      window.addEventListener('focus', pollSync);
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) pollSync();
+      });
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       loadHarnessManifest();
       loadContextOverview();
@@ -3345,6 +3520,7 @@
       updateFavoriteIcons();
       initSidebarTooltips();
       onStudioSkillSelect('create-prd');
+      startLiveCompanionPolling();
 
       const themeBtn = document.getElementById('theme-toggle-btn');
       if (themeBtn) themeBtn.addEventListener('click', toggleAppTheme);

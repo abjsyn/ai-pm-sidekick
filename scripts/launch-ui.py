@@ -13,6 +13,8 @@ import sys
 import json
 import re
 import argparse
+import shutil
+import subprocess
 import webbrowser
 from pathlib import Path
 from datetime import datetime
@@ -79,12 +81,14 @@ def write_env_file(data):
     anthropic_key = data.get('anthropic_api_key', current.get('ANTHROPIC_API_KEY', ''))
     openai_key = data.get('openai_api_key', current.get('OPENAI_API_KEY', ''))
     default_llm_provider = data.get('default_llm_provider', current.get('DEFAULT_LLM_PROVIDER', 'gemini'))
+    active_engine = data.get('active_engine', current.get('ACTIVE_ENGINE', ''))
 
     lines = [
         "# AI PM Sidekick — Credentials & User Preferences",
         "# Saved via PM Command Center UI",
         "",
-        "# --- AI Execution Engine (Optional In-Browser SaaS Keys) ---",
+        "# --- AI Execution Engine (Local CLI or SaaS API Keys) ---",
+        f"ACTIVE_ENGINE={active_engine}",
         f"GEMINI_API_KEY={gemini_key}",
         f"ANTHROPIC_API_KEY={anthropic_key}",
         f"OPENAI_API_KEY={openai_key}",
@@ -356,16 +360,20 @@ def get_context_overview():
                 color = "blue"
                 
             files[p.name] = {
+                "name": p.name,
                 "filename": p.name,
                 "title": context_titles.get(p.name, p.name),
+                "description": context_titles.get(p.name, p.name),
                 "content": content,
                 "lines": lines,
                 "words": words,
                 "bytes": stat.st_size,
                 "modified_iso": datetime.fromtimestamp(stat.st_mtime).strftime("%Y-%m-%d %H:%M"),
                 "score": score,
+                "completeness_score": score,
                 "status": status,
                 "color": color,
+                "suggested_prompt": cli_prompts.get(p.name, f"/ingest-context Update .context/{p.name}"),
                 "cli_prompt": cli_prompts.get(p.name, f"/ingest-context Update .context/{p.name}")
             }
             
@@ -374,6 +382,7 @@ def get_context_overview():
     return {
         "config": config,
         "files": files,
+        "files_list": list(files.values()),
         "mcp_status": mcp_status,
         "summary": {
             "total_files": len(files),
@@ -706,28 +715,159 @@ At the very end of your response, output a distinct section formatted as:
         "context_summary": context_summary
     }
 
+def detect_local_clis():
+    """
+    Detect installed local AI CLIs on system PATH in priority order:
+      1. agy (Antigravity CLI)
+      2. gemini (Gemini CLI)
+      3. claude (Claude Code CLI)
+      4. cursor / agent (Cursor CLI)
+    """
+    specs = [
+        ("agy", "Antigravity CLI", True),
+        ("gemini", "Gemini CLI", True),
+        ("claude", "Claude Code CLI", True),
+        ("cursor", "Cursor CLI", False),
+        ("agent", "Cursor Agent CLI", False),
+    ]
+    detected = []
+    seen_cursor = False
+    for bin_name, display_name, can_exec in specs:
+        if bin_name in ("cursor", "agent") and seen_cursor:
+            continue
+        p = shutil.which(bin_name)
+        if p:
+            if bin_name in ("cursor", "agent"):
+                seen_cursor = True
+            detected.append({
+                "id": bin_name,
+                "name": display_name,
+                "path": p,
+                "can_execute": can_exec,
+                "type": "cli" if can_exec else "ide",
+                "label": f"{display_name} ({bin_name})"
+            })
+    return detected
+
+def resolve_active_engine(env_vars=None, detected=None):
+    """
+    Resolves the active AI engine based on saved preference, installed local CLIs, or API keys.
+    Returns: 'cli:agy' | 'cli:gemini' | 'cli:claude' | 'companion:cursor' | 'api:gemini' | 'bundle_only'
+    """
+    if env_vars is None:
+        env_vars = parse_env_file()
+    if detected is None:
+        detected = detect_local_clis()
+
+    saved_engine = env_vars.get("ACTIVE_ENGINE", "").strip()
+    exec_ids = [c["id"] for c in detected if c.get("can_execute")]
+    ide_ids = [c["id"] for c in detected if not c.get("can_execute")]
+
+    gemini_key = bool(env_vars.get("GEMINI_API_KEY") or os.environ.get("GEMINI_API_KEY"))
+    anthropic_key = bool(env_vars.get("ANTHROPIC_API_KEY") or os.environ.get("ANTHROPIC_API_KEY"))
+    openai_key = bool(env_vars.get("OPENAI_API_KEY") or os.environ.get("OPENAI_API_KEY"))
+    default_llm = env_vars.get("DEFAULT_LLM_PROVIDER", "gemini")
+
+    # If user explicitly configured an engine in .env, honor it if valid
+    if saved_engine:
+        if saved_engine.startswith("cli:") and saved_engine[4:] in exec_ids:
+            return saved_engine
+        if saved_engine == "companion:cursor" and ide_ids:
+            return saved_engine
+        if saved_engine == "bundle_only":
+            return saved_engine
+        if saved_engine == "api:gemini" and gemini_key:
+            return saved_engine
+        if saved_engine == "api:anthropic" and anthropic_key:
+            return saved_engine
+        if saved_engine == "api:openai" and openai_key:
+            return saved_engine
+
+    # Priority 1: Local authenticated CLIs (agy > gemini > claude)
+    for cid in ("agy", "gemini", "claude"):
+        if cid in exec_ids:
+            return f"cli:{cid}"
+
+    # Priority 2: Configured .env REST API keys
+    if default_llm == "gemini" and gemini_key: return "api:gemini"
+    if default_llm == "anthropic" and anthropic_key: return "api:anthropic"
+    if default_llm == "openai" and openai_key: return "api:openai"
+    if gemini_key: return "api:gemini"
+    if anthropic_key: return "api:anthropic"
+    if openai_key: return "api:openai"
+
+    # Priority 3: Cursor / Terminal Companion
+    if ide_ids:
+        return "companion:cursor"
+
+    # Fallback: Smart Prompt Bundle
+    return "bundle_only"
+
 def execute_ai_call(data):
     payload = compile_prompt_payload(data)
     stage = data.get("stage", "generate")
+    selected_engine = data.get("engine") or data.get("active_engine")
     provider = data.get("provider")
-    
+
     env_vars = parse_env_file()
+    detected = detect_local_clis()
+    executable_map = {c["id"]: c for c in detected if c.get("can_execute")}
+
     gemini_key = env_vars.get("GEMINI_API_KEY") or os.environ.get("GEMINI_API_KEY")
     anthropic_key = env_vars.get("ANTHROPIC_API_KEY") or os.environ.get("ANTHROPIC_API_KEY")
     openai_key = env_vars.get("OPENAI_API_KEY") or os.environ.get("OPENAI_API_KEY")
+    default_provider = env_vars.get("DEFAULT_LLM_PROVIDER", "gemini")
 
-    active_provider = None
-    if provider == "gemini" and gemini_key: active_provider = "gemini"
-    elif provider == "anthropic" and anthropic_key: active_provider = "anthropic"
-    elif provider == "openai" and openai_key: active_provider = "openai"
-    elif gemini_key: active_provider = "gemini"
-    elif anthropic_key: active_provider = "anthropic"
-    elif openai_key: active_provider = "openai"
+    # Determine execution target
+    target_type = None  # "cli" or "api"
+    target_id = None    # e.g., "agy", "gemini"
 
-    if not active_provider:
+    if selected_engine:
+        if selected_engine.startswith("cli:"):
+            cid = selected_engine[4:]
+            if cid in executable_map:
+                target_type = "cli"
+                target_id = cid
+        elif selected_engine.startswith("api:"):
+            p = selected_engine[4:]
+            if (p == "gemini" and gemini_key) or (p == "anthropic" and anthropic_key) or (p == "openai" and openai_key):
+                target_type = "api"
+                target_id = p
+        elif selected_engine in ("companion:cursor", "bundle_only"):
+            return {
+                "mode": "bundle_only",
+                "message": "IDE Companion Mode active. Copy the hydrated prompt to run in your terminal or Cursor, then paste the output below.",
+                "bundle": payload["full_bundle"],
+                "system_prompt": payload["system_prompt"],
+                "user_prompt": payload["user_prompt"],
+                "payload": payload
+            }
+
+    # If no target specified, check Priority 1: Local CLI (agy > gemini > claude)
+    if not target_type:
+        for cid in ("agy", "gemini", "claude"):
+            if cid in executable_map:
+                target_type = "cli"
+                target_id = cid
+                break
+
+    # Priority 2: Configured REST API keys
+    if not target_type:
+        if provider == "gemini" and gemini_key: target_type, target_id = "api", "gemini"
+        elif provider == "anthropic" and anthropic_key: target_type, target_id = "api", "anthropic"
+        elif provider == "openai" and openai_key: target_type, target_id = "api", "openai"
+        elif default_provider == "gemini" and gemini_key: target_type, target_id = "api", "gemini"
+        elif default_provider == "anthropic" and anthropic_key: target_type, target_id = "api", "anthropic"
+        elif default_provider == "openai" and openai_key: target_type, target_id = "api", "openai"
+        elif gemini_key: target_type, target_id = "api", "gemini"
+        elif anthropic_key: target_type, target_id = "api", "anthropic"
+        elif openai_key: target_type, target_id = "api", "openai"
+
+    # If neither local CLI nor API key is available:
+    if not target_type:
         return {
             "mode": "bundle_only",
-            "message": "No API key configured in .env. Switch to Smart Prompt Bundle mode.",
+            "message": "No local CLI (agy/gemini/claude) or .env API key detected. Switch to Smart Prompt Bundle mode.",
             "bundle": payload["full_bundle"],
             "system_prompt": payload["system_prompt"],
             "user_prompt": payload["user_prompt"],
@@ -736,59 +876,97 @@ def execute_ai_call(data):
 
     system_prompt = payload["system_prompt"]
     user_prompt = payload["user_prompt"]
+    combined_prompt = f"{system_prompt}\n\n---\n\n{user_prompt}"
 
     try:
         response_text = ""
-        if active_provider == "gemini":
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={gemini_key}"
-            req_body = {
-                "contents": [{"role": "user", "parts": [{"text": user_prompt}]}],
-                "systemInstruction": {"parts": [{"text": system_prompt}]},
-                "generationConfig": {"temperature": 0.4, "maxOutputTokens": 8192}
-            }
-            req = Request(url, data=json.dumps(req_body).encode("utf-8"), headers={"Content-Type": "application/json"}, method="POST")
-            with urlopen(req, timeout=60) as res:
-                res_data = json.loads(res.read().decode("utf-8"))
-                candidates = res_data.get("candidates", [])
-                if candidates and "content" in candidates[0]:
-                    parts = candidates[0]["content"].get("parts", [])
-                    response_text = "".join(p.get("text", "") for p in parts)
-                    
-        elif active_provider == "openai":
-            url = "https://api.openai.com/v1/chat/completions"
-            req_body = {
-                "model": "gpt-4o",
-                "messages": [
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": user_prompt}
-                ],
-                "temperature": 0.4
-            }
-            req = Request(url, data=json.dumps(req_body).encode("utf-8"), headers={
-                "Content-Type": "application/json",
-                "Authorization": f"Bearer {openai_key}"
-            }, method="POST")
-            with urlopen(req, timeout=60) as res:
-                res_data = json.loads(res.read().decode("utf-8"))
-                response_text = res_data["choices"][0]["message"]["content"]
+        active_engine_name = f"{target_type}:{target_id}"
 
-        elif active_provider == "anthropic":
-            url = "https://api.anthropic.com/v1/messages"
-            req_body = {
-                "model": "claude-3-5-sonnet-20241022",
-                "max_tokens": 4096,
-                "system": system_prompt,
-                "messages": [{"role": "user", "content": user_prompt}],
-                "temperature": 0.4
-            }
-            req = Request(url, data=json.dumps(req_body).encode("utf-8"), headers={
-                "Content-Type": "application/json",
-                "x-api-key": anthropic_key,
-                "anthropic-version": "2023-06-01"
-            }, method="POST")
-            with urlopen(req, timeout=60) as res:
-                res_data = json.loads(res.read().decode("utf-8"))
-                response_text = "".join(b.get("text", "") for b in res_data.get("content", []))
+        if target_type == "cli":
+            cli_info = executable_map[target_id]
+            cmd = [cli_info["path"]]
+            if target_id == "agy":
+                cmd.extend(["--dangerously-skip-permissions", "-p", combined_prompt])
+            elif target_id == "gemini":
+                cmd.extend(["-y", "-p", combined_prompt])
+            elif target_id == "claude":
+                cmd.extend(["--dangerously-skip-permissions", "-p", combined_prompt])
+            else:
+                cmd.extend(["-p", combined_prompt])
+            res = subprocess.run(
+                cmd,
+                cwd=ROOT_DIR,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                encoding="utf-8",
+                timeout=120
+            )
+            if res.returncode != 0:
+                err_msg = res.stderr.strip() or res.stdout.strip() or f"CLI exited with code {res.returncode}"
+                # If a REST API key is available and was not explicitly pinned, attempt fallback to API
+                if (gemini_key or anthropic_key or openai_key) and not selected_engine:
+                    if gemini_key: target_type, target_id = "api", "gemini"
+                    elif anthropic_key: target_type, target_id = "api", "anthropic"
+                    elif openai_key: target_type, target_id = "api", "openai"
+                else:
+                    raise RuntimeError(err_msg)
+            else:
+                response_text = res.stdout.strip()
+                if not response_text and res.stderr.strip():
+                    response_text = res.stderr.strip()
+
+        if target_type == "api":
+            if target_id == "gemini":
+                url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={gemini_key}"
+                req_body = {
+                    "contents": [{"role": "user", "parts": [{"text": user_prompt}]}],
+                    "systemInstruction": {"parts": [{"text": system_prompt}]},
+                    "generationConfig": {"temperature": 0.4, "maxOutputTokens": 8192}
+                }
+                req = Request(url, data=json.dumps(req_body).encode("utf-8"), headers={"Content-Type": "application/json"}, method="POST")
+                with urlopen(req, timeout=60) as res:
+                    res_data = json.loads(res.read().decode("utf-8"))
+                    candidates = res_data.get("candidates", [])
+                    if candidates and "content" in candidates[0]:
+                        parts = candidates[0]["content"].get("parts", [])
+                        response_text = "".join(p.get("text", "") for p in parts)
+
+            elif target_id == "openai":
+                url = "https://api.openai.com/v1/chat/completions"
+                req_body = {
+                    "model": "gpt-4o",
+                    "messages": [
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": user_prompt}
+                    ],
+                    "temperature": 0.4
+                }
+                req = Request(url, data=json.dumps(req_body).encode("utf-8"), headers={
+                    "Content-Type": "application/json",
+                    "Authorization": f"Bearer {openai_key}"
+                }, method="POST")
+                with urlopen(req, timeout=60) as res:
+                    res_data = json.loads(res.read().decode("utf-8"))
+                    response_text = res_data["choices"][0]["message"]["content"]
+
+            elif target_id == "anthropic":
+                url = "https://api.anthropic.com/v1/messages"
+                req_body = {
+                    "model": "claude-3-5-sonnet-20241022",
+                    "max_tokens": 4096,
+                    "system": system_prompt,
+                    "messages": [{"role": "user", "content": user_prompt}],
+                    "temperature": 0.4
+                }
+                req = Request(url, data=json.dumps(req_body).encode("utf-8"), headers={
+                    "Content-Type": "application/json",
+                    "x-api-key": anthropic_key,
+                    "anthropic-version": "2023-06-01"
+                }, method="POST")
+                with urlopen(req, timeout=60) as res:
+                    res_data = json.loads(res.read().decode("utf-8"))
+                    response_text = "".join(b.get("text", "") for b in res_data.get("content", []))
 
         if stage == "clarify":
             questions = []
@@ -807,7 +985,8 @@ def execute_ai_call(data):
             return {
                 "mode": "ai_executed",
                 "stage": "clarify",
-                "provider": active_provider,
+                "engine": active_engine_name,
+                "provider": active_engine_name,
                 "questions": questions,
                 "raw_text": response_text
             }
@@ -822,7 +1001,8 @@ def execute_ai_call(data):
             return {
                 "mode": "ai_executed",
                 "stage": "generate",
-                "provider": active_provider,
+                "engine": active_engine_name,
+                "provider": active_engine_name,
                 "artifact_content": artifact_content,
                 "write_back_snippet": write_back_snippet,
                 "raw_text": response_text
@@ -832,7 +1012,7 @@ def execute_ai_call(data):
         return {
             "mode": "bundle_only",
             "error": str(e),
-            "message": f"AI call failed ({active_provider}): {e}. Switched to Smart Prompt Bundle mode.",
+            "message": f"AI execution error ({target_type}:{target_id}): {e}. Switched to Smart Prompt Bundle mode.",
             "bundle": payload["full_bundle"],
             "system_prompt": payload["system_prompt"],
             "user_prompt": payload["user_prompt"],
@@ -841,6 +1021,9 @@ def execute_ai_call(data):
 
 def get_env_status():
     env_vars = parse_env_file()
+    detected = detect_local_clis()
+    active_engine = resolve_active_engine(env_vars, detected)
+
     def mask_key(k):
         v = env_vars.get(k, "") or os.environ.get(k, "")
         if not v:
@@ -850,6 +1033,8 @@ def get_env_status():
         return v[:4] + "••••" + v[-4:]
 
     return {
+        "detected_clis": detected,
+        "active_engine": active_engine,
         "llm": {
             "gemini": {
                 "configured": bool(env_vars.get("GEMINI_API_KEY") or os.environ.get("GEMINI_API_KEY")),
@@ -1012,6 +1197,8 @@ class PMCommandCenterApiHandler(SimpleHTTPRequestHandler):
                 "favorite_skills": cfg.get("favorite_skills", []),
                 "active_frameworks": cfg.get("active_frameworks", []),
                 "workspace_path": str(ROOT_DIR),
+                "detected_clis": env_status["detected_clis"],
+                "active_engine": env_status["active_engine"],
                 "llm_status": env_status["llm"],
                 "gemini_api_key": env_status["llm"]["gemini"]["preview"],
                 "anthropic_api_key": env_status["llm"]["anthropic"]["preview"],
@@ -1049,6 +1236,16 @@ class PMCommandCenterApiHandler(SimpleHTTPRequestHandler):
             data = json.loads(body_bytes.decode("utf-8"))
         except Exception:
             data = {}
+
+        if path == "/api/set-engine":
+            engine_val = data.get("engine", "") or data.get("active_engine", "")
+            write_env_file({"active_engine": engine_val})
+            return self.send_json({
+                "success": True,
+                "active_engine": engine_val,
+                "message": f"Active AI engine updated to '{engine_val}'",
+                "env_status": get_env_status()
+            })
 
         if path in ("/api/artifacts", "/api/save-artifact"):
             try:

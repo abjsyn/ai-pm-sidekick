@@ -122,7 +122,7 @@
             <span class="material-symbols-outlined text-[20px] text-amber-500">smart_toy</span>
             <div class="text-left">
               <span class="block font-semibold text-sm">AI Execution Engine</span>
-              <span class="block text-[11px] text-zinc-500 font-normal">Gemini, Claude, OpenAI</span>
+              <span class="block text-[11px] text-zinc-500 font-normal">Local agy CLI, Cursor, API Keys</span>
             </div>
           </div>
           <span class="material-symbols-outlined text-[16px] text-zinc-600">chevron_right</span>
@@ -458,23 +458,70 @@
           <div>
             <h2 class="font-headline text-lg font-bold text-zinc-100 flex items-center gap-2">
               <span class="material-symbols-outlined text-amber-500 text-[22px]">smart_toy</span>
-              AI Execution Engine (In-Browser SaaS Mode)
+              AI Execution Engine (Local CLI & SaaS API)
             </h2>
-            <p class="text-xs text-zinc-400 mt-0.5">Configure your LLM API keys to run Socratic Question Gates and generate artifacts directly in-app without a terminal.</p>
+            <p class="text-xs text-zinc-400 mt-0.5">Use your local authenticated CLI (agy, gemini, claude) with zero API keys required, or configure REST API keys for fallback.</p>
           </div>
 
-          <!-- Zero Config Fallback Banner -->
-          <div class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-zinc-300 space-y-1">
-            <div class="font-semibold text-amber-400 flex items-center gap-1.5">
-              <span class="material-symbols-outlined text-[16px]">info</span> Zero-Config Fallback & Privacy
+          <!-- LOCAL CLI AUTO-DETECTION HUD CARD -->
+          <div class="p-5 rounded-xl bg-[#1f2025] border border-[#2a2b30] space-y-4">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                  <span class="material-symbols-outlined text-[20px]">terminal</span>
+                </div>
+                <div>
+                  <h3 class="font-semibold text-zinc-100 text-xs">Local Authenticated CLIs (Zero-Config Session)</h3>
+                  <p class="text-[11px] text-zinc-400">Automatically detected on your system <code>PATH</code></p>
+                </div>
+              </div>
+              <span id="badge-cli-summary" class="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px] font-mono font-semibold flex items-center gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Local CLI Detected
+              </span>
             </div>
-            <p class="text-[11px] text-zinc-400 leading-relaxed">Keys are stored exclusively in your local `.env` and sent directly to LLM provider REST endpoints via Python's built-in `urllib.request`. If no keys are configured, the UI smoothly switches to <strong>Smart Prompt Bundle mode</strong> so you can 1-click copy hydrated prompts for Cursor, Claude Code, or Antigravity CLI.</p>
+
+            <!-- Detected CLIs list rendered dynamically -->
+            <div id="detected-clis-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-[#2a2b30]">
+              <div class="col-span-full py-2 text-zinc-500 text-xs font-mono">Scanning system PATH for local AI CLIs...</div>
+            </div>
+
+            <div class="p-3 rounded-lg bg-[#121316] border border-emerald-500/20 text-[11px] text-zinc-300 flex items-start gap-2">
+              <span class="material-symbols-outlined text-emerald-400 text-[16px] shrink-0 mt-0.5">verified</span>
+              <div>
+                <strong class="text-emerald-400 font-semibold">Zero-Config Out-of-the-Box:</strong> When <strong>Antigravity CLI (<code>agy</code>)</strong> or another local CLI is installed, the Web UI executes prompts directly through your local session. <strong>No API keys in <code>.env</code> are required!</strong>
+              </div>
+            </div>
           </div>
 
-          <div class="space-y-4">
+          <!-- Active Engine Selector Dropdown -->
+          <div class="space-y-1.5">
+            <label class="block text-xs font-medium text-zinc-300">Active AI Execution Engine</label>
+            <select id="setting-active-engine" class="w-full px-3 py-2 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-xs focus:outline-none focus:border-amber-500">
+              <option value="cli:agy">Local CLI: Antigravity CLI (agy) — Recommended</option>
+              <option value="cli:gemini">Local CLI: Gemini CLI (gemini)</option>
+              <option value="cli:claude">Local CLI: Claude Code CLI (claude)</option>
+              <option value="companion:cursor">IDE Companion Mode (Cursor / Terminal / Smart Prompt Bundle)</option>
+              <option value="api:gemini">REST API: Google Gemini (.env Key)</option>
+              <option value="api:anthropic">REST API: Anthropic Claude (.env Key)</option>
+              <option value="api:openai">REST API: OpenAI (.env Key)</option>
+              <option value="bundle_only">Smart Prompt Bundle (Manual Copy)</option>
+            </select>
+            <p class="text-[11px] text-zinc-500">Choose between automated local CLI execution, IDE Companion mode (Cursor / terminal), or direct REST API calls.</p>
+          </div>
+
+          <!-- In-Browser SaaS REST Keys Fallback -->
+          <div class="pt-2 border-t border-[#2a2b30] space-y-4">
+            <div>
+              <h3 class="font-headline text-sm font-bold text-zinc-200 flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[18px] text-amber-500">key</span>
+                Optional REST API Keys (.env Fallback)
+              </h3>
+              <p class="text-[11px] text-zinc-400 mt-0.5">Optional SaaS keys used only if selected above or when running without a local CLI.</p>
+            </div>
+
             <!-- Default Provider Selector -->
             <div class="space-y-1.5">
-              <label class="block text-xs font-medium text-zinc-300">Default LLM Provider</label>
+              <label class="block text-xs font-medium text-zinc-300">Default SaaS Provider</label>
               <select id="setting-default-provider" class="w-full px-3 py-2 rounded-lg bg-[#121316] border border-[#2a2b30] text-zinc-100 text-xs focus:outline-none focus:border-amber-500">
                 <option value="gemini">Google Gemini (gemini-2.5-pro / 2.5-flash via Gemini REST API)</option>
                 <option value="anthropic">Anthropic Claude (claude-3-7-sonnet via Messages REST API)</option>
@@ -690,6 +737,52 @@
           document.getElementById('setting-default-provider').value = data.default_llm_provider;
         }
 
+        // Active Engine & Detected CLIs
+        const detectedClis = data.detected_clis || [];
+        const activeEngine = data.active_engine || 'cli:agy';
+
+        const activeEngineSelect = document.getElementById('setting-active-engine');
+        if (activeEngineSelect && activeEngine) {
+          activeEngineSelect.value = activeEngine;
+        }
+
+        const clisGrid = document.getElementById('detected-clis-grid');
+        const summaryBadge = document.getElementById('badge-cli-summary');
+        if (clisGrid) {
+          if (detectedClis.length === 0) {
+            clisGrid.innerHTML = `<div class="col-span-full py-2 text-zinc-500 text-xs font-mono">No local AI CLIs detected on PATH.</div>`;
+            if (summaryBadge) {
+              summaryBadge.className = 'px-2.5 py-0.5 rounded-full bg-zinc-500/10 text-zinc-400 border border-zinc-500/30 text-[10px] font-mono font-semibold';
+              summaryBadge.textContent = 'No CLIs Detected';
+            }
+          } else {
+            const hasExec = detectedClis.some(c => c.can_execute);
+            if (summaryBadge) {
+              summaryBadge.className = hasExec
+                ? 'px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px] font-mono font-semibold flex items-center gap-1'
+                : 'px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/30 text-[10px] font-mono font-semibold flex items-center gap-1';
+              summaryBadge.innerHTML = hasExec
+                ? '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Local CLI Detected'
+                : '<span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span> IDE Detected';
+            }
+
+            clisGrid.innerHTML = detectedClis.map(c => `
+              <div class="p-3 rounded-lg bg-[#121316] border border-[#2a2b30] flex items-center justify-between">
+                <div class="space-y-0.5">
+                  <div class="flex items-center gap-1.5">
+                    <span class="font-semibold text-zinc-200 text-xs">${c.name}</span>
+                    <code class="px-1.5 py-0.5 rounded bg-[#26272e] text-amber-400 font-mono text-[10px]">${c.id}</code>
+                  </div>
+                  <p class="text-[10px] text-zinc-500 font-mono truncate max-w-[220px]" title="${c.path}">${c.path}</p>
+                </div>
+                <span class="px-2 py-0.5 rounded-full ${c.can_execute ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' : 'bg-blue-500/10 text-blue-400 border-blue-500/30'} border text-[10px] font-mono font-medium">
+                  ${c.can_execute ? 'Direct Session' : 'Companion'}
+                </span>
+              </div>
+            `).join('');
+          }
+        }
+
         const updateLlmBadge = (badgeId, previewId, keyConfigured, previewText) => {
           const badge = document.getElementById(badgeId);
           const preview = document.getElementById(previewId);
@@ -730,6 +823,7 @@
         ac_format: document.getElementById('setting-ac-format').value,
         story_scale: document.getElementById('setting-points-scale').value,
         ui_theme: document.getElementById('setting-ui-theme').value,
+        active_engine: document.getElementById('setting-active-engine')?.value || 'cli:agy',
         default_llm_provider: document.getElementById('setting-default-provider')?.value || 'gemini',
         gemini_api_key: document.getElementById('input-gemini-key')?.value || '',
         anthropic_api_key: document.getElementById('input-anthropic-key')?.value || '',
