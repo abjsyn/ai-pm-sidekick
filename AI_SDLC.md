@@ -250,6 +250,7 @@ Create a new Markdown file in the appropriate directory:
 - `frameworks/strategy/<framework-name>.md`
 - `frameworks/discovery/<framework-name>.md`
 - `frameworks/prioritization/<framework-name>.md`
+- `frameworks/operations/<framework-name>.md`
 
 Every framework file must follow this standardized 5-part structure:
 

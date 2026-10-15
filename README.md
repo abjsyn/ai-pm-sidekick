@@ -7,13 +7,14 @@
 
 ---
 
-## 🌟 Core Capabilities & 18 Canonical Skills
+## 🌟 Core Capabilities & 19 Canonical Skills
 
 | Skill / Integration | Slash Command | Category | Description | Primary Output Target | Next Skill Suggestion |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **PM Command Center** | `/gui-run` | `gui` | Web GUI dashboard & REST API on `localhost:3000` | Google Stitch Atelier UI | `create-prd`, `connect-mcp` |
+| **PM Command Center** | `/gui-run` | `gui` | SaaS web studio, Product Brain manager, Artifact library, & REST server on `localhost:3000` | Local Web Browser | `create-prd`, `connect-mcp` |
 | **Context Ingestion** | `/ingest-context` | `knowledge` | Distills raw notes, calls, & Slack dumps into `.context/` | `.context/*.md`, `decisions.md` | `apply-framework`, `create-prd` |
-| **Apply Framework** | `/apply-framework` | `knowledge` | Runs strategic, discovery, & prioritization models | `.context/`, `BACKLOG.md`, `docs/` | `create-prd`, `create-user-stories` |
+| **Apply Framework** | `/apply-framework` | `knowledge` | Runs strategic, discovery, prioritization, & operational models | `.context/`, `BACKLOG.md`, `docs/` | `create-prd`, `create-user-stories` |
+| **Recommend Framework** | `/recommend-framework` | `knowledge` | Diagnoses bottlenecks & uncertainty, recommends the optimal framework & skill with anti-pattern warnings | Diagnostic recommendation in chat | `apply-framework`, `create-prd` |
 | **Idea Validation** | `/validate-idea` | `ideation` | Evaluates raw concepts & hypotheses (4-Risk, Mom Test, Pre-mortem) | 4-Risk Brief in `docs/` | `brainstorm`, `create-prd` |
 | **Brainstorming** | `/brainstorm` | `ideation` | Generates innovative solution angles (SCAMPER, HMW, 6 Hats) | Opportunity doc in `docs/` | `sync-miro`, `create-prd` |
 | **PRD Generation** | `/create-prd` | `specification` | Generates structured PRDs across Lean, Standard, and Enterprise tiers | PRD in `docs/` | `create-mockup`, `create-user-stories` |
@@ -32,11 +33,23 @@
 
 ---
 
+## 🖥️ PM Command Center Web GUI
+
+Launch with `python3 scripts/launch-ui.py --open` (or `/gui-run`) for a visual PM studio:
+
+- **Zero-Config Local CLI Auto-Detection**: Automatically detects local authenticated AI CLIs (`agy`, `gemini`, `claude`, `cursor`) on your `PATH`. Execute prompts and skills directly in the browser—**no API keys in `.env` required**.
+- **Live IDE Companion Mode**: 4-second background file-system polling synchronizes newly generated PRDs, stories, and context files created from external terminal or Cursor IDE chat sessions without requiring a browser reload.
+- **Product Brain Manager**: Live health cards for all 6 `.context/` files with line/word counts, quick-append modal, and inline markdown editor/previewer.
+- **Deliverables & Artifacts Hub**: Dual-pane workspace with search, category filtering (PRDs, Stories, Validation, Mockups, Backlog), live markdown preview, in-place editor, and an interactive responsive sandbox iframe (Desktop, Tablet, Mobile) for HTML prototypes.
+- **Functional Dark & Light Theme**: Toggle seamlessly between dark atelier and clean, high-contrast light SaaS modes with zero-flash persistence backed by `localStorage`.
+
+---
+
 ## 🧠 The `.context/` Product Knowledge Core
 
 At the center of AI PM Sidekick is a persistent, version-controlled **single source of truth** in `.context/`. Instead of stuffing massive prompts into ephemeral chat windows, agents continuously hydrate from and compound knowledge back into these structured files:
 
-- [`.context/harness-config.yaml`](.context/harness-config.yaml): Workspace mode (`standalone` vs `embedded`), default tier (`lean`, `standard`, `enterprise`), active frameworks, and enabled MCP integrations.
+- [`.context/harness-config.yaml`](.context/harness-config.yaml): Workspace mode (`standalone` vs `embedded`), default tier (`lean`, `standard`, `enterprise`), operating model (`scrum`, `shape-up`, `kanban`, `gist`), active frameworks across all 4 categories, favorite skills, and enabled MCP integrations.
 - [`.context/product.md`](.context/product.md): High-level strategic vision, primary personas, core value loops, North Star metric, and quarterly OKRs.
 - [`.context/discovery.md`](.context/discovery.md): Teresa Torres Opportunity Solution Trees (OST), active customer opportunities, and verified Mom Test insights.
 - [`.context/strategy-and-constraints.md`](.context/strategy-and-constraints.md): Wardley Map value chain evolution table, Theory of Constraints system bottleneck, and business/regulatory constraints.
@@ -53,7 +66,7 @@ To eliminate AI hallucinations:
 
 ## 🗺️ Modular Framework Engine (`frameworks/`)
 
-AI PM Sidekick includes a decoupled library of industry-standard strategic, discovery, and prioritization frameworks:
+AI PM Sidekick includes a decoupled library of 10 industry-standard strategic, discovery, prioritization, and operational frameworks:
 
 ### 1. Strategic Frameworks ([`frameworks/strategy/`](frameworks/strategy/))
 - **`wardley-mapping`**: Plots value chain components along Visibility vs. Evolution (Genesis ➔ Custom ➔ Product ➔ Commodity) to enforce disciplined Build-vs-Buy decisions.
@@ -68,7 +81,17 @@ AI PM Sidekick includes a decoupled library of industry-standard strategic, disc
 - **`wsjf-cost-of-delay`**: Weighted Shortest Job First economic scheduling ($\frac{\text{User Value} + \text{Time Criticality} + \text{Risk Reduction}}{\text{Job Size}}$).
 - **`kano-model`**: Non-linear customer satisfaction classification (Must-be, One-dimensional, Attractive, Indifferent) using functional/dysfunctional question pairs.
 
-> 💡 **Add your own custom framework in under 2 minutes!** Follow the standardized 5-part schema in [`frameworks/README.md`](frameworks/README.md) and run `python3 scripts/export-skills.py`.
+### 4. Operational & Delivery Frameworks ([`frameworks/operations/`](frameworks/operations/))
+- **`scrum-sprint-delivery`**: Sprint Goal definition, backlog grooming, velocity slicing, INVEST user story breakdown, and sprint retrospective cadence.
+- **`shape-up`**: Basecamp's fixed-time/variable-scope methodology with 6-week cycles, appetites, pitch shaping, rabbit holes, and Hill Charts.
+- **`gist-planning`**: Itamar Gilad's agile roadmapping connecting strategic Goals $\rightarrow$ prioritized Ideas $\rightarrow$ validated Step-projects $\rightarrow$ tactical Tasks.
+
+### 🧭 Diagnostic Frontmatter & Framework Dispatcher (`/recommend-framework`)
+Every framework implements a standardized YAML frontmatter schema (`problem_signatures`, `best_for_stage`, `data_maturity_required`, `when_not_to_use`, `paired_skills`, `write_back_target`).
+- Run `/recommend-framework` to diagnose your team's specific uncertainty or bottleneck. The agent recommends the optimal primary framework, provides a lightweight alternative, and highlights common anti-patterns.
+- Validate framework conformity anytime by running `python3 scripts/export-skills.py`, which includes a diagnostic schema linter.
+
+> 💡 **Add your own custom framework in under 2 minutes!** Follow the standardized 5-part schema in [`frameworks/README.md`](frameworks/README.md) and place your spec in `frameworks/strategy/`, `frameworks/discovery/`, `frameworks/prioritization/`, or `frameworks/operations/`.
 
 ---
 
@@ -116,7 +139,7 @@ This generates native configurations for:
 - **Cursor IDE**: `.cursor/rules/*.mdc` and `.cursorrules`
 - **Claude Code**: `.claude/commands/*.md` and `CLAUDE.md`
 - **ChatGPT / Custom GPTs**: `dist/pm_sidekick_system_prompt.md`
-- **Web GUI Sidepanel**: `dist/harness-manifest.json`
+- **Web GUI Sidepanel**: `dist/harness-manifest.json` (19 skills, 10 frameworks, 7 context files)
 
 ---
 
@@ -126,6 +149,8 @@ When generating PRDs or User Stories, choose your compliance and detail tier:
 1. **⚡ Lean Mode (Startup / MVP)**: 1-page PRDs, rapid bullet acceptance criteria, minimal overhead.
 2. **🎯 Standard Agile Mode (Default / Growth)**: Full INVEST criteria, Gherkin BDD (`Given/When/Then`), Fibonacci story points, and Definition of Done.
 3. **🏢 Enterprise Mode (Compliance / Scale)**: Traceability matrices, SOC2/GDPR compliance tags, security assertions, SLA targets, and audit log specifications.
+
+Configure your preferred default tier and operating model (`scrum`, `shape-up`, `kanban`, `gist`) in [`.context/harness-config.yaml`](.context/harness-config.yaml).
 
 ---
 
