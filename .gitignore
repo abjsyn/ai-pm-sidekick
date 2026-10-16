@@ -24,3 +24,5 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Local deliverables & generated artifacts
+docs/monetization_idea_validation.md
