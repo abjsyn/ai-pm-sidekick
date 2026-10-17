@@ -442,6 +442,44 @@ def get_all_skills():
             })
     return skills
 
+def resolve_skill_file(skill_id):
+    if not isinstance(skill_id, str) or not skill_id.strip():
+        raise ValueError("Missing 'skill' parameter")
+    skill_id = skill_id.strip()
+    if any(token in skill_id for token in ("/", "\\", "..")) or skill_id.startswith("."):
+        raise ValueError("Invalid skill id")
+
+    target = (SKILLS_DIR / skill_id / "SKILL.md").resolve()
+    skills_root = SKILLS_DIR.resolve()
+    if skills_root not in target.parents or target.name != "SKILL.md":
+        raise ValueError("Invalid skill id")
+    if not target.is_file():
+        raise FileNotFoundError(f"Skill not found: {skill_id}")
+    return target
+
+def read_skill_content(skill_id):
+    target = resolve_skill_file(skill_id)
+    content = target.read_text(encoding="utf-8")
+    return {
+        "skill": skill_id.strip(),
+        "path": str(target.relative_to(ROOT_DIR)),
+        "content": content
+    }
+
+def save_skill_content(data):
+    skill_id = data.get("skill", "")
+    content = data.get("content")
+    if not isinstance(content, str):
+        raise ValueError("Missing 'content' parameter")
+    target = resolve_skill_file(skill_id)
+    target.write_text(content, encoding="utf-8")
+    return {
+        "success": True,
+        "skill": skill_id.strip(),
+        "path": str(target.relative_to(ROOT_DIR)),
+        "message": f"Saved {target.relative_to(ROOT_DIR)}"
+    }
+
 def get_all_artifacts():
     artifacts = []
     
@@ -1180,6 +1218,16 @@ class PMCommandCenterApiHandler(SimpleHTTPRequestHandler):
         if path == "/api/skills":
             return self.send_json({"skills": get_all_skills()})
 
+        if path == "/api/skill-content":
+            skill_id = query.get("skill", [""])[0]
+            try:
+                result = read_skill_content(skill_id)
+                return self.send_json(result)
+            except ValueError as e:
+                return self.send_json({"error": str(e)}, status=400)
+            except FileNotFoundError as e:
+                return self.send_json({"error": str(e)}, status=404)
+
         if path == "/api/artifacts":
             return self.send_json({"artifacts": get_all_artifacts()})
 
@@ -1372,6 +1420,15 @@ class PMCommandCenterApiHandler(SimpleHTTPRequestHandler):
                 "connected": has_key,
                 "status": "200 OK (Active)" if has_key else "Missing Credentials in .env"
             })
+
+        if path == "/api/skill-content":
+            try:
+                result = save_skill_content(data)
+                return self.send_json(result)
+            except ValueError as e:
+                return self.send_json({"error": str(e), "success": False}, status=400)
+            except FileNotFoundError as e:
+                return self.send_json({"error": str(e), "success": False}, status=404)
 
         if path == "/api/generate-deliverable":
             env_vars = parse_env_file()

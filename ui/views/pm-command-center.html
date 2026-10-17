@@ -3250,6 +3250,7 @@
       try {
         const res = await fetch(`/api/skill-content?skill=${encodeURIComponent(skillId)}`);
         const data = await res.json();
+        if (data.error) throw new Error(data.error);
         if (editor) editor.value = data.content || '';
         if (preview && typeof marked !== 'undefined') preview.innerHTML = marked.parse(data.content || '');
       } catch (e) {
