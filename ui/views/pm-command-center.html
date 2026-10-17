@@ -130,6 +130,20 @@
       background-color: rgba(245, 158, 11, 0.18);
     }
 
+    /* Framework Dispatcher Avoid-When Warning Box (Dark Mode default) */
+    .framework-avoid-box {
+      background-color: rgba(245, 158, 11, 0.08);
+      border: 1px solid rgba(245, 158, 11, 0.22);
+      color: rgba(253, 230, 138, 0.95);
+    }
+    .framework-avoid-label {
+      color: #fbbf24;
+      font-weight: 700;
+    }
+    .framework-avoid-text {
+      color: rgba(253, 230, 138, 0.90);
+    }
+
     /* ==========================================================================
        LIGHT MODE HIGH-CONTRAST OVERRIDES (html:not(.dark))
        Enables seamless switching between Dark Atelier & Clean Light SaaS modes
@@ -209,6 +223,21 @@
     }
     html:not(.dark) .sidebar-favorite-item:hover {
       background-color: #fef3c7;
+    }
+    html:not(.dark) .framework-avoid-box {
+      background-color: #fffbeb !important;
+      border-color: #fde68a !important;
+      color: #78350f !important;
+    }
+    html:not(.dark) .framework-avoid-label {
+      color: #b45309 !important;
+      font-weight: 700 !important;
+    }
+    html:not(.dark) .framework-avoid-text {
+      color: #78350f !important;
+    }
+    html:not(.dark) .text-amber-400\/80 {
+      color: #78350f !important;
     }
 
     /* Borders */
@@ -1986,8 +2015,8 @@
               ` : ''}
 
               ${antiPattern ? `
-                <div class="text-[11px] text-amber-400/80 bg-amber-500/5 p-2 rounded border border-amber-500/10">
-                  <span class="font-semibold text-amber-400">Avoid when:</span> <span class="truncate block" title="${antiPattern}">${antiPattern}</span>
+                <div class="framework-avoid-box text-[11px] p-2 rounded border border-amber-500/20 bg-amber-500/10 text-amber-200/90 dark:border-amber-500/20 dark:bg-amber-500/10 dark:text-amber-200/90">
+                  <span class="framework-avoid-label font-bold text-amber-800 dark:text-amber-400">Avoid when:</span> <span class="framework-avoid-text truncate block mt-0.5 text-amber-900 dark:text-amber-200/90" title="${antiPattern}">${antiPattern}</span>
                 </div>
               ` : ''}
             </div>
