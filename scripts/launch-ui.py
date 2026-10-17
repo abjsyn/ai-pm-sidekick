@@ -1019,10 +1019,41 @@ def execute_ai_call(data):
             "payload": payload
         }
 
+def get_git_version():
+    """Extracts published version tag from git, falling back to git describe or v0.1.0."""
+    try:
+        res = subprocess.run(
+            ["git", "describe", "--tags", "--abbrev=0"],
+            cwd=str(ROOT_DIR),
+            capture_output=True,
+            text=True,
+            check=True
+        )
+        tag = res.stdout.strip()
+        if tag:
+            return tag
+    except Exception:
+        pass
+    try:
+        res = subprocess.run(
+            ["git", "describe", "--tags", "--always"],
+            cwd=str(ROOT_DIR),
+            capture_output=True,
+            text=True,
+            check=True
+        )
+        tag = res.stdout.strip()
+        if tag:
+            return tag
+    except Exception:
+        pass
+    return "v0.1.0"
+
 def get_env_status():
     env_vars = parse_env_file()
     detected = detect_local_clis()
     active_engine = resolve_active_engine(env_vars, detected)
+    version = get_git_version()
 
     def mask_key(k):
         v = env_vars.get(k, "") or os.environ.get(k, "")
@@ -1033,6 +1064,7 @@ def get_env_status():
         return v[:4] + "••••" + v[-4:]
 
     return {
+        "version": version,
         "detected_clis": detected,
         "active_engine": active_engine,
         "llm": {
@@ -1110,10 +1142,15 @@ class PMCommandCenterApiHandler(SimpleHTTPRequestHandler):
             self.path = '/ui/stitch/' + path[len('/mockups/stitch/'):]
             return super().do_GET()
 
+        if path == "/api/version":
+            return self.send_json({"version": get_git_version()})
+
         if path in ("/api/manifest", "/dist/harness-manifest.json"):
             manifest_file = DIST_DIR / "harness-manifest.json"
             if manifest_file.exists():
-                return self.send_json(json.loads(manifest_file.read_text(encoding="utf-8")))
+                data = json.loads(manifest_file.read_text(encoding="utf-8"))
+                data["version"] = get_git_version()
+                return self.send_json(data)
             return self.send_json({"error": "Manifest not found. Run scripts/export-skills.py first."}, status=404)
 
         if path == "/api/context":
@@ -1184,6 +1221,7 @@ class PMCommandCenterApiHandler(SimpleHTTPRequestHandler):
             cfg = parse_harness_config()
             env_status = get_env_status()
             return self.send_json({
+                "version": env_status.get("version", "v0.1.0"),
                 "user_name": env_vars.get("USER_NAME", "Paula (Lead PM)"),
                 "user_email": env_vars.get("USER_EMAIL", "paula.pm@company.com"),
                 "persona": env_vars.get("DEFAULT_PERSONA", "paula"),

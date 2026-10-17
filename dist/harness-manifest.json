@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "version": "1.0.0",
-  "generated_at": "2026-10-15T14:52:50.920682",
+  "version": "v0.1.0",
+  "generated_at": "2026-10-17T14:15:42.098865",
   "skills": [
     {
       "id": "apply-framework",

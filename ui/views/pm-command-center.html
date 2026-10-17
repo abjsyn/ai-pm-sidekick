@@ -409,7 +409,7 @@
             </div>
             <div class="flex items-center gap-2">
               <span class="font-headline text-lg text-zinc-100 tracking-tight font-bold">PM Command</span>
-              <span class="px-2 py-0.5 rounded bg-[#26272e] text-zinc-400 font-mono text-[11px] font-medium border border-[#2a2b30] uppercase">v1.0.0-MVP</span>
+              <span id="app-version-badge" class="px-2 py-0.5 rounded bg-[#26272e] text-zinc-400 font-mono text-[11px] font-medium border border-[#2a2b30] uppercase">v0.1.0</span>
             </div>
           </div>
         </div>
@@ -1798,6 +1798,11 @@
           } catch (e) {}
         }
 
+        if (manifest && manifest.version) {
+          const badge = document.getElementById('app-version-badge');
+          if (badge) badge.textContent = manifest.version;
+        }
+
         if (manifest && Array.isArray(manifest.skills) && manifest.skills.length > 0) {
           SKILL_DETAILS = {};
           manifest.skills.forEach(s => {
@@ -2460,11 +2465,28 @@
     let detectedClis = [];
 
     // ================= LOAD & SAVE SETTINGS =================
+    async function loadAppVersion() {
+      try {
+        const res = await fetch('/api/version');
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.version) {
+            const badge = document.getElementById('app-version-badge');
+            if (badge) badge.textContent = data.version;
+          }
+        }
+      } catch (e) {}
+    }
+
     async function loadEnvStatus() {
       try {
         const res = await fetch('/api/env-status');
         if (!res.ok) return;
         const data = await res.json();
+        if (data.version) {
+          const badge = document.getElementById('app-version-badge');
+          if (badge) badge.textContent = data.version;
+        }
         detectedClis = data.detected_clis || [];
         if (data.active_engine) currentActiveEngine = data.active_engine;
 
@@ -3802,6 +3824,7 @@
 
     document.addEventListener('DOMContentLoaded', () => {
       syncThemeToggleUI();
+      loadAppVersion();
       loadHarnessManifest();
       loadContextOverview();
       loadProductBrainHealth();

@@ -14,6 +14,7 @@ import os
 import shutil
 import re
 import json
+import subprocess
 from pathlib import Path
 from datetime import datetime
 
@@ -23,6 +24,36 @@ FRAMEWORKS_DIR = ROOT_DIR / "frameworks"
 CONTEXT_DIR = ROOT_DIR / ".context"
 TEMPLATES_DIR = ROOT_DIR / "templates"
 DIST_DIR = ROOT_DIR / "dist"
+
+def get_git_version():
+    """Extracts published version tag from git, falling back to git describe or v0.1.0."""
+    try:
+        res = subprocess.run(
+            ["git", "describe", "--tags", "--abbrev=0"],
+            cwd=str(ROOT_DIR),
+            capture_output=True,
+            text=True,
+            check=True
+        )
+        tag = res.stdout.strip()
+        if tag:
+            return tag
+    except Exception:
+        pass
+    try:
+        res = subprocess.run(
+            ["git", "describe", "--tags", "--always"],
+            cwd=str(ROOT_DIR),
+            capture_output=True,
+            text=True,
+            check=True
+        )
+        tag = res.stdout.strip()
+        if tag:
+            return tag
+    except Exception:
+        pass
+    return "v0.1.0"
 
 # Metadata enrichment for skills: categories, display names, context dependencies, and UI assets
 SKILL_CONFIG = {
@@ -741,7 +772,7 @@ def export_manifest(skills, frameworks, context_files):
         
     manifest_data = {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "version": "1.0.0",
+        "version": get_git_version(),
         "generated_at": datetime.now().isoformat(),
         "skills": manifest_skills,
         "frameworks": frameworks,
