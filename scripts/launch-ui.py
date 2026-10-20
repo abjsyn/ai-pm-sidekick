@@ -414,7 +414,18 @@ def get_all_skills():
         "gui-run": "gui",
         "ingest-context": "context",
         "apply-framework": "strategy",
-        "recommend-framework": "strategy"
+        "recommend-framework": "strategy",
+        "create-stakeholder-update": "strategy",
+        "prepare-user-interview": "strategy",
+        "define-metrics-and-experiment": "strategy",
+        "audit-spec": "stories",
+        "plan-launch": "strategy",
+        "create-roadmap": "strategy",
+        "prep-meeting": "strategy",
+        "analyze-competitor": "strategy",
+        "sync-linear": "mcp",
+        "triage-feedback": "strategy",
+        "evaluate-launch": "strategy"
     }
     
     if SKILLS_DIR.exists():

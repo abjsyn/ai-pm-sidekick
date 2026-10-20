@@ -5,9 +5,13 @@
 > 📖 **Looking for the complete operational guide?**  
 > Read the [📘 AI-SDLC Playbook (AI_SDLC.md)](AI_SDLC.md) for step-by-step walkthroughs of **Workflow A (Standalone PM Command Center)**, **Workflow B (Embedded Codebase Harness)**, adding custom frameworks in 2 minutes, and context hygiene rules.
 
+<p align="center">
+  <img src="assets/screenshots/pm-command-center-hero.png" alt="AI PM Sidekick — PM Command Center Workspace" width="100%" />
+</p>
+
 ---
 
-## 🌟 Core Capabilities & 19 Canonical Skills
+## 🌟 Core Capabilities & 30 Canonical Skills
 
 | Skill / Integration | Slash Command | Category | Description | Primary Output Target | Next Skill Suggestion |
 | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -23,7 +27,18 @@
 | **User Stories** | `/create-user-stories` | `specification` | Breaks down features into INVEST stories + Gherkin BDD AC | User Stories in `docs/` | `refine-user-stories`, `sync-jira` |
 | **Story Grooming** | `/refine-user-stories` | `specification` | Refines & splits stories using SPIDR with Readiness Score | Refined Stories in `docs/` | `sync-jira`, `sync-github-issues` |
 | **Documentation** | `/create-documentation` | `specification` | Dual tech spec & user guide generator (OpenAPI 3.0, Mermaid) | Tech Docs & Manuals in `docs/` | `sync-confluence`, `sync-notion` |
-| **MCP Manager** | `/connect-mcp` | `sync` | Connects & verifies external PM tools across IDEs | `mcp.json` & `.env` | `sync-jira`, `sync-github-issues` |
+| **Stakeholder Update** | `/create-stakeholder-update` | `communication` | Synthesizes git & backlog into Executive digests, team updates, or release notes | Status update in `docs/updates/` | `sync-confluence`, `refine-user-stories` |
+| **User Interview Guide**| `/prepare-user-interview` | `discovery` | Non-leading Mom Test guides, screener questions, & assumption probes | Interview guide in `docs/research/` | `ingest-context`, `apply-framework` |
+| **Metrics & Experiments**| `/define-metrics-and-experiment` | `specification` | Defines North Star hierarchies, event telemetry schemas, & A/B rollout gates | Metrics spec in `docs/specs/` | `create-prd`, `create-user-stories` |
+| **Spec Auditor** | `/audit-spec` | `specification` | VP Product + Staff Eng review auditing scope creep, edge cases, & architecture | Audit report in `docs/reviews/` | `refine-user-stories`, `plan-launch` |
+| **GTM Launch Plan** | `/plan-launch` | `operations` | Tier 1/2/3 launch playbook with positioning copy, enablement FAQ, & kill switches | Launch plan in `docs/gtm/` | `create-stakeholder-update`, `evaluate-launch` |
+| **Outcome Roadmap** | `/create-roadmap` | `strategy` | Transforms backlog into Now/Next/Later or Quarterly OKR outcome horizons | Roadmap doc in `docs/roadmap/` | `prep-meeting`, `create-user-stories` |
+| **Meeting Defense Brief**| `/prep-meeting` | `communication` | 1-page defense brief with decision history, hostile questions, & trade-off boxes | Brief in `docs/meetings/` | `create-stakeholder-update` |
+| **Competitor Battlecard**| `/analyze-competitor` | `strategy` | Feature parity matrix, positioning teardowns, & Sales/PM battlecards | Battlecard in `docs/competitive/` | `plan-launch`, `create-prd` |
+| **Linear Sync** | `/sync-linear` | `sync` | Bi-directional Linear cycles, projects, issues, and triage inbox sync via MCP | Linear Issues & Projects | `refine-user-stories`, `triage-feedback` |
+| **Feedback Triage** | `/triage-feedback` | `discovery` | Clusters raw support/NPS/transcript feedback by frequency & severity | Triage ledger in `docs/discovery/`| `create-prd`, `prepare-user-interview` |
+| **Launch Retrospective**| `/evaluate-launch` | `operations` | Evaluates telemetry against PRD targets and logs lessons to decisions.md | Retro doc in `docs/retrospectives/` | `create-stakeholder-update`, `refine-user-stories` |
+| **MCP Manager** | `/connect-mcp` | `sync` | Connects & verifies external PM tools across IDEs | `mcp.json` & `.env` | `sync-jira`, `sync-linear` |
 | **Jira Backlog Sync** | `/sync-jira` | `sync` | Exports stories/epics directly to Jira via Atlassian MCP | Jira Issues & Epics | `sync-confluence`, `refine-user-stories` |
 | **Confluence Doc Sync**| `/sync-confluence` | `sync` | Publishes PRDs/specs straight to Confluence spaces | Confluence Wiki Pages | `sync-jira`, `create-documentation` |
 | **GitHub Issues Sync** | `/sync-github-issues` | `sync` | Bi-directional GitHub Issues, milestones, and label sync | GitHub Issues & Milestones | `refine-user-stories`, `sync-jira` |
@@ -36,6 +51,32 @@
 ## 🖥️ PM Command Center Web GUI
 
 Launch with `python3 scripts/launch-ui.py --open` (or `/gui-run`) for a visual PM studio:
+
+<div align="center">
+  <table>
+    <tr>
+      <td width="50%">
+        <img src="assets/screenshots/deliverable-hub-mockup-sandbox.png" alt="Deliverables Hub & Responsive Mockup Sandbox" />
+        <p align="center"><b>Deliverables Hub & Responsive Sandbox</b><br/><i>Preview PRDs, user stories, and interactive device prototypes (Desktop/Tablet/Mobile)</i></p>
+      </td>
+      <td width="50%">
+        <img src="assets/screenshots/skill-studio-socratic-gate.png" alt="Skill Studio & Socratic Clarifying Gate" />
+        <p align="center"><b>Interactive Skill Studio</b><br/><i>Form-based wizard with framework lenses & Socratic clarifying gate</i></p>
+      </td>
+    </tr>
+    <tr>
+      <td width="50%">
+        <img src="assets/screenshots/product-brain-health.png" alt="Product Brain Context Health" />
+        <p align="center"><b>Product Brain & Health Scores</b><br/><i>Live completeness tracking for <code>.context/</code> single source of truth</i></p>
+      </td>
+      <td width="50%">
+        <img src="assets/screenshots/pm-command-center-hero.png" alt="Atelier PM Command Center Dashboard" />
+        <p align="center"><b>Atelier Command Center</b><br/><i>SaaS-style dark & light workbench with local engine detection</i></p>
+      </td>
+    </tr>
+  </table>
+</div>
+
 
 - **Zero-Config Local CLI Auto-Detection**: Automatically detects local authenticated AI CLIs (`agy`, `gemini`, `claude`, `cursor`) on your `PATH`. Execute prompts and skills directly in the browser—**no API keys in `.env` required**.
 - **Live IDE Companion Mode**: 4-second background file-system polling synchronizes newly generated PRDs, stories, and context files created from external terminal or Cursor IDE chat sessions without requiring a browser reload.
@@ -64,27 +105,40 @@ To eliminate AI hallucinations:
 
 ---
 
-## 🗺️ Modular Framework Engine (`frameworks/`)
+## 🗺️ Modular Framework Engine (23 Frameworks)
 
-AI PM Sidekick includes a decoupled library of 10 industry-standard strategic, discovery, prioritization, and operational frameworks:
+AI PM Sidekick includes a decoupled library of 23 industry-standard strategic, discovery, prioritization, and operational frameworks:
 
 ### 1. Strategic Frameworks ([`frameworks/strategy/`](frameworks/strategy/))
 - **`wardley-mapping`**: Plots value chain components along Visibility vs. Evolution (Genesis ➔ Custom ➔ Product ➔ Commodity) to enforce disciplined Build-vs-Buy decisions.
 - **`theory-of-constraints`**: Executes Goldratt's 5 Focusing Steps to exploit the primary system bottleneck choking sprint throughput, backed by Current Reality Trees (CRT).
+- **`working-backwards-prfaq`**: Amazon-style Press Release, Customer FAQ, and Internal Stakeholder FAQ to clarify customer value before writing code.
+- **`north-star-metric-tree`**: Decomposes lagging company revenue into a single customer-value North Star Metric and 4 actionable Input Metric levers (Breadth, Depth, Frequency, Efficiency).
+- **`product-positioning`**: April Dunford 5-component positioning engine (Alternatives ➔ Attributes ➔ Value ➔ Target ➔ Category) for differentiated GTM.
+- **`seven-powers-moats`**: Hamilton Helmer structural defensibility audit evaluating Scale, Network Economies, Counter-Positioning, Switching Costs, Branding, Cornered Resources, and Process Power.
+- **`pricing-and-packaging`**: Van Westendorp 4 price sensitivity thresholds and Good-Better-Best feature tiering matrix (Leaders, Fillers, Killers).
 
 ### 2. Discovery Frameworks ([`frameworks/discovery/`](frameworks/discovery/))
 - **`opportunity-solution-tree`**: Teresa Torres OST framework connecting Desired Business Outcomes $\rightarrow$ Customer Opportunities (unmet needs) $\rightarrow$ Candidate Solutions $\rightarrow$ Fastest Assumption Tests.
 - **`jtbd-and-mom-test`**: Maps Functional, Emotional, and Social jobs across the Four Forces of Progress ($\text{Push} + \text{Pull} > \text{Anxiety} + \text{Habit}$) and filters customer interviews for behavioral facts over empty compliments.
+- **`assumption-mapping`**: Categorizes assumptions across Desirability, Feasibility, Viability, and Usability; plots on Importance vs Evidence 2x2 to design Riskiest Assumption Tests (RATs).
+- **`aarrr-and-growth-loops`**: Diagnoses funnel drop-offs across Acquisition, Activation, Retention, Referral, and Revenue; models self-reinforcing viral, content, and paid growth loops.
 
 ### 3. Prioritization Frameworks ([`frameworks/prioritization/`](frameworks/prioritization/))
 - **`rice`**: Quantitative score ($\frac{\text{Reach} \times \text{Impact} \times \text{Confidence}}{\text{Effort}}$) featuring strict anti-gaming confidence thresholds ($100\%, 80\%, 50\%, 20\%$).
 - **`wsjf-cost-of-delay`**: Weighted Shortest Job First economic scheduling ($\frac{\text{User Value} + \text{Time Criticality} + \text{Risk Reduction}}{\text{Job Size}}$).
 - **`kano-model`**: Non-linear customer satisfaction classification (Must-be, One-dimensional, Attractive, Indifferent) using functional/dysfunctional question pairs.
+- **`ice-and-value-effort`**: Fast, lightweight prioritization ($Impact \times Confidence \times Ease$) + 2x2 Value vs Effort matrix for 0-to-1 speed without RICE false precision.
+- **`opportunity-scoring`**: Dan Olsen / Anthony Ulwick formula ($Importance + \max(Importance - Satisfaction, 0)$) identifying underserved customer jobs vs over-served table stakes.
+- **`moscow-scope-negotiation`**: Must Have ($\le 60\%$), Should Have ($\sim 20\%$), Could Have ($\sim 20\%$), and Won't Have scope boundaries with Buy-a-Feature budget games.
 
 ### 4. Operational & Delivery Frameworks ([`frameworks/operations/`](frameworks/operations/))
 - **`scrum-sprint-delivery`**: Sprint Goal definition, backlog grooming, velocity slicing, INVEST user story breakdown, and sprint retrospective cadence.
 - **`shape-up`**: Basecamp's fixed-time/variable-scope methodology with 6-week cycles, appetites, pitch shaping, rabbit holes, and Hill Charts.
 - **`gist-planning`**: Itamar Gilad's agile roadmapping connecting strategic Goals $\rightarrow$ prioritized Ideas $\rightarrow$ validated Step-projects $\rightarrow$ tactical Tasks.
+- **`user-story-mapping`**: Jeff Patton two-dimensional narrative backbone (Activities ➔ Steps) with vertical Walking Skeleton (MVP) and release slices.
+- **`pre-mortem-tigers`**: Shreyas Doshi risk simulation separating real catastrophic threats (Tigers), vocal harmless noise (Paper Tigers), and unspoken team taboos (Elephants).
+- **`kanban-continuous-flow`**: Continuous pull delivery governed by Little's Law with column WIP limits, Service Level Expectations (SLE), and Classes of Service.
 
 ### 🧭 Diagnostic Frontmatter & Framework Dispatcher (`/recommend-framework`)
 Every framework implements a standardized YAML frontmatter schema (`problem_signatures`, `best_for_stage`, `data_maturity_required`, `when_not_to_use`, `paired_skills`, `write_back_target`).
@@ -95,7 +149,7 @@ Every framework implements a standardized YAML frontmatter schema (`problem_sign
 
 ---
 
-## 🔌 6 Live MCP Tool Integrations
+## 🔌 7 Live MCP Tool Integrations
 
 Connect the Sidekick directly to your team's production tool stack using the Model Context Protocol (MCP):
 
@@ -103,6 +157,7 @@ Connect the Sidekick directly to your team's production tool stack using the Mod
 | :--- | :--- | :--- |
 | **Atlassian (Jira)** | Backlog sync, epic generation, ticket creation, status updates | `npx -y @atlassian/mcp` |
 | **Atlassian (Confluence)**| PRD publishing, engineering spec updates, space page creation | `npx -y @atlassian/mcp` |
+| **Linear** | Cycle tracking, project sync, INVEST story creation, triage queues | `npx -y mcp-server-linear` |
 | **GitHub Issues** | Bi-directional issue sync, milestone mapping, label assignment | `npx -y @modelcontextprotocol/server-github` |
 | **Figma** | Design file inspection, component discovery, canvas comments | `npx -y @figma/mcp` |
 | **Miro** | Sticky note brainstorming, OST visual maps, roadmap exports | `npx -y @miro/mcp` |
@@ -139,7 +194,7 @@ This generates native configurations for:
 - **Cursor IDE**: `.cursor/rules/*.mdc` and `.cursorrules`
 - **Claude Code**: `.claude/commands/*.md` and `CLAUDE.md`
 - **ChatGPT / Custom GPTs**: `dist/pm_sidekick_system_prompt.md`
-- **Web GUI Sidepanel**: `dist/harness-manifest.json` (19 skills, 10 frameworks, 7 context files)
+- **Web GUI Sidepanel**: `dist/harness-manifest.json` (30 skills, 23 frameworks, 7 context files)
 
 ---
 

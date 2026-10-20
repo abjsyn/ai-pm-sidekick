@@ -18,20 +18,33 @@ The skill dynamically orchestrates any methodology from [`frameworks/`](file:///
 ### 1. Strategic Frameworks ([`frameworks/strategy/`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/frameworks/strategy/))
 - **`wardley-mapping`**: Plots value chain components along Visibility vs Evolution (Genesis ➔ Custom ➔ Product ➔ Commodity) and applies build-vs-buy doctrine.
 - **`theory-of-constraints`**: Executes the 5 Focusing Steps to identify and exploit the single bottleneck choking sprint delivery; constructs Current Reality Trees (CRTs).
+- **`working-backwards-prfaq`**: Amazon-style future Press Release, Customer FAQ, and Internal Stakeholder FAQ to clarify customer value before coding.
+- **`north-star-metric-tree`**: Decomposes lagging revenue into a single customer-value North Star Metric and 4 actionable Input Metric levers (Breadth, Depth, Frequency, Efficiency).
+- **`product-positioning`**: April Dunford 5-component positioning engine (Alternatives ➔ Attributes ➔ Value ➔ Target ➔ Category) for differentiated GTM.
+- **`seven-powers-moats`**: Hamilton Helmer defensibility audit evaluating Scale, Network Economies, Counter-Positioning, Switching Costs, Branding, Cornered Resources, and Process Power.
+- **`pricing-and-packaging`**: Van Westendorp 4 price sensitivity thresholds and Good-Better-Best feature tiering matrix (Leaders, Fillers, Killers).
 
 ### 2. Discovery Frameworks ([`frameworks/discovery/`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/frameworks/discovery/))
 - **`opportunity-solution-tree`**: Teresa Torres OST decoupling Desired Outcomes from candidate Solutions via verified Customer Opportunities and assumption tests.
 - **`jtbd-and-mom-test`**: Maps Functional, Emotional, and Social jobs across the Four Forces of Progress ($\text{Push} + \text{Pull} > \text{Anxiety} + \text{Habit}$) and filters out false praise using The Mom Test.
+- **`assumption-mapping`**: Categorizes assumptions across Desirability, Feasibility, Viability, and Usability; plots on Importance vs Evidence 2x2 to design Riskiest Assumption Tests (RATs).
+- **`aarrr-and-growth-loops`**: Diagnoses funnel drop-offs across Acquisition, Activation, Retention, Referral, and Revenue; models self-reinforcing viral, content, and paid growth loops.
 
 ### 3. Prioritization Frameworks ([`frameworks/prioritization/`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/frameworks/prioritization/))
 - **`rice`**: Quantitative ranking ($\frac{\text{Reach} \times \text{Impact} \times \text{Confidence}}{\text{Effort}}$) with strict anti-gaming confidence thresholds ($100\%, 80\%, 50\%, 20\%$).
 - **`wsjf-cost-of-delay`**: Weighted Shortest Job First economic scheduling ($\frac{\text{User-Business Value} + \text{Time Criticality} + \text{RR/OE}}{\text{Job Size}}$).
 - **`kano-model`**: Non-linear satisfaction classification (Must-Be, Performance, Attractive, Indifferent) using functional/dysfunctional question pairs.
+- **`ice-and-value-effort`**: Fast, lightweight prioritization ($Impact \times Confidence \times Ease$) + 2x2 Value vs Effort matrix for 0-to-1 speed without RICE false precision.
+- **`opportunity-scoring`**: Dan Olsen / Anthony Ulwick formula ($Importance + \max(Importance - Satisfaction, 0)$) identifying underserved customer jobs vs over-served table stakes.
+- **`moscow-scope-negotiation`**: Must Have ($\le 60\%$), Should Have ($\sim 20\%$), Could Have ($\sim 20\%$), and Won't Have scope boundaries with Buy-a-Feature budget games.
 
 ### 4. Operational & Delivery Frameworks ([`frameworks/operations/`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/frameworks/operations/))
 - **`shape-up`**: Fixed-time, variable-scope product development (Shaped Pitches, Appetite budgeting, Breadboards, No-Gos, Hill Charts).
 - **`scrum-sprint-delivery`**: Predictable sprint execution (Sprint Goal, INVEST slicing via SPIDR, Gherkin acceptance criteria, DoR gating).
 - **`gist-planning`**: Iterative high-uncertainty outcome execution (Goals, Ideas backlog, lightweight Step-projects $\le 2$ weeks, Tasks).
+- **`user-story-mapping`**: Jeff Patton two-dimensional narrative backbone (Activities ➔ Steps) with vertical Walking Skeleton (MVP) and release slices.
+- **`pre-mortem-tigers`**: Shreyas Doshi risk simulation separating real catastrophic threats (Tigers), vocal harmless noise (Paper Tigers), and unspoken team taboos (Elephants).
+- **`kanban-continuous-flow`**: Continuous pull delivery governed by Little's Law with column WIP limits, Service Level Expectations (SLE), and Classes of Service.
 
 ---
 
@@ -50,7 +63,7 @@ Run this skill over any of the following targets:
 - **No Specific Framework Named? Delegate to Dispatcher**:
   If the user describes a problem, bottleneck, or goal without specifying an exact framework name, **immediately invoke [`skills/recommend-framework/SKILL.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/skills/recommend-framework/SKILL.md)** to generate a 4-part Diagnostic Prescription.
 - If a framework is specified, prompt user to confirm or select:
-  > *"Running framework: `<framework-id>`. Available frameworks: `rice`, `wsjf-cost-of-delay`, `kano-model`, `opportunity-solution-tree`, `jtbd-and-mom-test`, `wardley-mapping`, `theory-of-constraints`, `shape-up`, `scrum-sprint-delivery`, `gist-planning`."*
+  > *"Running framework: `<framework-id>`. Available frameworks: `rice`, `wsjf-cost-of-delay`, `kano-model`, `ice-and-value-effort`, `opportunity-scoring`, `moscow-scope-negotiation`, `opportunity-solution-tree`, `jtbd-and-mom-test`, `assumption-mapping`, `aarrr-and-growth-loops`, `wardley-mapping`, `theory-of-constraints`, `working-backwards-prfaq`, `north-star-metric-tree`, `product-positioning`, `seven-powers-moats`, `pricing-and-packaging`, `shape-up`, `scrum-sprint-delivery`, `gist-planning`, `user-story-mapping`, `pre-mortem-tigers`, `kanban-continuous-flow`."*
 - Ingest the target content: raw text, a file in `docs/`, `BACKLOG.md`, or user prompt.
 
 ### 2. Context Hydration

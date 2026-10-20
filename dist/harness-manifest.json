@@ -1,8 +1,21 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "version": "v0.1.0",
-  "generated_at": "2026-10-17T14:15:42.098865",
+  "generated_at": "2026-10-20T13:11:57.654339",
   "skills": [
+    {
+      "id": "analyze-competitor",
+      "name": "Competitor Analysis & Battlecard",
+      "category": "strategy",
+      "description": "Takes competitor URLs, release notes, or positioning dumps, compares them against .context/ product specs, and outputs a feature parity matrix, differentiation gaps, and a 1-page Sales/PM battlecard.",
+      "required_context_files": [
+        ".context/product.md",
+        ".context/strategy-and-constraints.md"
+      ],
+      "command_trigger": "/analyze-competitor",
+      "icon": "compare_arrows",
+      "color": "text-purple-400"
+    },
     {
       "id": "apply-framework",
       "name": "Modular Framework Runner",
@@ -16,6 +29,21 @@
       "command_trigger": "/apply-framework",
       "icon": "hub",
       "color": "text-indigo-400"
+    },
+    {
+      "id": "audit-spec",
+      "name": "Spec Auditor & Pre-Mortem Critique",
+      "category": "specification",
+      "description": "Audits draft PRDs and User Stories against .context/ single source of truth, flagging scope creep, missing edge cases, unvalidated assumptions, and architectural conflicts.",
+      "required_context_files": [
+        ".context/product.md",
+        ".context/architecture.md",
+        ".context/strategy-and-constraints.md",
+        ".context/conventions.md"
+      ],
+      "command_trigger": "/audit-spec",
+      "icon": "fact_check",
+      "color": "text-rose-400"
     },
     {
       "id": "brainstorm",
@@ -97,6 +125,33 @@
       "color": "text-amber-500"
     },
     {
+      "id": "create-roadmap",
+      "name": "Outcome Roadmap Generator",
+      "category": "strategy",
+      "description": "Transforms BACKLOG.md, .context/discovery.md, and prioritization scores into a stakeholder-ready Now / Next / Later or Quarterly OKR Outcome Roadmap.",
+      "required_context_files": [
+        ".context/product.md",
+        ".context/discovery.md",
+        ".context/strategy-and-constraints.md"
+      ],
+      "command_trigger": "/create-roadmap",
+      "icon": "timeline",
+      "color": "text-indigo-400"
+    },
+    {
+      "id": "create-stakeholder-update",
+      "name": "Stakeholder Update & Release Notes",
+      "category": "communication",
+      "description": "Synthesizes recent changes in BACKLOG.md, .context/decisions.md, and docs/ into tailored communications: Executive Weekly Digest, Engineering/Cross-Functional Update, or Customer-Facing Release Notes.",
+      "required_context_files": [
+        ".context/product.md",
+        ".context/decisions.md"
+      ],
+      "command_trigger": "/create-stakeholder-update",
+      "icon": "campaign",
+      "color": "text-sky-400"
+    },
+    {
       "id": "create-user-stories",
       "name": "INVEST User Stories",
       "category": "specification",
@@ -109,6 +164,33 @@
       "command_trigger": "/create-user-stories",
       "icon": "splitscreen",
       "color": "text-blue-400"
+    },
+    {
+      "id": "define-metrics-and-experiment",
+      "name": "Metrics & Experiment Plan",
+      "category": "specification",
+      "description": "Defines feature success metrics (North Star, Primary, Guardrail), event tracking taxonomy (events + properties), and A/B test or rollout hypotheses before engineering begins building.",
+      "required_context_files": [
+        ".context/product.md",
+        ".context/strategy-and-constraints.md",
+        ".context/architecture.md"
+      ],
+      "command_trigger": "/define-metrics-and-experiment",
+      "icon": "query_stats",
+      "color": "text-emerald-400"
+    },
+    {
+      "id": "evaluate-launch",
+      "name": "Post-Launch Retrospective",
+      "category": "operations",
+      "description": "Evaluates post-launch performance data against the PRD's original success metrics, logs whether the bet succeeded/failed/iterated, and writes lessons learned back to .context/decisions.md.",
+      "required_context_files": [
+        ".context/product.md",
+        ".context/decisions.md"
+      ],
+      "command_trigger": "/evaluate-launch",
+      "icon": "published_with_changes",
+      "color": "text-cyan-400"
     },
     {
       "id": "gui-run",
@@ -137,6 +219,46 @@
       "command_trigger": "/ingest-context",
       "icon": "input",
       "color": "text-purple-400"
+    },
+    {
+      "id": "plan-launch",
+      "name": "GTM Launch Plan",
+      "category": "operations",
+      "description": "Generates a tiered launch plan (Tier 1 Major, Tier 2 Standard, Tier 3 Silent) from a PRD, including positioning messaging, internal enablement FAQs, rollout checklists, and rollback triggers.",
+      "required_context_files": [
+        ".context/product.md",
+        ".context/strategy-and-constraints.md"
+      ],
+      "command_trigger": "/plan-launch",
+      "icon": "rocket_launch",
+      "color": "text-amber-500"
+    },
+    {
+      "id": "prep-meeting",
+      "name": "Meeting Prep & Defense Brief",
+      "category": "communication",
+      "description": "Prepares a 1-page briefing doc before a tough stakeholder review, board meeting, or customer call, pulling past decisions, anticipated objections, trade-off options, and talking points.",
+      "required_context_files": [
+        ".context/product.md",
+        ".context/decisions.md",
+        ".context/strategy-and-constraints.md"
+      ],
+      "command_trigger": "/prep-meeting",
+      "icon": "forum",
+      "color": "text-blue-400"
+    },
+    {
+      "id": "prepare-user-interview",
+      "name": "User Interview Script & Guide",
+      "category": "discovery",
+      "description": "Generates non-leading Mom Test interview guides, screener questions, and assumption probes tailored to a specific target persona and hypothesis before user discovery sessions.",
+      "required_context_files": [
+        ".context/product.md",
+        ".context/discovery.md"
+      ],
+      "command_trigger": "/prepare-user-interview",
+      "icon": "record_voice_over",
+      "color": "text-teal-400"
     },
     {
       "id": "recommend-framework",
@@ -221,6 +343,20 @@
       "color": "text-blue-500"
     },
     {
+      "id": "sync-linear",
+      "name": "Linear Issues & Cycles Sync",
+      "category": "sync",
+      "description": "Bi-directionally syncs Linear issues, cycles, projects, and triage queues via Model Context Protocol (MCP). Imports Linear issues into BACKLOG.md and .context/discovery.md, or exports INVEST user stories to Linear.",
+      "required_context_files": [
+        ".context/product.md",
+        ".context/conventions.md",
+        ".context/harness-config.yaml"
+      ],
+      "command_trigger": "/sync-linear",
+      "icon": "sync_alt",
+      "color": "text-violet-400"
+    },
+    {
       "id": "sync-miro",
       "name": "Miro Whiteboards Sync",
       "category": "sync",
@@ -249,6 +385,19 @@
       "color": "text-orange-400"
     },
     {
+      "id": "triage-feedback",
+      "name": "Customer Feedback Triage",
+      "category": "discovery",
+      "description": "Batch-processes raw customer feedback, support tickets, NPS verbatims, or sales call notes, clustering them by frequency and severity, and mapping them to opportunities in .context/discovery.md.",
+      "required_context_files": [
+        ".context/product.md",
+        ".context/discovery.md"
+      ],
+      "command_trigger": "/triage-feedback",
+      "icon": "mark_email_unread",
+      "color": "text-yellow-400"
+    },
+    {
       "id": "validate-idea",
       "name": "Idea & Hypothesis Validator",
       "category": "ideation",
@@ -264,6 +413,60 @@
     }
   ],
   "frameworks": [
+    {
+      "id": "aarrr-and-growth-loops",
+      "name": "AARRR Pirate Metrics & Growth Loops",
+      "category": "discovery",
+      "description": "To diagnose exactly where the user conversion leaks occur, fix the \"leaky bucket\" before spending money on acquisition, and architect compounding, product-led distribution loops.",
+      "problem_signatures": [
+        "User acquisition is growing but revenue or retention is flatlining (leaky bucket syndrome)",
+        "Growth model relies entirely on paid linear ads rather than compounding self-reinforcing product loops",
+        "Team cannot pinpoint the exact drop-off step in the user onboarding funnel"
+      ],
+      "best_for_stage": [
+        "growth",
+        "scale"
+      ],
+      "data_maturity_required": "medium",
+      "when_not_to_use": [
+        "Early 0-to-1 pre-product-market fit where retention has not stabilized for even 10 users",
+        "Pure B2B high-touch enterprise sales where buying cycles are 9 months of RFP committee negotiations"
+      ],
+      "paired_skills": [
+        "define-metrics-and-experiment",
+        "apply-framework",
+        "plan-launch"
+      ],
+      "write_back_target": ".context/product.md",
+      "path": "frameworks/discovery/aarrr-and-growth-loops.md"
+    },
+    {
+      "id": "assumption-mapping",
+      "name": "Assumption Mapping & Riskiest Assumption Test (RAT)",
+      "category": "discovery",
+      "description": "To eliminate leap-of-faith failures and prevent engineering teams from spending months building products or features that nobody wants, cannot be monetized, or hit insurmountable technical roadblocks.",
+      "problem_signatures": [
+        "Team is preparing to build a major feature based on unverified team opinions rather than customer evidence",
+        "Unclear which risk (desirability, feasibility, viability, usability) could kill the product first",
+        "Over-investing in high-fidelity prototypes when a simple landing page or customer inquiry test would suffice"
+      ],
+      "best_for_stage": [
+        "0-to-1",
+        "growth"
+      ],
+      "data_maturity_required": "low",
+      "when_not_to_use": [
+        "Standard maintenance tasks, refactoring, or compliance mandates with known solutions and zero user uncertainty",
+        "Optimizing high-traffic checkout funnels where quantitative multivariate A/B testing is already active"
+      ],
+      "paired_skills": [
+        "validate-idea",
+        "prepare-user-interview",
+        "define-metrics-and-experiment"
+      ],
+      "write_back_target": ".context/discovery.md",
+      "path": "frameworks/discovery/assumption-mapping.md"
+    },
     {
       "id": "jtbd-and-mom-test",
       "name": "Jobs-to-be-Done (JTBD) & The Mom Test",
@@ -353,6 +556,64 @@
       "path": "frameworks/operations/gist-planning.md"
     },
     {
+      "id": "kanban-continuous-flow",
+      "name": "Continuous Kanban & Service Level Expectations (SLE)",
+      "category": "operations",
+      "description": "To eliminate sprint-end crunch and rollover anxiety, stabilize flow predictability, shorten lead time from idea to production, and ensure operational readiness when `operating_model: kanban` is active in `.context/harness-config.yaml`.",
+      "problem_signatures": [
+        "Teams struggle with sprint batching friction and artificial 2-week boundary overhead",
+        "Work-in-progress (WIP) bloat causes lead times and cycle times to blow out unpredictably",
+        "High-priority production bugs and urgent customer requests constantly disrupt sprint commitments"
+      ],
+      "best_for_stage": [
+        "growth",
+        "scale",
+        "enterprise"
+      ],
+      "data_maturity_required": "medium",
+      "when_not_to_use": [
+        "Early 0-to-1 exploratory spikes where workflows have no distinct linear stages",
+        "Contract-driven waterfall releases requiring fixed-scope, fixed-date milestone sign-offs"
+      ],
+      "paired_skills": [
+        "refine-user-stories",
+        "apply-framework",
+        "create-stakeholder-update"
+      ],
+      "write_back_target": ".context/conventions.md",
+      "path": "frameworks/operations/kanban-continuous-flow.md"
+    },
+    {
+      "id": "pre-mortem-tigers",
+      "name": "Pre-Mortem (Tigers, Paper Tigers & Elephants)",
+      "category": "operations",
+      "description": "To normalize the voice of dissent, prevent preventable launch disasters, clear away unproductive anxiety over minor edge cases, and confront taboo blockers while there is still time to adjust scope.",
+      "problem_signatures": [
+        "Teams experience catastrophic launch-day surprises that could easily have been anticipated",
+        "Engineering and business teams waste excessive energy debating vocal but harmless minor worries",
+        "Nobody on the team feels safe speaking up about known fatal architectural or organizational flaws"
+      ],
+      "best_for_stage": [
+        "0-to-1",
+        "growth",
+        "scale",
+        "enterprise"
+      ],
+      "data_maturity_required": "low",
+      "when_not_to_use": [
+        "Low-risk, reversible routine bug fixes or internal copy changes",
+        "Teams where psychological safety is so damaged that risk identification is weaponized"
+      ],
+      "paired_skills": [
+        "audit-spec",
+        "create-prd",
+        "plan-launch",
+        "prep-meeting"
+      ],
+      "write_back_target": ".context/decisions.md",
+      "path": "frameworks/operations/pre-mortem-tigers.md"
+    },
+    {
       "id": "scrum-sprint-delivery",
       "name": "Scrum Sprint Delivery & INVEST Execution",
       "category": "operations",
@@ -410,6 +671,63 @@
       "path": "frameworks/operations/shape-up.md"
     },
     {
+      "id": "user-story-mapping",
+      "name": "User Story Mapping (Jeff Patton)",
+      "category": "operations",
+      "description": "To eliminate \"flat backlog blindness\", ensure teams ship complete, coherent end-to-end user journeys rather than disconnected vertical feature fragments, and establish clear release boundaries based on value increments.",
+      "problem_signatures": [
+        "Backlog is a flat, unprioritized list of tickets with no visibility into the end-to-end customer journey",
+        "Teams struggle to carve out a true Walking Skeleton MVP without scope creeping into a monolithic release",
+        "Stories are released out of sequence, stranding users in half-finished or broken task flows"
+      ],
+      "best_for_stage": [
+        "0-to-1",
+        "growth",
+        "scale"
+      ],
+      "data_maturity_required": "low",
+      "when_not_to_use": [
+        "Pure backend infrastructure migration or algorithmic performance tuning with zero user workflow",
+        "Single bug fixes or minor cosmetic copy tweaks that do not touch user journey steps"
+      ],
+      "paired_skills": [
+        "create-user-stories",
+        "refine-user-stories",
+        "create-prd",
+        "create-roadmap"
+      ],
+      "write_back_target": ".context/discovery.md",
+      "path": "frameworks/operations/user-story-mapping.md"
+    },
+    {
+      "id": "ice-and-value-effort",
+      "name": "ICE & Value vs. Effort Prioritization",
+      "category": "prioritization",
+      "description": "To deliver rapid, transparent prioritization when teams are in early stages, lack large-scale statistical telemetry for RICE, or need to unblock backlog paralysis in under 15 minutes.",
+      "problem_signatures": [
+        "Team lacks quantitative reach and conversion telemetry required to run RICE without guessing",
+        "Need a fast, 15-minute consensus scoring method to rank a brainstormed backlog of 15+ ideas",
+        "Stakeholders disagree on whether to prioritize quick wins versus long-term strategic investments"
+      ],
+      "best_for_stage": [
+        "0-to-1",
+        "growth"
+      ],
+      "data_maturity_required": "low",
+      "when_not_to_use": [
+        "High-scale mature products with robust funnel analytics where RICE or WSJF provides mathematically superior economic scheduling",
+        "Contractually committed enterprise roadmap items where scope is legally mandated"
+      ],
+      "paired_skills": [
+        "brainstorm",
+        "validate-idea",
+        "apply-framework",
+        "recommend-framework"
+      ],
+      "write_back_target": ".context/discovery.md",
+      "path": "frameworks/prioritization/ice-and-value-effort.md"
+    },
+    {
       "id": "kano-model",
       "name": "The Kano Model & Customer Delight",
       "category": "prioritization",
@@ -436,6 +754,64 @@
       ],
       "write_back_target": ".context/discovery.md",
       "path": "frameworks/prioritization/kano-model.md"
+    },
+    {
+      "id": "moscow-scope-negotiation",
+      "name": "MoSCoW & Buy-a-Feature Scope Negotiation",
+      "category": "prioritization",
+      "description": "To establish enforceable release boundaries, protect developers from burnout, and prevent the \"everything is high priority\" trap during fixed-date enterprise deliveries.",
+      "problem_signatures": [
+        "Stakeholders treat every feature request as an absolute P0 must-have",
+        "Release deadlines are fixed by contractual commitments but scope keeps ballooning",
+        "Scope cutting meetings devolve into political turf wars without clear budget boundaries"
+      ],
+      "best_for_stage": [
+        "growth",
+        "scale",
+        "enterprise"
+      ],
+      "data_maturity_required": "low",
+      "when_not_to_use": [
+        "Early 0-to-1 exploratory spikes where user problem discovery is still fluid",
+        "Teams running small, continuous single-piece flow without batch milestone releases"
+      ],
+      "paired_skills": [
+        "create-prd",
+        "refine-user-stories",
+        "apply-framework",
+        "prep-meeting"
+      ],
+      "write_back_target": ".context/strategy-and-constraints.md",
+      "path": "frameworks/prioritization/moscow-scope-negotiation.md"
+    },
+    {
+      "id": "opportunity-scoring",
+      "name": "Opportunity Scoring (Importance vs. Satisfaction)",
+      "category": "prioritization",
+      "description": "To eliminate the wasteful \"feature trap\" of improving capabilities that customers already find \"good enough\", and redirect resources toward high-importance jobs where customers remain acutely dissatisfied.",
+      "problem_signatures": [
+        "Team is over-investing in features where customer satisfaction is already high (over-served market)",
+        "Critical customer needs are severely underserved, but ignored because no vocal stakeholder advocates for them",
+        "Prioritization relies on subjective HIPPO opinions rather than quantitative customer satisfaction gaps"
+      ],
+      "best_for_stage": [
+        "growth",
+        "scale",
+        "enterprise"
+      ],
+      "data_maturity_required": "medium",
+      "when_not_to_use": [
+        "Early 0-to-1 concept phase where customers have never experienced a candidate solution",
+        "Internal devops pipelines where customer satisfaction surveys cannot be administered"
+      ],
+      "paired_skills": [
+        "apply-framework",
+        "validate-idea",
+        "create-roadmap",
+        "create-prd"
+      ],
+      "write_back_target": ".context/discovery.md",
+      "path": "frameworks/prioritization/opportunity-scoring.md"
     },
     {
       "id": "rice",
@@ -493,6 +869,122 @@
       "path": "frameworks/prioritization/wsjf-cost-of-delay.md"
     },
     {
+      "id": "north-star-metric-tree",
+      "name": "North Star Metric & Input Metric Tree",
+      "category": "strategy",
+      "description": "To establish a clear causal equation between day-to-day feature development and overall company success, ensuring squads optimize actionable leading indicators without gaming the system.",
+      "problem_signatures": [
+        "Team is optimizing fragmented vanity metrics that do not roll up to sustainable customer value",
+        "Different squads or engineers pull in opposing directions without a unified equation of growth",
+        "Leadership tracks lagging revenue numbers without actionable leading input metrics for product teams"
+      ],
+      "best_for_stage": [
+        "0-to-1",
+        "growth",
+        "scale",
+        "enterprise"
+      ],
+      "data_maturity_required": "medium",
+      "when_not_to_use": [
+        "Early customer discovery phase before any initial product value loop or prototype exists",
+        "Ad-hoc consulting or custom bespoke software projects with zero recurring usage loops"
+      ],
+      "paired_skills": [
+        "define-metrics-and-experiment",
+        "create-prd",
+        "create-roadmap"
+      ],
+      "write_back_target": ".context/product.md",
+      "path": "frameworks/strategy/north-star-metric-tree.md"
+    },
+    {
+      "id": "pricing-and-packaging",
+      "name": "Van Westendorp & Packaging/Tiering Matrix",
+      "category": "strategy",
+      "description": "To establish data-backed pricing boundaries, eliminate monetization guesswork, and package features into clear, high-converting tier boundaries.",
+      "problem_signatures": [
+        "Pricing strategy is based on internal team guesswork rather than empirical customer willingness-to-pay",
+        "Feature tiering is confusing and customers resist upgrading between Free, Pro, and Enterprise",
+        "Team packages 'killer' core value features into lower tiers, starving higher tiers of upgrade incentives"
+      ],
+      "best_for_stage": [
+        "growth",
+        "scale",
+        "enterprise"
+      ],
+      "data_maturity_required": "medium",
+      "when_not_to_use": [
+        "Pure open-source software with zero commercial, monetization, or paid tier ambitions",
+        "Early 0-to-1 discovery where customers haven't validated the core value proposition"
+      ],
+      "paired_skills": [
+        "validate-idea",
+        "plan-launch",
+        "create-prd",
+        "apply-framework"
+      ],
+      "write_back_target": ".context/strategy-and-constraints.md",
+      "path": "frameworks/strategy/pricing-and-packaging.md"
+    },
+    {
+      "id": "product-positioning",
+      "name": "Product Positioning (April Dunford)",
+      "category": "strategy",
+      "description": "To eliminate positioning confusion, elevate differentiation above incumbent competitors, and guide GTM launch messaging, sales battlecards, and PRD scope.",
+      "problem_signatures": [
+        "Prospects and customers say 'So what?' or misunderstand what the product actually does",
+        "Sales team struggles to close deals without extensive discounting or custom development",
+        "The product competes head-on against entrenched incumbents in the wrong market category"
+      ],
+      "best_for_stage": [
+        "0-to-1",
+        "growth",
+        "scale"
+      ],
+      "data_maturity_required": "medium",
+      "when_not_to_use": [
+        "Internal platform tools with zero external customer or market positioning considerations",
+        "Routine patch releases or minor bug fix updates"
+      ],
+      "paired_skills": [
+        "plan-launch",
+        "analyze-competitor",
+        "create-prd",
+        "prep-meeting"
+      ],
+      "write_back_target": ".context/strategy-and-constraints.md",
+      "path": "frameworks/strategy/product-positioning.md"
+    },
+    {
+      "id": "seven-powers-moats",
+      "name": "7 Powers (Hamilton Helmer) Moat Analysis",
+      "category": "strategy",
+      "description": "To force product managers to distinguish between temporary \"features\" (easily copied commodities) and structural \"powers\" that generate enduring enterprise value.",
+      "problem_signatures": [
+        "Features are easily copied by well-funded incumbents within weeks of launching",
+        "The product lacks durable structural defensibility or pricing power as it scales",
+        "Team confuses temporary operational excellence or speed with long-term strategic moats"
+      ],
+      "best_for_stage": [
+        "growth",
+        "scale",
+        "enterprise"
+      ],
+      "data_maturity_required": "medium",
+      "when_not_to_use": [
+        "Early 0-to-1 exploratory spikes where product-market fit has not yet been demonstrated",
+        "Internal developer tooling with no commercial or competitive market dynamics"
+      ],
+      "paired_skills": [
+        "analyze-competitor",
+        "validate-idea",
+        "apply-framework",
+        "create-prd"
+      ],
+      "write_back_target": ".context/strategy-and-constraints.md",
+      "path": "frameworks/strategy/seven-powers-moats.md"
+    },
+    {
       "id": "theory-of-constraints",
       "name": "Theory of Constraints (ToC) & CRT Mapping",
       "category": "strategy",
@@ -547,6 +1039,35 @@
       ],
       "write_back_target": ".context/strategy-and-constraints.md",
       "path": "frameworks/strategy/wardley-mapping.md"
+    },
+    {
+      "id": "working-backwards-prfaq",
+      "name": "Working Backwards (Amazon PR/FAQ)",
+      "category": "strategy",
+      "description": "To enforce extreme customer-centric clarity, prevent technical solipsism, align cross-functional leaders around the core value proposition, and expose unaddressed trade-offs long before development begins.",
+      "problem_signatures": [
+        "Feature concept is heavily engineering-led or architecture-driven without a clear customer value narrative",
+        "Product vision is diffuse and executive stakeholders disagree on the core customer experience being built",
+        "Team writes massive 30-page spec documents that bury the real customer problem under implementation minutiae"
+      ],
+      "best_for_stage": [
+        "0-to-1",
+        "growth",
+        "enterprise"
+      ],
+      "data_maturity_required": "low",
+      "when_not_to_use": [
+        "Incremental bug fixing, tech debt reduction, or internal pipeline refactoring",
+        "Continuous UI polish sprints where the core value proposition is already proven and unchanged"
+      ],
+      "paired_skills": [
+        "create-prd",
+        "validate-idea",
+        "audit-spec",
+        "plan-launch"
+      ],
+      "write_back_target": ".context/strategy-and-constraints.md",
+      "path": "frameworks/strategy/working-backwards-prfaq.md"
     }
   ],
   "context_files": [

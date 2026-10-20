@@ -1,0 +1,107 @@
+# Command: /audit-spec
+
+Audits draft PRDs and User Stories against .context/ single source of truth, flagging scope creep, missing edge cases, unvalidated assumptions, and architectural conflicts.
+
+# 🧐 Audit Spec & Pre-Mortem Critique Skill
+
+## Overview
+The `audit-spec` skill acts as an uncompromising VP of Product and Staff Principal Engineer reviewing a draft PRD, technical spec, or user story backlog. It cross-checks the draft against the `.context/` Product Knowledge Core to detect scope creep, unvalidated leaps of faith, ambiguous acceptance criteria, missing edge cases, and architectural friction before engineering grooming begins.
+
+---
+
+## ⚙️ Supported Audit Scopes
+1. **📋 PRD Audit (`prd`)**:
+   - Reviews requirements clarity, problem-to-solution alignment, measurable success metrics, and out-of-scope enforcement.
+2. **🧩 Backlog & User Story Grooming Audit (`stories`)**:
+   - Audits INVEST criteria, SPIDR story splitting opportunities, Gherkin syntax precision, and negative testing scenarios.
+3. **⚠️ Pre-Mortem & Risk Critique (`pre-mortem`)**:
+   - Assumes the feature has failed catastrophically 6 months after launch; identifies the root structural causes and unmitigated risks using `frameworks/operations/pre-mortem-tigers.md`.
+
+---
+
+## 📋 Best Practices & Standards Enforced
+- **Zero Hallucinated Scope**: Flags any requirement that lacks direct justification in `.context/discovery.md` or `.context/product.md`.
+- **Edge Case Rigor**: Fails any spec that only describes the happy path; demands explicit handling for rate limits, zero-states, network timeouts, auth expiry, and invalid inputs.
+- **Spec Health Score (0–100%)**: Computes a transparent, objective quality rubric across Completeness, Testability, Feasibility, and Strategic Alignment.
+- **Actionable Redlines**: Provides concrete replacement text and Gherkin scenarios for every flagged deficiency.
+
+---
+
+## 🛠️ Standardized 4-Stage Execution Protocol
+
+### Stage 1: Context Hydration
+1. Ingest [`.context/product.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/.context/product.md) for target personas, core positioning, and OKRs.
+2. Ingest [`.context/architecture.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/.context/architecture.md) for technical stack boundaries, existing endpoints, schemas, and anti-patterns.
+3. Ingest [`.context/strategy-and-constraints.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/.context/strategy-and-constraints.md) for compliance requirements, budget, and bottleneck realities.
+4. Ingest [`.context/conventions.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/.context/conventions.md) for the Definition of Ready (DoR) checklist.
+5. Ingest the target PRD or story file from `docs/` or user prompt.
+
+### Stage 2: Socratic Clarifying Gate
+1. Inspect the target document. If it is less than 50 words, request the complete draft or identify the target file path in `docs/`.
+2. Ask the user:
+   - *"Would you like a Standard Spec Review, or a High-Severity Pre-Mortem Stress Test (assuming total failure)?"*
+
+### Stage 3: Grounded Generation
+Generate the comprehensive Audit Report & Health Score:
+
+```markdown
+# 🧐 Spec Audit & Pre-Mortem Critique: [Document Name]
+
+### 📊 Spec Health Score: [Score] / 100
+- **Completeness & Structure**: [X]/25 (Missing sections, undefined boundaries)
+- **Edge Case & Error Coverage**: [X]/25 (Negative flows, recovery states)
+- **Technical Feasibility & Architecture**: [X]/25 (Schema alignment, scale bottlenecks)
+- **Strategic Grounding & Metrics**: [X]/25 (Traceability to .context/)
+
+**Verdict**: [🟢 Ready for Grooming | 🟡 Needs Minor Revisions | 🔴 Critical Gaps / Blocked]
+
+---
+
+## 🚨 Critical Deficiencies & Architectural Conflicts (Redlines)
+
+### 1. Scope Creep & Missing Problem Justification
+- **Flag**: Requirement `FR-04` (*Real-time WebSocket collaboration*) lacks customer evidence in `.context/discovery.md`.
+- **Risk**: Increases engineering appetite from 2 weeks to 6 weeks.
+- **Recommendation**: Move `FR-04` to v2.0 or convert to a 15-minute polling fallback.
+
+### 2. Missing Edge Cases & Negative Flows
+- **Flag**: The spec does not define behavior when the 3rd-party API returns a `429 Rate Limit Exceeded` error.
+- **Concrete Replacement Text**:
+  ```gherkin
+  Scenario: Third-party API rate limit is reached
+    Given the external service returns HTTP 429
+    When the sidekick initiates a sync job
+    Then the system applies exponential backoff (max 3 retries)
+    And alerts the user with "Sync paused: rate limit reached. Resuming in 2 minutes."
+  ```
+
+### 3. Architecture & Data Model Friction
+- **Flag**: Spec references querying tickets by custom field, but `.context/architecture.md` specifies that tickets are stored in unindexed JSON blobs.
+- **Recommendation**: Update schema migration plan or add GIN indexing requirement.
+
+---
+
+## 🐅 Pre-Mortem: Tigers, Paper Tigers & Elephants
+- 🐅 **Real Tiger (Existential Risk)**: [High-probability failure mode that could ruin the release].
+- 🐯 **Paper Tiger (Harmless Worry)**: [Overblown stakeholder concern that poses zero actual threat].
+- 🐘 **Elephant in the Room (Unspoken Truth)**: [Hard organizational truth or dependency nobody wants to address].
+
+---
+
+## ✅ Action Checklist Before Sprint Commitment
+- [ ] Add explicit rate limit and timeout Gherkin scenarios to FR-02.
+- [ ] Align with Tech Lead on database index requirement in `architecture.md`.
+- [ ] Cut FR-04 to protect 2-week sprint appetite.
+```
+
+### Stage 4: Knowledge Compounding (Write-Back)
+1. Save the audit report to `docs/reviews/audit_[spec_name].md`.
+2. Offer to automatically rewrite the draft PRD with the accepted redlines applied.
+3. If new architectural constraints or risks emerged, offer to update [`.context/strategy-and-constraints.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/.context/strategy-and-constraints.md).
+
+---
+
+## 🔄 Flow Handling & Suggested Next Skills
+- **Refine User Stories**: Send audited requirements into `refine-user-stories` for SPIDR splitting.
+- **Update PRD**: Apply recommended changes using `create-prd`.
+- **Plan Launch**: Once the spec passes the audit ($\text{Score} \ge 85$), proceed to `plan-launch`.

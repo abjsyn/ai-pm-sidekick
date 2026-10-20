@@ -68,6 +68,13 @@ DEFAULT_CONFIG = {
             "env": {
                 "STITCH_API_KEY": "${STITCH_API_KEY}"
             }
+        },
+        "linear": {
+            "command": "npx",
+            "args": ["-y", "mcp-server-linear"],
+            "env": {
+                "LINEAR_API_KEY": "${LINEAR_API_KEY}"
+            }
         }
     }
 }
@@ -97,6 +104,9 @@ NOTION_ROOT_PAGE_ID=your_notion_root_page_id_here
 
 # --- Google Stitch ---
 STITCH_API_KEY=your_stitch_api_key_here
+
+# --- Linear (Cycles, Projects & Issues) ---
+LINEAR_API_KEY=your_linear_api_key_here
 
 # --- User Profile & PM Persona ---
 USER_NAME=Paula (Lead PM)
@@ -198,7 +208,7 @@ def main():
     parser = argparse.ArgumentParser(description="Configure MCP integrations for AI PM Sidekick.")
     parser.add_argument("--target", choices=["agy", "claude", "cursor", "root", "all"], default="all",
                         help="Target AI environment configuration file (default: all)")
-    parser.add_argument("--tool", choices=["atlassian", "github", "figma", "miro", "notion", "stitch", "all"], default="all",
+    parser.add_argument("--tool", choices=["atlassian", "github", "figma", "miro", "notion", "stitch", "linear", "all"], default="all",
                         help="Specific tool integration to enable (default: all)")
     parser.add_argument("--check", action="store_true", help="Check setup readiness and credentials")
     parser.add_argument("--interactive", action="store_true", help="Prompt interactively for credentials")
@@ -261,6 +271,12 @@ def main():
             print("\n--- Google Stitch Setup ---")
             stitch_key = input(f"Google Stitch API Key [{env_vars.get('STITCH_API_KEY', '')}]: ").strip()
             if stitch_key: env_vars['STITCH_API_KEY'] = stitch_key
+
+        # Linear
+        if args.tool in ("linear", "all"):
+            print("\n--- Linear (Cycles, Projects & Issues) Setup ---")
+            linear_key = input(f"Linear API Key [{env_vars.get('LINEAR_API_KEY', '')}]: ").strip()
+            if linear_key: env_vars['LINEAR_API_KEY'] = linear_key
 
         # Save to .env
         env_content = "\n".join([f"{k}={v}" for k, v in env_vars.items()])

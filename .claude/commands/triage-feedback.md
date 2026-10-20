@@ -1,0 +1,97 @@
+# Command: /triage-feedback
+
+Batch-processes raw customer feedback, support tickets, NPS verbatims, or sales call notes, clustering them by frequency and severity, and mapping them to opportunities in .context/discovery.md.
+
+# 📥 Synthesize Feedback & Triage Requests Skill
+
+## Overview
+The `triage-feedback` skill solves customer feedback overwhelm. It ingests messy, unstructured customer inputs—CSV exports, Zendesk/Intercom support tickets, Gong/Chorus call summaries, NPS verbatim comments, App Store reviews, or Linear/Jira triage queues.
+
+It groups disparate feedback into distinct semantic opportunity clusters, computes a **Severity vs Frequency Priority Score**, and maps the clusters directly to active outcomes in [`.context/discovery.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/.context/discovery.md).
+
+---
+
+## ⚙️ Supported Ingestion Formats
+1. **📄 CSV / TSV Dumps**:
+   - Parses feedback exports with columns like `User`, `Feedback`, `Rating`, `Date`, `Account Size`.
+2. **💬 Chat & Call Transcripts**:
+   - Pulls pain points and feature requests from raw Slack threads, sales call notes, or customer interview logs.
+3. **⚡ Linear / Jira Triage Inboxes**:
+   - Ingests unassigned issues from Linear or Jira Triage via MCP sync.
+
+---
+
+## 📋 Best Practices & Standards Enforced
+- **Problem over Proposed Solution**: Do not log *"Customer wants feature X"*; extract the underlying customer struggle (*"Customer cannot reconcile invoice totals across currencies"*).
+- **Quantify Impact**: Separate high-frequency paper cuts (many users, low churn risk) from high-severity dealbreakers (few users, immediate churn).
+- **Traceability to Quotes**: Retain raw verbatim customer quotes for every identified theme to keep discovery grounded.
+- **Deduplication**: Match newly extracted requests against existing opportunities in `.context/discovery.md` before creating duplicate items.
+
+---
+
+## 🛠️ Standardized 4-Stage Execution Protocol
+
+### Stage 1: Context Hydration
+1. Ingest [`.context/product.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/.context/product.md) for target personas, product vision, and active quarterly OKRs.
+2. Ingest [`.context/discovery.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/.context/discovery.md) for existing customer outcomes (`OUT-01` etc.) and historical feedback themes.
+3. Ingest the raw customer feedback dataset from file path, pasted text, or triage queue.
+
+### Stage 2: Socratic Clarifying Gate
+1. Inspect input volume and format. If raw text contains ambiguous acronyms or account tiers, clarify:
+   - *"Are there specific high-value customer tiers (e.g. Enterprise vs Free) we should weight more heavily during this triage?"*
+2. If input is empty, request the customer feedback text or file location.
+
+### Stage 3: Grounded Generation
+Synthesize the feedback into the standardized Triage & Synthesis Ledger:
+
+```markdown
+# 📥 Customer Feedback Triage & Synthesis: [Source / Cohort]
+
+**Triage Date**: [YYYY-MM-DD]  
+**Total Inputs Analyzed**: [e.g. 48 tickets / 12 call transcripts]  
+**Primary Personas Represented**: [e.g. Enterprise Admin, Solo PM]
+
+---
+
+## 📊 Feedback Opportunity Clusters (Ranked by Severity & Frequency)
+
+### 1. 🔥 Cluster A: Real-Time API Key Connection Friction
+- **Frequency**: 19 mentions (40% of cohort)
+- **Severity**: High (Blocks onboarding activation)
+- **Root Problem**: Users in enterprise environments cannot create cloud API keys due to corporate infosec bans.
+- **Representative Verbatims**:
+  > *"My IT security lead rejected our request for a Claude cloud token. Can this tool just use local models?"* — FinTech PM Lead
+- **Mapped Opportunity in `.context/discovery.md`**: `OUT-02: Zero-config enterprise activation`
+- **Recommended Action**: Prioritize `feat: local-cli-auto-detection` in next sprint.
+
+### 2. 🟡 Cluster B: Export to Custom Slide Decks
+- **Frequency**: 8 mentions (17% of cohort)
+- **Severity**: Medium (Workaround exists via markdown copy-paste)
+- **Root Problem**: PMs need to present roadmaps to non-technical executives who demand PowerPoint.
+- **Representative Verbatims**:
+  > *"I have to manually screenshot the markdown tables into Google Slides every Thursday."* — Product Ops
+- **Mapped Opportunity**: `OUT-04: Executive presentation export`
+- **Recommended Action**: Queue for future discovery in `create-roadmap`.
+
+---
+
+## ⚖️ Triage Matrix (Frequency vs Severity)
+
+| Opportunity Cluster | Mentions | Severity (1-5) | Frequency (1-5) | Triage Score ($S \times F$) | Action Bucket |
+| :--- | :---: | :---: | :---: | :---: | :--- |
+| **CLI Auto-Detection** | 19 | 5 | 5 | **25** | 🚀 **Immediate Sprint Fix** |
+| **Linear Bi-directional Sync** | 12 | 4 | 4 | **16** | 📅 **Next Sprint Epic** |
+| **Slide Deck Presentation Export**| 8 | 3 | 3 | **9** | 🔍 **Explore in Discovery** |
+| **Custom Avatar Colors** | 2 | 1 | 1 | **1** | ❌ **Drop / Archive** |
+```
+
+### Stage 4: Knowledge Compounding (Write-Back)
+1. Save the synthesis report to `docs/discovery/triage_[source]_[date].md`.
+2. Offer to append new user quotes and update opportunity evidence counts directly in [`.context/discovery.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/.context/discovery.md).
+
+---
+
+## 🔄 Flow Handling & Suggested Next Skills
+- **Deep-Dive Interviews**: For critical emerging themes, generate an interview guide with `prepare-user-interview`.
+- **Rank Opportunities**: Score new themes with `frameworks/prioritization/opportunity-scoring.md`.
+- **Draft Solution PRD**: For the top-scored cluster, initiate `create-prd`.
