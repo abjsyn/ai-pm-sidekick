@@ -30,21 +30,34 @@ favorite_skills:
   - recommend-framework
   - sync-jira
 
-# Active Product Strategy, Discovery, Prioritization, and Operations Frameworks:
+# Active Product Strategy, Discovery, Prioritization, and Operations Frameworks (23 Modular Frameworks):
 #   Strategy:
 #     - wardley: Wardley Value Chain Evolution Mapping
 #     - toc: Theory of Constraints (Goldratt bottleneck identification)
+#     - working-backwards-prfaq: Amazon PR/FAQ Press Release & FAQs
+#     - north-star-metric-tree: North Star & Input Metric Tree
+#     - product-positioning: April Dunford 5-component positioning engine
+#     - seven-powers-moats: Hamilton Helmer structural defensibility analysis
+#     - pricing-and-packaging: Van Westendorp & Good-Better-Best tiering
 #   Discovery:
 #     - ost: Opportunity Solution Tree (Teresa Torres continuous discovery)
 #     - jtbd-and-mom-test: Jobs-to-be-Done & The Mom Test customer interviews
+#     - assumption-mapping: 4 Lenses (Desirability, Feasibility, Viability, Usability) & RAT
+#     - aarrr-and-growth-loops: Pirate metrics funnel diagnostics & compounding growth loops
 #   Prioritization:
 #     - rice: Reach, Impact, Confidence, Effort scoring
 #     - wsjf: Weighted Shortest Job First (Cost of Delay / Duration)
 #     - kano-model: Kano Customer Delight & Hygiene analysis
+#     - ice-and-value-effort: ICE Scoring + 2x2 Value vs Effort matrix
+#     - opportunity-scoring: Ulwick / Olsen Opportunity formula (Importance vs Satisfaction)
+#     - moscow-scope-negotiation: Must/Should/Could/Won't boundaries & Buy-a-Feature
 #   Operations:
 #     - scrum-sprint-delivery: Sprint Goal, INVEST Stories & Velocity Slicing
 #     - shape-up: Basecamp Shaped Pitches, Appetite Budgeting & Hill Charts
 #     - gist-planning: Goals, Ideas, Step-projects, Tasks
+#     - user-story-mapping: Jeff Patton narrative backbone & Walking Skeleton release slices
+#     - pre-mortem-tigers: Shreyas Doshi failure simulation (Tigers, Paper Tigers, Elephants)
+#     - kanban-continuous-flow: Little's Law continuous flow, WIP limits & SLE
 active_frameworks:
   - ost
   - wardley
@@ -59,6 +72,7 @@ active_frameworks:
 mcp_enabled:
   - atlassian  # Jira & Confluence
   - github  # GitHub Issues, PRs, & Milestones
+  - linear  # Linear Issues, Cycles, Projects & Triage
   - figma  # UI design files & comments
   - miro  # Visual whiteboards & sticky notes
   - notion  # Product wikis & database sync

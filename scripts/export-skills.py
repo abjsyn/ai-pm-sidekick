@@ -189,6 +189,83 @@ SKILL_CONFIG = {
         "icon": "open_in_browser",
         "color": "text-amber-500",
         "required_context_files": [".context/harness-config.yaml"]
+    },
+    "create-stakeholder-update": {
+        "name": "Stakeholder Update & Release Notes",
+        "category": "communication",
+        "icon": "campaign",
+        "color": "text-sky-400",
+        "required_context_files": [".context/product.md", ".context/decisions.md"]
+    },
+    "prepare-user-interview": {
+        "name": "User Interview Script & Guide",
+        "category": "discovery",
+        "icon": "record_voice_over",
+        "color": "text-teal-400",
+        "required_context_files": [".context/product.md", ".context/discovery.md"]
+    },
+    "define-metrics-and-experiment": {
+        "name": "Metrics & Experiment Plan",
+        "category": "specification",
+        "icon": "query_stats",
+        "color": "text-emerald-400",
+        "required_context_files": [".context/product.md", ".context/strategy-and-constraints.md", ".context/architecture.md"]
+    },
+    "audit-spec": {
+        "name": "Spec Auditor & Pre-Mortem Critique",
+        "category": "specification",
+        "icon": "fact_check",
+        "color": "text-rose-400",
+        "required_context_files": [".context/product.md", ".context/architecture.md", ".context/strategy-and-constraints.md", ".context/conventions.md"]
+    },
+    "plan-launch": {
+        "name": "GTM Launch Plan",
+        "category": "operations",
+        "icon": "rocket_launch",
+        "color": "text-amber-500",
+        "required_context_files": [".context/product.md", ".context/strategy-and-constraints.md"]
+    },
+    "create-roadmap": {
+        "name": "Outcome Roadmap Generator",
+        "category": "strategy",
+        "icon": "timeline",
+        "color": "text-indigo-400",
+        "required_context_files": [".context/product.md", ".context/discovery.md", ".context/strategy-and-constraints.md"]
+    },
+    "prep-meeting": {
+        "name": "Meeting Prep & Defense Brief",
+        "category": "communication",
+        "icon": "forum",
+        "color": "text-blue-400",
+        "required_context_files": [".context/product.md", ".context/decisions.md", ".context/strategy-and-constraints.md"]
+    },
+    "analyze-competitor": {
+        "name": "Competitor Analysis & Battlecard",
+        "category": "strategy",
+        "icon": "compare_arrows",
+        "color": "text-purple-400",
+        "required_context_files": [".context/product.md", ".context/strategy-and-constraints.md"]
+    },
+    "sync-linear": {
+        "name": "Linear Issues & Cycles Sync",
+        "category": "sync",
+        "icon": "sync_alt",
+        "color": "text-violet-400",
+        "required_context_files": [".context/product.md", ".context/conventions.md", ".context/harness-config.yaml"]
+    },
+    "triage-feedback": {
+        "name": "Customer Feedback Triage",
+        "category": "discovery",
+        "icon": "mark_email_unread",
+        "color": "text-yellow-400",
+        "required_context_files": [".context/product.md", ".context/discovery.md"]
+    },
+    "evaluate-launch": {
+        "name": "Post-Launch Retrospective",
+        "category": "operations",
+        "icon": "published_with_changes",
+        "color": "text-cyan-400",
+        "required_context_files": [".context/product.md", ".context/decisions.md"]
     }
 }
 
@@ -669,7 +746,7 @@ Configured via `operating_model` in `.context/harness-config.yaml` and detailed 
 
 ## 🛠️ 5. Integration & Tooling Reference
 
-- **Model Context Protocol (MCP)**: Use `/connect-mcp` or tool-specific sync skills (`/sync-jira`, `/sync-confluence`, `/sync-github-issues`, `/sync-figma`, `/sync-miro`, `/sync-notion`).
+- **Model Context Protocol (MCP)**: Use `/connect-mcp` or tool-specific sync skills (`/sync-jira`, `/sync-confluence`, `/sync-github-issues`, `/sync-linear`, `/sync-figma`, `/sync-miro`, `/sync-notion`).
 - **GUI Command Center**: Launch the local visual dashboard on port 3000 via `/gui-run` (`python3 scripts/launch-ui.py --open`).
 - **Machine-Readable Manifest**: Consult `dist/harness-manifest.json` for live schema definitions, triggers, and framework metadata.
 """

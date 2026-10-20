@@ -4,17 +4,45 @@ This document outlines prioritized future capabilities ("Product Manager Must-Ha
 
 ---
 
-## ✅ Completed Capabilities (MCP Tool Integrations)
+## ✅ Completed Capabilities & Canonical Skills
 
-* **`connect-mcp`**: Unified MCP connection & verification wizard for Atlassian, Figma, and Miro across AGY, Claude, and Cursor.
+### 🔌 Model Context Protocol (MCP) Integrations
+* **`connect-mcp`**: Unified MCP connection & verification wizard for Atlassian, GitHub, Linear, Figma, Miro, Notion across AGY, Claude, and Cursor.
 * **`sync-jira`**: Atlassian MCP integration to export user stories, epics, and Gherkin BDD criteria directly to Jira backlogs.
 * **`sync-confluence`**: Atlassian MCP integration to publish PRDs, technical documentation, and design briefs to Confluence spaces.
+* **`sync-github-issues`**: Bi-directional GitHub Issues, milestones, and label sync via GitHub MCP.
+* **`sync-linear`**: Bi-directional Linear cycles, projects, issues, and triage queues sync via Linear MCP.
 * **`sync-figma`**: Figma MCP integration to inspect design component structures and attach PM criteria as comments on Figma nodes.
 * **`sync-miro`**: Miro MCP integration to transform SCAMPER/HMW brainstorms into visual sticky notes on Miro whiteboards.
+* **`sync-notion`**: Notion MCP integration for product wikis, research databases, and PDR logs.
+
+### 🚀 Core PM Workflow Skills (30 Total Skills)
+* **`create-stakeholder-update`**: Synthesizes git & backlog into Executive digests, team updates, or release notes.
+* **`prepare-user-interview`**: Non-leading Mom Test guides, screener questions, & assumption probes.
+* **`define-metrics-and-experiment`**: Defines North Star hierarchies, event telemetry schemas, & A/B rollout gates.
+* **`audit-spec`**: VP Product + Staff Eng review auditing scope creep, edge cases, & architecture.
+* **`plan-launch`**: Tier 1/2/3 launch playbook with positioning copy, enablement FAQ, & kill switches.
+* **`create-roadmap`**: Transforms backlog into Now/Next/Later or Quarterly OKR outcome horizons.
+* **`prep-meeting`**: 1-page defense brief with decision history, hostile questions, & trade-off boxes.
+* **`analyze-competitor`**: Feature parity matrix, positioning teardowns, & Sales/PM battlecards.
+* **`triage-feedback`**: Clusters raw support/NPS/transcript feedback by frequency & severity.
+* **`evaluate-launch`**: Evaluates telemetry against PRD targets and logs lessons to decisions.md.
+* **`create-prd`**: Generates structured PRDs across Lean, Standard, and Enterprise tiers.
+* **`create-user-stories`**: Breaks down features into INVEST stories + Gherkin BDD AC.
+* **`refine-user-stories`**: Refines & splits stories using SPIDR with Readiness Score.
+* **`create-mockup`**: Generates self-contained, interactive Tailwind HTML wireframes.
+* **`create-design-brief`**: Bridges PM and UI/UX design specs with WCAG 2.1 AA accessibility.
+* **`create-documentation`**: Dual tech spec & user guide generator (OpenAPI 3.0, Mermaid).
+* **`validate-idea`**: Evaluates raw concepts & hypotheses (4-Risk, Mom Test, Pre-mortem).
+* **`brainstorm`**: Generates innovative solution angles (SCAMPER, HMW, 6 Hats).
+* **`ingest-context`**: Distills raw notes, calls, & Slack dumps into `.context/`.
+* **`apply-framework`**: Runs 23 strategic, discovery, prioritization, & operational models.
+* **`recommend-framework`**: Diagnoses bottlenecks & uncertainty, recommends the optimal framework & skill.
+* **`gui-run`**: SaaS web studio, Product Brain manager, & REST server on `localhost:3000`.
 
 ---
 
-## 🎯 High Priority Backlog (Next Iteration)
+## 🎯 Next Horizon / Future Capabilities
 
 ### B1. `competitor-analysis` — Competitive Teardowns & Matrix
 * **Goal:** Benchmark feature sets against primary and secondary competitors.

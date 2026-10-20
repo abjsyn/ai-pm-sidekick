@@ -1,0 +1,102 @@
+---
+name: create-stakeholder-update
+description: >-
+  Synthesizes recent changes in BACKLOG.md, .context/decisions.md, and docs/ into tailored communications:
+  Executive Weekly Digest, Engineering/Cross-Functional Update, or Customer-Facing Release Notes.
+---
+
+# 📢 Stakeholder Update & Release Notes Skill
+
+## Overview
+The `create-stakeholder-update` skill eliminates Friday afternoon status report drudgery. It automatically synthesizes recent sprint activity, backlog shifts (`BACKLOG.md`), product decisions (`.context/decisions.md`), and PRD milestones into concise, tailored updates formatted for three distinct audiences: executives, cross-functional delivery teams, or external customers.
+
+---
+
+## ⚙️ Supported Update Modes
+Detect from user input or prompt explicitly:
+1. **👔 Executive Weekly Digest (`executive`)**:
+   - High-signal TL;DR, OKR progress, sprint delivery status (On Track / At Risk / Blocked), critical risks, and explicit "Asks / Decisions Needed".
+2. **🛠️ Engineering & Cross-Functional Sync (`cross-functional`)**:
+   - Sprint throughput, tickets shipped, upcoming architectural dependencies, blocker deep-dives, and Definition of Done completions.
+3. **🚀 Customer-Facing Release Notes (`release-notes`)**:
+   - Customer-centric benefits, "What's New", "Improvements", "Bug Fixes", and links to user guides or migration instructions.
+
+---
+
+## 📋 Best Practices & Standards Enforced
+- **Radical Honesty**: Highlight blockers, delayed deliveries, and risks without corporate euphemisms.
+- **Audience Tailoring**: Never dump technical Git commit messages into executive digests or customer release notes.
+- **Traceability**: Link every completed deliverable back to original PRDs in `docs/` or tickets in `BACKLOG.md`.
+- **Actionable Asks**: State clearly *who* needs to decide *what* by *when* to unblock progress.
+
+---
+
+## 🛠️ Standardized 4-Stage Execution Protocol
+
+### Stage 1: Context Hydration
+1. **Read Core Context**:
+   - Ingest [`.context/product.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/.context/product.md) for North Star metrics, current OKRs, and target personas.
+   - Ingest [`.context/decisions.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/.context/decisions.md) for newly logged Product Decision Records (PDRs).
+   - Ingest [`BACKLOG.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/BACKLOG.md) to inspect completed items (`[x]`), active sprint tickets, and slipped items.
+   - Inspect recently modified files in `docs/` to summarize shipped specifications.
+2. **Retrieve Git Log Delta** *(if git repository)*:
+   - Check the recent git log commits (`git log -n 15 --oneline`) to identify ground-truth engineering changes.
+
+### Stage 2: Socratic Clarifying Gate
+1. **Mode & Audience Check**:
+   - If the user simply asks for an "update", ask:
+     > *"Which update format would you like to generate?*  
+     > *1. 👔 **Executive Weekly Digest** (TL;DR, OKRs, Risks, Asks)*  
+     > *2. 🛠️ **Engineering & Cross-Functional Sync** (Milestones, Blockers, PRDs)*  
+     > *3. 🚀 **Customer Release Notes** (What's New, Improvements, Fixes)*"
+2. **Highlight Scope**: Clarify if there are specific uncommitted wins or unlogged blockers that occurred outside GitHub/Jira that should be included.
+
+### Stage 3: Grounded Generation
+Generate the selected update artifact using standardized templates:
+
+#### Format A: Executive Weekly Digest
+```markdown
+# 📊 Executive Product Digest — [Date / Week Number]
+
+### ⚡ 30-Second TL;DR
+- [Single most important milestone shipped this week]
+- [Current delivery confidence: 🟢 On Track | 🟡 At Risk | 🔴 Blocked]
+- [Key decision or blocker requiring leadership action]
+
+### 🎯 OKR & Milestone Progress
+| Objective / Milestone | Status | Target Metric Progress | Confidence |
+| :--- | :---: | :--- | :---: |
+| [Epic / OKR 1] | 🟢 Shipped | 12% -> 24% conversion | High |
+| [Epic / OKR 2] | 🟡 At Risk | Pending 3rd-party API review | Medium |
+
+### ⚠️ Risks, Dependencies & Elephants
+- **Risk 1**: [Concrete description of blocker or delayed upstream dependency].
+
+### 🙋 Critical Asks & Decisions Needed
+- **Decision Required**: [Specific decision needed from VP/CPO/CTO by Date].
+```
+
+#### Format B: Customer-Facing Release Notes
+```markdown
+# 🚀 What's New in [Product Name] — [Version / Date]
+
+### ✨ Highlights
+- **[Feature Title]**: [1-2 sentence description focusing on customer benefit and time saved].
+
+### 🛠️ Improvements & Enhancements
+- **[Module Name]**: [Speed, responsiveness, or workflow simplification].
+
+### 🐛 Bug Fixes & Stability
+- Fixed issue where [symptom experienced by users] occurred during [user action].
+```
+
+### Stage 4: Knowledge Compounding (Write-Back)
+1. Offer to save the update to `docs/updates/update_[YYYY-MM-DD].md` or `docs/release_notes_[vX.X.X].md`.
+2. If strategic decisions were articulated during the update, offer to append them to [`.context/decisions.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/.context/decisions.md).
+
+---
+
+## 🔄 Flow Handling & Suggested Next Skills
+- **Publish to Confluence**: *"Would you like to publish this executive update to Confluence using `sync-confluence`?"*
+- **Sync to Slack / Team**: *"Would you like to generate a condensed 5-bullet Slack post format?"*
+- **Update Backlog Milestones**: *"Would you like to groom slipped tickets into the next sprint using `refine-user-stories`?"*

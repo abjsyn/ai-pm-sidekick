@@ -24,7 +24,7 @@ The dispatcher matches problem signatures against the four framework categories:
        ▼                  ▼                             ▼                  ▼
 ┌──────────────┐   ┌──────────────┐              ┌──────────────┐   ┌──────────────┐
 │  Strategy &  │   │  Continuous  │              │ Quantitative │   │  Delivery &  │
-│  Value Chain │   │  Discovery   │              │ Prioritize   │   │  Operations  │
+│  Defensibility   │  Discovery   │              │ Prioritize   │   │  Operations  │
 └──────┬───────┘   └──────┬───────┘              └──────┬───────┘   └──────┬───────┘
        │                  │                             │                  │
    [Wardley]          [JTBD / Mom]                   [RICE]            [Shape Up]
@@ -32,9 +32,21 @@ The dispatcher matches problem signatures against the four framework categories:
        │                  │                             │                  │
     [ToC]               [OST]                        [WSJF]             [Scrum]
   Bottlenecks       Outcomes/Opps                Cost of Delay       INVEST Sprints
-                                                        │                  │
-                                                      [Kano]             [GIST]
-                                                    Delighters       Step-Projects
+       │                  │                             │                  │
+    [PR/FAQ]           [Assumptions]                 [Kano]             [GIST]
+ Customer Vision      RAT Risk Matrix              Delighters       Step-Projects
+       │                  │                             │                  │
+  [North Star]         [AARRR]                       [ICE]           [Story Mapping]
+  Metric Tree        Growth Loops                 Speed Heuristic    Walking Skeleton
+       │                                                │                  │
+ [Positioning]                                      [Opp Score]      [Pre-Mortem]
+ April Dunford                                    ODI Satisfaction   Tigers & Elephants
+       │                                                │                  │
+  [7 Powers]                                         [MoSCoW]           [Kanban]
+ Moat Defense                                      Scope Budget      Flow WIP & SLE
+       │
+   [Pricing]
+ Van Westendorp
 ```
 
 ---

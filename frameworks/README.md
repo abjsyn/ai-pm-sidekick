@@ -11,18 +11,31 @@ frameworks/
 ├── README.md                      # Schema specification & execution protocol
 ├── strategy/                      # High-level positioning, value chains, and system constraints
 │   ├── wardley-mapping.md         # Value chain evolution & build-vs-buy doctrine
-│   └── theory-of-constraints.md   # 5 Focusing Steps & bottleneck throughput optimization
+│   ├── theory-of-constraints.md   # 5 Focusing Steps & bottleneck throughput optimization
+│   ├── working-backwards-prfaq.md # Amazon Press Release & Customer/Internal FAQ
+│   ├── north-star-metric-tree.md  # North Star decomposition into Breadth/Depth/Frequency/Efficiency
+│   ├── product-positioning.md     # April Dunford 5-component positioning engine
+│   ├── seven-powers-moats.md      # Hamilton Helmer structural defensibility analysis
+│   └── pricing-and-packaging.md   # Van Westendorp PSM & Good-Better-Best tiering
 ├── discovery/                     # Continuous discovery, user pains, and customer validation
 │   ├── opportunity-solution-tree.md # Outcome -> Opportunity -> Solution -> Test hierarchy
-│   └── jtbd-and-mom-test.md       # Jobs to Be Done & non-leading interview synthesis
+│   ├── jtbd-and-mom-test.md       # Jobs to Be Done & non-leading interview synthesis
+│   ├── assumption-mapping.md      # 4 lenses (Desirability, Feasibility, Viability, Usability) + RAT
+│   └── aarrr-and-growth-loops.md  # Pirate metrics funnel diagnostics & compounding growth loops
 ├── prioritization/                # Quantitative & qualitative trade-off scoring
 │   ├── rice.md                    # Reach, Impact, Confidence (anti-gaming), Effort
 │   ├── wsjf-cost-of-delay.md      # Weighted Shortest Job First economic scheduling
-│   └── kano-model.md              # Must-be, Performance, and Delighter categorization
+│   ├── kano-model.md              # Must-be, Performance, and Delighter categorization
+│   ├── ice-and-value-effort.md    # ICE scoring (Impact, Confidence, Ease) + 2x2 Value/Effort
+│   ├── opportunity-scoring.md     # Ulwick / Dan Olsen Opportunity formula (Importance vs Satisfaction)
+│   └── moscow-scope-negotiation.md# Must/Should/Could/Won't boundaries & Buy-a-Feature budget games
 └── operations/                    # Delivery execution, cadence, and operational models
     ├── shape-up.md                # Shaped Pitches, Appetite, Rabbit Holes, Hill Charts
     ├── scrum-sprint-delivery.md   # Sprint Goal, INVEST Stories, Gherkin ACs, Velocity slicing
-    └── gist-planning.md           # Goals, Ideas, Step-projects, Tasks
+    ├── gist-planning.md           # Goals, Ideas, Step-projects, Tasks
+    ├── user-story-mapping.md      # Jeff Patton narrative backbone & Walking Skeleton release slices
+    ├── pre-mortem-tigers.md       # Shreyas Doshi failure simulation: Tigers, Paper Tigers, Elephants
+    └── kanban-continuous-flow.md  # Little's Law continuous flow, WIP limits, and Service Level Expectations
 ```
 
 ---

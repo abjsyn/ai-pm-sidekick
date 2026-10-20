@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-[#0d0e11] text-[#e3e2e6]">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Knowledge Core — File Upload & Ingestion | AI PM Sidekick</title>
+  <!-- Google Fonts: Plus Jakarta Sans & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            surface: {
+              DEFAULT: '#121316',
+              dim: '#0d0e11',
+              bright: '#38393c',
+              low: '#1b1b1f',
+              container: '#1f1f23',
+              high: '#292a2d',
+              highest: '#343538'
+            },
+            primary: {
+              DEFAULT: '#ffb77d',
+              container: '#d97707',
+              hover: '#ffa556',
+              surface: '#2c1a0c'
+            },
+            accent: {
+              cyan: '#80d5cb',
+              emerald: '#34d399',
+              amber: '#fbbf24',
+              rose: '#f87171'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #121316; }
+    ::-webkit-scrollbar-thumb { background: #292a2d; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #38393c; }
+
+    .dropzone-active {
+      border-color: #ffb77d !important;
+      background-color: rgba(255, 183, 125, 0.05) !important;
+      box-shadow: 0 0 25px -5px rgba(217, 119, 7, 0.25);
+    }
+  </style>
+</head>
+<body class="h-full flex flex-col font-sans antialiased text-[#e3e2e6] bg-[#0d0e11]">
+
+  <!-- Top Navigation Header -->
+  <header class="h-16 border-b border-[#292a2d] bg-[#121316]/90 backdrop-blur-md sticky top-0 z-30 px-4 sm:px-6 flex items-center justify-between">
+    <div class="flex items-center space-x-4">
+      <div class="flex items-center space-x-2.5">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-[#d97707] to-[#ffb77d] flex items-center justify-center shadow-lg shadow-orange-950/30">
+          <svg class="w-4 h-4 text-[#121316]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+        </div>
+        <span class="font-display font-bold text-base tracking-tight text-white">AI PM Sidekick</span>
+      </div>
+      <span class="text-[#554336] text-sm">/</span>
+      <nav class="flex items-center space-x-2 text-xs sm:text-sm">
+        <span class="text-[#a38c7c]">Knowledge Core</span>
+        <span class="text-[#554336]">/</span>
+        <span class="text-white font-medium bg-[#1f1f23] px-2 py-0.5 rounded border border-[#292a2d]">Upload & Ingest</span>
+      </nav>
+    </div>
+
+    <!-- Right utility status & persona -->
+    <div class="flex items-center space-x-3 sm:space-x-4">
+      <div class="hidden md:flex items-center space-x-2 px-2.5 py-1 rounded-full bg-[#1b1b1f] border border-[#292a2d] text-xs">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span class="text-zinc-400 font-mono">14 Context Files Active</span>
+      </div>
+      <div class="flex items-center space-x-2 pl-2 border-l border-[#292a2d]">
+        <div class="w-7 h-7 rounded-full bg-gradient-to-tr from-amber-600 to-amber-300 text-[#121316] font-bold text-xs flex items-center justify-center">
+          P
+        </div>
+        <span class="text-xs font-medium text-zinc-300 hidden sm:inline">Paula (Lead PM)</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-8">
+    
+    <!-- Hero / Title Section -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-[#292a2d]/60">
+      <div>
+        <div class="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full bg-[#ffb77d]/10 text-[#ffb77d] text-xs font-medium border border-[#ffb77d]/20 mb-2">
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+          </svg>
+          <span>Context Knowledge Pipeline</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-display font-bold text-white tracking-tight">Upload Knowledge & Signals</h1>
+        <p class="text-sm text-zinc-400 mt-1 max-w-2xl">
+          Ingest raw customer interview transcripts, technical RFCs, meeting notes, or PRD drafts directly into <code class="text-xs bg-[#1f1f23] text-[#ffb77d] px-1.5 py-0.5 rounded border border-[#292a2d]">.context/</code> to ground AI reasoning.
+        </p>
+      </div>
+
+      <!-- Quick Action Buttons -->
+      <div class="flex items-center gap-2.5">
+        <button id="btn-sample-data" onclick="loadSampleFiles()" class="inline-flex items-center space-x-1.5 px-3 py-2 rounded-lg bg-[#1f1f23] hover:bg-[#292a2d] text-xs font-medium text-zinc-200 border border-[#292a2d] transition-all hover:border-[#a38c7c]/50 shadow-sm">
+          <svg class="w-4 h-4 text-[#ffb77d]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+          </svg>
+          <span>Try Sample Data</span>
+        </button>
+        <button onclick="openKnowledgeModal()" class="inline-flex items-center space-x-1.5 px-3 py-2 rounded-lg bg-[#1f1f23] hover:bg-[#292a2d] text-xs font-medium text-zinc-200 border border-[#292a2d] transition-all">
+          <svg class="w-4 h-4 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span>Routing Rules</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 2-Column Responsive Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+      <!-- Left Column: Upload Area & Queue (7 cols) -->
+      <section class="lg:col-span-7 space-y-6">
+
+        <!-- Upload Form Container -->
+        <div class="bg-[#121316] rounded-xl border border-[#292a2d] p-5 sm:p-6 shadow-xl relative overflow-hidden">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-base font-display font-semibold text-white flex items-center space-x-2">
+              <span>1. Staging & File Selection</span>
+            </h2>
+            <span class="text-xs text-zinc-400">Supported: .md, .pdf, .docx, .txt, .csv, .json</span>
+          </div>
+
+          <!-- Drag and Drop Box -->
+          <div id="drop-zone" 
+               class="border-2 border-dashed border-[#292a2d] hover:border-[#ffb77d]/60 bg-[#1b1b1f]/50 hover:bg-[#1f1f23]/50 rounded-xl p-8 sm:p-10 text-center transition-all cursor-pointer group"
+               ondragover="handleDragOver(event)" 
+               ondragleave="handleDragLeave(event)" 
+               ondrop="handleDrop(event)"
+               onclick="document.getElementById('file-input').click()">
+            
+            <input type="file" id="file-input" class="hidden" multiple accept=".md,.pdf,.docx,.txt,.csv,.json" onchange="handleFileSelect(event)">
+            
+            <div class="flex flex-col items-center justify-center space-y-3">
+              <div class="w-14 h-14 rounded-2xl bg-[#1f1f23] group-hover:bg-[#292a2d] border border-[#292a2d] group-hover:border-[#ffb77d]/40 flex items-center justify-center transition-all transform group-hover:scale-105 shadow-inner">
+                <svg class="w-7 h-7 text-[#ffb77d]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                </svg>
+              </div>
+              <div class="space-y-1">
+                <p class="text-sm font-medium text-white group-hover:text-[#ffb77d] transition-colors">
+                  <span class="underline underline-offset-2 decoration-[#ffb77d]/50">Click to browse</span> or drag & drop files here
+                </p>
+                <p class="text-xs text-zinc-400">Maximum file size 25MB • Up to 10 files per batch</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Configuration Controls -->
+          <div class="mt-6 pt-5 border-t border-[#292a2d]/80 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            
+            <!-- Target Domain Selector -->
+            <div>
+              <label for="default-domain" class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1.5">
+                Target Knowledge Core Domain
+              </label>
+              <div class="relative">
+                <select id="default-domain" class="w-full bg-[#1b1b1f] border border-[#292a2d] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#ffb77d] appearance-none pr-8 cursor-pointer">
+                  <option value="discovery">Customer Discovery (.context/discovery.md)</option>
+                  <option value="product">Product Strategy & Vision (.context/product.md)</option>
+                  <option value="architecture">Architecture & Tech Specs (.context/architecture.md)</option>
+                  <option value="market">Market & Competitor Intel (.context/market.md)</option>
+                  <option value="decisions">Product Decision Log (.context/decisions.md)</option>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-zinc-400">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Ingestion Strategy Mode -->
+            <div>
+              <label for="ingestion-strategy" class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1.5">
+                Ingestion Mode
+              </label>
+              <div class="relative">
+                <select id="ingestion-strategy" class="w-full bg-[#1b1b1f] border border-[#292a2d] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#ffb77d] appearance-none pr-8 cursor-pointer">
+                  <option value="synthesize">Append & Synthesize (Safe Mode)</option>
+                  <option value="replace_section">Update Section by Title</option>
+                  <option value="extract_stories">Ingest & Auto-Extract INVEST Stories</option>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-zinc-400">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tags Selector -->
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1.5">
+                Tags & Topic Association
+              </label>
+              <div class="flex flex-wrap items-center gap-1.5" id="tags-container">
+                <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs bg-[#1f1f23] border border-[#ffb77d]/30 text-[#ffb77d] font-mono">
+                  #q4-interviews
+                  <button onclick="this.parentElement.remove()" class="ml-1.5 text-zinc-400 hover:text-white">&times;</button>
+                </span>
+                <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs bg-[#1f1f23] border border-[#292a2d] text-zinc-300 font-mono">
+                  #customer-pains
+                  <button onclick="this.parentElement.remove()" class="ml-1.5 text-zinc-400 hover:text-white">&times;</button>
+                </span>
+                <button onclick="promptNewTag()" class="inline-flex items-center px-2 py-1 rounded-md text-xs bg-[#1b1b1f] hover:bg-[#292a2d] border border-dashed border-[#292a2d] text-zinc-400 hover:text-white transition-colors">
+                  + Add Tag
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Staged Files Queue Section -->
+        <div class="bg-[#121316] rounded-xl border border-[#292a2d] p-5 sm:p-6 shadow-xl">
+          <div class="flex items-center justify-between pb-3 border-b border-[#292a2d]">
+            <div class="flex items-center space-x-2">
+              <h2 class="text-base font-display font-semibold text-white">2. Upload Queue</h2>
+              <span id="queue-badge" class="px-2 py-0.5 rounded-full text-xs font-mono font-medium bg-[#1f1f23] text-zinc-300 border border-[#292a2d]">
+                0 files queued
+              </span>
+            </div>
+            <button id="btn-clear-queue" onclick="clearQueue()" class="text-xs text-zinc-400 hover:text-rose-400 transition-colors hidden">
+              Clear All
+            </button>
+          </div>
+
+          <!-- Empty Queue Placeholder -->
+          <div id="queue-empty-state" class="py-10 text-center space-y-2">
+            <svg class="w-10 h-10 text-zinc-600 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <p class="text-sm text-zinc-400">No files staged for ingestion yet</p>
+            <p class="text-xs text-zinc-500">Drop your files above or click "Try Sample Data" for a 1-click test</p>
+          </div>
+
+          <!-- Staged Files List -->
+          <ul id="staged-files-list" class="divide-y divide-[#292a2d]/50 mt-2 hidden">
+            <!-- Dynamically populated via JS -->
+          </ul>
+
+          <!-- Ingestion Progress Bar (Initially Hidden) -->
+          <div id="ingestion-progress-card" class="mt-4 p-4 rounded-lg bg-[#1b1b1f] border border-[#292a2d] hidden space-y-2">
+            <div class="flex justify-between items-center text-xs">
+              <span id="progress-stage-label" class="font-medium text-amber-300 flex items-center space-x-1.5">
+                <svg class="animate-spin h-3.5 w-3.5 text-amber-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span id="progress-text">Uploading files to staging...</span>
+              </span>
+              <span id="progress-percent" class="font-mono text-zinc-300">0%</span>
+            </div>
+            <div class="w-full bg-[#121316] h-2 rounded-full overflow-hidden border border-[#292a2d]">
+              <div id="progress-bar-fill" class="bg-gradient-to-r from-amber-500 to-[#ffb77d] h-full rounded-full transition-all duration-300 w-0"></div>
+            </div>
+          </div>
+
+          <!-- Primary Submit CTA -->
+          <div class="mt-6 pt-4 border-t border-[#292a2d] flex items-center justify-between">
+            <div class="text-xs text-zinc-400 flex items-center space-x-1.5">
+              <svg class="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+              </svg>
+              <span>Audit logged to <code class="text-zinc-300">.context/decisions.md</code></span>
+            </div>
+            <button id="btn-submit-upload" 
+                    onclick="triggerIngestion()" 
+                    disabled 
+                    class="px-5 py-2.5 rounded-lg bg-gradient-to-r from-[#d97707] to-[#ffb77d] text-[#121316] font-display font-semibold text-xs sm:text-sm shadow-lg shadow-orange-900/30 hover:opacity-95 focus:ring-2 focus:ring-[#ffb77d] disabled:opacity-40 disabled:cursor-not-allowed transition-all flex items-center space-x-2">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+              </svg>
+              <span>Ingest into Knowledge Core</span>
+            </button>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- Right Column: Recent Ingestion Log & History (5 cols) -->
+      <section class="lg:col-span-5 space-y-6">
+
+        <div class="bg-[#121316] rounded-xl border border-[#292a2d] p-5 shadow-xl">
+          <div class="flex items-center justify-between pb-3 border-b border-[#292a2d]">
+            <div>
+              <h2 class="text-base font-display font-semibold text-white">Recent Ingestion History</h2>
+              <p class="text-xs text-zinc-400 mt-0.5">Documents synchronized to <code class="text-zinc-300 font-mono">.context/</code></p>
+            </div>
+            <span class="text-xs bg-emerald-950/60 border border-emerald-500/30 text-emerald-300 px-2.5 py-0.5 rounded-full font-mono">
+              Live Sync
+            </span>
+          </div>
+
+          <!-- Filter & Search Controls -->
+          <div class="mt-4 space-y-3">
+            <div class="relative">
+              <input type="text" 
+                     id="search-input" 
+                     placeholder="Search indexed files, tags, or topics..." 
+                     oninput="filterHistoryTable()"
+                     class="w-full bg-[#1b1b1f] border border-[#292a2d] rounded-lg pl-9 pr-3 py-1.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-[#ffb77d]">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-zinc-500">
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+            </div>
+
+            <!-- Domain Category Tabs -->
+            <div class="flex items-center space-x-1 overflow-x-auto pb-1 text-xs">
+              <button onclick="setDomainFilter('all')" class="domain-tab active px-2.5 py-1 rounded-md bg-[#292a2d] text-white font-medium whitespace-nowrap">All (5)</button>
+              <button onclick="setDomainFilter('discovery')" class="domain-tab px-2.5 py-1 rounded-md bg-[#1b1b1f] hover:bg-[#292a2d] text-zinc-400 hover:text-white whitespace-nowrap">Discovery</button>
+              <button onclick="setDomainFilter('architecture')" class="domain-tab px-2.5 py-1 rounded-md bg-[#1b1b1f] hover:bg-[#292a2d] text-zinc-400 hover:text-white whitespace-nowrap">Architecture</button>
+              <button onclick="setDomainFilter('market')" class="domain-tab px-2.5 py-1 rounded-md bg-[#1b1b1f] hover:bg-[#292a2d] text-zinc-400 hover:text-white whitespace-nowrap">Market</button>
+            </div>
+          </div>
+
+          <!-- History Table / Feed -->
+          <div class="mt-4 overflow-hidden rounded-lg border border-[#292a2d]/80">
+            <div class="max-h-[460px] overflow-y-auto divide-y divide-[#292a2d]/60" id="history-items-container">
+              
+              <!-- Item 1 -->
+              <div class="p-3.5 hover:bg-[#1b1b1f]/60 transition-colors history-row" data-domain="discovery" data-name="customer-interviews-fintech.pdf">
+                <div class="flex items-start justify-between gap-2">
+                  <div class="flex items-start space-x-2.5 min-w-0">
+                    <div class="w-8 h-8 rounded bg-rose-950/50 border border-rose-800/40 text-rose-400 flex items-center justify-center shrink-0 text-xs font-bold font-mono">
+                      PDF
+                    </div>
+                    <div class="min-w-0">
+                      <p class="text-xs font-semibold text-white truncate">customer-interviews-fintech.pdf</p>
+                      <div class="flex items-center space-x-2 mt-1 text-[11px] text-zinc-400">
+                        <span class="text-amber-300 bg-amber-950/40 px-1.5 py-0.5 rounded border border-amber-800/30">discovery.md</span>
+                        <span>•</span>
+                        <span>1.4 MB</span>
+                        <span>•</span>
+                        <span>2h ago</span>
+                      </div>
+                    </div>
+                  </div>
+                  <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-emerald-950/60 text-emerald-400 border border-emerald-800/30 shrink-0">
+                    Indexed
+                  </span>
+                </div>
+                <div class="mt-2.5 pt-2 border-t border-[#292a2d]/40 flex items-center justify-between text-[11px]">
+                  <span class="text-zinc-500">By: Paula (Lead PM)</span>
+                  <button onclick="viewChunksModal('customer-interviews-fintech.pdf', 'discovery.md', 6)" class="text-[#ffb77d] hover:underline flex items-center space-x-1">
+                    <span>Inspect 6 Chunks</span>
+                    <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Item 2 -->
+              <div class="p-3.5 hover:bg-[#1b1b1f]/60 transition-colors history-row" data-domain="architecture" data-name="stripe-billing-v2-rfc.md">
+                <div class="flex items-start justify-between gap-2">
+                  <div class="flex items-start space-x-2.5 min-w-0">
+                    <div class="w-8 h-8 rounded bg-blue-950/50 border border-blue-800/40 text-blue-400 flex items-center justify-center shrink-0 text-xs font-bold font-mono">
+                      MD
+                    </div>
+                    <div class="min-w-0">
+                      <p class="text-xs font-semibold text-white truncate">stripe-billing-v2-rfc.md</p>
+                      <div class="flex items-center space-x-2 mt-1 text-[11px] text-zinc-400">
+                        <span class="text-blue-300 bg-blue-950/40 px-1.5 py-0.5 rounded border border-blue-800/30">architecture.md</span>
+                        <span>•</span>
+                        <span>320 KB</span>
+                        <span>•</span>
+                        <span>Yesterday</span>
+                      </div>
+                    </div>
+                  </div>
+                  <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-emerald-950/60 text-emerald-400 border border-emerald-800/30 shrink-0">
+                    Indexed
+                  </span>
+                </div>
+                <div class="mt-2.5 pt-2 border-t border-[#292a2d]/40 flex items-center justify-between text-[11px]">
+                  <span class="text-zinc-500">By: Eric (Tech Lead)</span>
+                  <button onclick="viewChunksModal('stripe-billing-v2-rfc.md', 'architecture.md', 3)" class="text-[#ffb77d] hover:underline flex items-center space-x-1">
+                    <span>Inspect 3 Chunks</span>
+                    <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Item 3 -->
+              <div class="p-3.5 hover:bg-[#1b1b1f]/60 transition-colors history-row" data-domain="market" data-name="competitor-pricing-matrix.docx">
+                <div class="flex items-start justify-between gap-2">
+                  <div class="flex items-start space-x-2.5 min-w-0">
+                    <div class="w-8 h-8 rounded bg-cyan-950/50 border border-cyan-800/40 text-cyan-400 flex items-center justify-center shrink-0 text-xs font-bold font-mono">
+                      DOC
+                    </div>
+                    <div class="min-w-0">
+                      <p class="text-xs font-semibold text-white truncate">competitor-pricing-matrix.docx</p>
+                      <div class="flex items-center space-x-2 mt-1 text-[11px] text-zinc-400">
+                        <span class="text-cyan-300 bg-cyan-950/40 px-1.5 py-0.5 rounded border border-cyan-800/30">market.md</span>
+                        <span>•</span>
+                        <span>850 KB</span>
+                        <span>•</span>
+                        <span>3 days ago</span>
+                      </div>
+                    </div>
+                  </div>
+                  <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-emerald-950/60 text-emerald-400 border border-emerald-800/30 shrink-0">
+                    Indexed
+                  </span>
+                </div>
+                <div class="mt-2.5 pt-2 border-t border-[#292a2d]/40 flex items-center justify-between text-[11px]">
+                  <span class="text-zinc-500">By: Gina (Growth PM)</span>
+                  <button onclick="viewChunksModal('competitor-pricing-matrix.docx', 'market.md', 4)" class="text-[#ffb77d] hover:underline flex items-center space-x-1">
+                    <span>Inspect 4 Chunks</span>
+                    <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="mt-3 text-center">
+            <span class="text-[11px] text-zinc-500">Showing 3 of 18 indexed context documents</span>
+          </div>
+
+        </div>
+
+        <!-- Quick Tips Callout -->
+        <div class="p-4 rounded-xl bg-[#1b1b1f]/70 border border-[#292a2d] space-y-2">
+          <div class="flex items-center space-x-2 text-xs font-semibold text-amber-300">
+            <svg class="w-4 h-4 text-[#ffb77d]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>Best Practices for Context Ingestion</span>
+          </div>
+          <ul class="text-xs text-zinc-400 space-y-1.5 list-disc list-inside">
+            <li>Customer transcripts are scrubbed of PII before indexing.</li>
+            <li>Key takeaways automatically populate <code class="text-zinc-300">.context/discovery.md</code>.</li>
+            <li>Architectural decisions get cross-checked against existing tech constraints.</li>
+          </ul>
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- Interactive Modal: Inspect Chunks & Diff Preview -->
+  <div id="chunks-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm hidden">
+    <div class="bg-[#121316] border border-[#292a2d] rounded-2xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+      <!-- Modal Header -->
+      <div class="px-6 py-4 border-b border-[#292a2d] flex items-center justify-between bg-[#1b1b1f]/50">
+        <div class="flex items-center space-x-2.5">
+          <div class="w-7 h-7 rounded-lg bg-[#ffb77d]/10 border border-[#ffb77d]/30 text-[#ffb77d] flex items-center justify-center">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-sm font-display font-semibold text-white" id="modal-doc-title">Inspect Parsed Chunks</h3>
+            <p class="text-[11px] text-zinc-400" id="modal-doc-target">Routing to: .context/discovery.md</p>
+          </div>
+        </div>
+        <button onclick="closeChunksModal()" class="text-zinc-400 hover:text-white p-1 rounded-lg hover:bg-[#292a2d]">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-6 overflow-y-auto space-y-4 text-xs">
+        <div class="bg-[#1b1b1f] p-3.5 rounded-lg border border-[#292a2d]">
+          <span class="text-[10px] font-mono uppercase tracking-wider text-amber-400 font-semibold">Chunk 1 / 4 • Extracted Insight</span>
+          <p class="text-zinc-300 mt-1 font-mono text-[11px]">
+            "Customers repeatedly noted that Jira ticket creation takes 20-30 minutes per user story due to manual Gherkin authoring."
+          </p>
+          <div class="mt-2 flex items-center space-x-2 text-[10px] text-zinc-400">
+            <span class="bg-emerald-950/60 text-emerald-400 border border-emerald-800/40 px-1.5 py-0.5 rounded">High Confidence (98%)</span>
+            <span>Target: ## Pain Points & Triggers</span>
+          </div>
+        </div>
+
+        <div class="bg-[#1b1b1f] p-3.5 rounded-lg border border-[#292a2d]">
+          <span class="text-[10px] font-mono uppercase tracking-wider text-amber-400 font-semibold">Chunk 2 / 4 • Verbatim Quote</span>
+          <p class="text-zinc-300 mt-1 font-mono text-[11px]">
+            "Quote (User #4 - Series B FinTech PM): 'If your tool can generate the happy path and negative path automatically, our squad will adopt it instantly.'"
+          </p>
+          <div class="mt-2 flex items-center space-x-2 text-[10px] text-zinc-400">
+            <span class="bg-emerald-950/60 text-emerald-400 border border-emerald-800/40 px-1.5 py-0.5 rounded">Verified Mom Test Rule</span>
+            <span>Target: ## Customer Quotes</span>
+          </div>
+        </div>
+
+        <!-- Markdown Diff View Preview -->
+        <div class="border border-[#292a2d] rounded-lg overflow-hidden">
+          <div class="bg-[#1f1f23] px-3 py-1.5 text-[11px] font-mono text-zinc-400 flex items-center justify-between">
+            <span>Diff Preview: .context/discovery.md</span>
+            <span class="text-emerald-400">+12 lines added</span>
+          </div>
+          <pre class="p-3 bg-[#0d0e11] font-mono text-[11px] leading-relaxed text-zinc-300 overflow-x-auto">
+<span class="text-zinc-500">@@ -45,6 +45,18 @@ ## Customer Discovery Log</span>
+<span class="text-emerald-400">+ ### Interview Signal: Series B PM Cohort</span>
+<span class="text-emerald-400">+ - Key Bottleneck: Gherkin edge case specification churn</span>
+<span class="text-emerald-400">+ - Verified Need: 1-click INVEST acceptance criteria generation</span>
+<span class="text-emerald-400">+ - Status: Validated with 5 enterprise tech leads</span>
+          </pre>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-6 py-3 border-t border-[#292a2d] bg-[#1b1b1f]/50 flex justify-end space-x-2">
+        <button onclick="closeChunksModal()" class="px-4 py-2 rounded-lg bg-[#292a2d] hover:bg-[#343538] text-white text-xs font-medium">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive Modal: Routing Rules Reference -->
+  <div id="routing-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm hidden">
+    <div class="bg-[#121316] border border-[#292a2d] rounded-2xl max-w-xl w-full p-6 space-y-4 shadow-2xl">
+      <div class="flex items-center justify-between pb-3 border-b border-[#292a2d]">
+        <h3 class="text-base font-display font-semibold text-white">Knowledge Core Routing Architecture</h3>
+        <button onclick="closeKnowledgeModal()" class="text-zinc-400 hover:text-white">&times;</button>
+      </div>
+      <div class="text-xs space-y-3 text-zinc-300 leading-relaxed">
+        <p>Uploaded documents are automatically partitioned and routed to the corresponding knowledge file based on their domain:</p>
+        <div class="space-y-2 font-mono text-[11px]">
+          <div class="p-2.5 rounded bg-[#1b1b1f] border border-[#292a2d]">
+            <span class="text-[#ffb77d] font-semibold">.context/discovery.md</span>
+            <p class="text-zinc-400 font-sans mt-0.5 text-xs">Customer pains, user quotes, Mom Test interview logs, and problem validations.</p>
+          </div>
+          <div class="p-2.5 rounded bg-[#1b1b1f] border border-[#292a2d]">
+            <span class="text-[#ffb77d] font-semibold">.context/product.md</span>
+            <p class="text-zinc-400 font-sans mt-0.5 text-xs">Product vision, core personas, North Star metrics, and quarterly OKRs.</p>
+          </div>
+          <div class="p-2.5 rounded bg-[#1b1b1f] border border-[#292a2d]">
+            <span class="text-[#ffb77d] font-semibold">.context/architecture.md</span>
+            <p class="text-zinc-400 font-sans mt-0.5 text-xs">Tech stack boundaries, API schemas, database models, and NFRs.</p>
+          </div>
+        </div>
+      </div>
+      <div class="flex justify-end pt-2">
+        <button onclick="closeKnowledgeModal()" class="px-4 py-2 rounded-lg bg-[#292a2d] text-white text-xs font-medium">
+          Understood
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Toast Alert -->
+  <div id="success-toast" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 ease-out flex items-center space-x-3 bg-[#1b1b1f] border border-emerald-500/40 text-white px-4 py-3 rounded-xl shadow-2xl">
+    <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+      </svg>
+    </div>
+    <div class="pr-2">
+      <h4 class="text-xs font-semibold text-white">Knowledge Core Updated!</h4>
+      <p class="text-[11px] text-zinc-400" id="toast-message">Files successfully parsed and indexed into .context/</p>
+    </div>
+    <button onclick="hideToast()" class="text-zinc-400 hover:text-white p-1">
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+  </div>
+
+  <!-- Vanilla JavaScript Logic -->
+  <script>
+    // State management
+    let queuedFiles = [];
+    let currentFilter = 'all';
+
+    // File selection handler
+    function handleFileSelect(e) {
+      const files = Array.from(e.target.files);
+      addFilesToQueue(files);
+      e.target.value = ''; // Reset input
+    }
+
+    // Drag and drop handlers
+    function handleDragOver(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      document.getElementById('drop-zone').classList.add('dropzone-active');
+    }
+
+    function handleDragLeave(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      document.getElementById('drop-zone').classList.remove('dropzone-active');
+    }
+
+    function handleDrop(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      document.getElementById('drop-zone').classList.remove('dropzone-active');
+      const files = Array.from(e.dataTransfer.files);
+      addFilesToQueue(files);
+    }
+
+    // Add files to staging list
+    function addFilesToQueue(files) {
+      const defaultDomain = document.getElementById('default-domain').value;
+      
+      files.forEach(file => {
+        const fileExt = file.name.split('.').pop().toUpperCase();
+        queuedFiles.push({
+          id: 'file-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4),
+          name: file.name,
+          size: formatFileSize(file.size),
+          ext: fileExt,
+          domain: defaultDomain,
+          status: 'Ready to Ingest'
+        });
+      });
+
+      renderQueue();
+    }
+
+    // Load sample files for 1-click test
+    function loadSampleFiles() {
+      queuedFiles = [
+        {
+          id: 'sample-1',
+          name: 'q4-customer-interviews-fintech-pains.pdf',
+          size: '2.4 MB',
+          ext: 'PDF',
+          domain: 'discovery',
+          status: 'Ready to Ingest'
+        },
+        {
+          id: 'sample-2',
+          name: 'auth-v2-migration-architecture-rfc.md',
+          size: '480 KB',
+          ext: 'MD',
+          domain: 'architecture',
+          status: 'Ready to Ingest'
+        },
+        {
+          id: 'sample-3',
+          name: 'competitor-pricing-teardown-2026.docx',
+          size: '1.1 MB',
+          ext: 'DOCX',
+          domain: 'market',
+          status: 'Ready to Ingest'
+        }
+      ];
+
+      renderQueue();
+    }
+
+    // Format file sizes
+    function formatFileSize(bytes) {
+      if (!bytes || bytes === 0) return '0 KB';
+      const k = 1024;
+      const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+    }
+
+    // Render queue list in DOM
+    function renderQueue() {
+      const listContainer = document.getElementById('staged-files-list');
+      const emptyState = document.getElementById('queue-empty-state');
+      const queueBadge = document.getElementById('queue-badge');
+      const clearBtn = document.getElementById('btn-clear-queue');
+      const submitBtn = document.getElementById('btn-submit-upload');
+
+      if (queuedFiles.length === 0) {
+        listContainer.classList.add('hidden');
+        listContainer.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        queueBadge.innerText = '0 files queued';
+        clearBtn.classList.add('hidden');
+        submitBtn.disabled = true;
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      listContainer.classList.remove('hidden');
+      clearBtn.classList.remove('hidden');
+      submitBtn.disabled = false;
+      queueBadge.innerText = `${queuedFiles.length} file${queuedFiles.length > 1 ? 's' : ''} queued`;
+
+      listContainer.innerHTML = queuedFiles.map(file => `
+        <li class="py-3 flex items-center justify-between gap-3 text-xs" id="${file.id}">
+          <div class="flex items-center space-x-3 min-w-0">
+            <span class="w-8 h-8 rounded bg-[#1f1f23] border border-[#292a2d] text-[#ffb77d] font-mono font-bold flex items-center justify-center shrink-0">
+              ${file.ext}
+            </span>
+            <div class="min-w-0">
+              <p class="text-white font-medium truncate">${file.name}</p>
+              <div class="flex items-center space-x-2 text-[11px] text-zinc-400 mt-0.5">
+                <span>${file.size}</span>
+                <span>•</span>
+                <span class="text-amber-300 font-mono">.context/${file.domain}.md</span>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center space-x-2">
+            <button onclick="removeFile('${file.id}')" class="text-zinc-500 hover:text-rose-400 p-1 rounded transition-colors" title="Remove file">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </button>
+          </div>
+        </li>
+      `).join('');
+    }
+
+    // Remove single file
+    function removeFile(fileId) {
+      queuedFiles = queuedFiles.filter(f => f.id !== fileId);
+      renderQueue();
+    }
+
+    // Clear entire queue
+    function clearQueue() {
+      queuedFiles = [];
+      renderQueue();
+    }
+
+    // Simulate Ingestion Process with Animated Progress
+    function triggerIngestion() {
+      if (queuedFiles.length === 0) return;
+
+      const submitBtn = document.getElementById('btn-submit-upload');
+      const progressCard = document.getElementById('ingestion-progress-card');
+      const progressBar = document.getElementById('progress-bar-fill');
+      const progressText = document.getElementById('progress-text');
+      const progressPercent = document.getElementById('progress-percent');
+
+      submitBtn.disabled = true;
+      progressCard.classList.remove('hidden');
+
+      let currentPercent = 0;
+      const stages = [
+        { at: 15, msg: 'Validating format and stripping PII...' },
+        { at: 45, msg: 'Chunking document into semantic nodes...' },
+        { at: 75, msg: 'Synthesizing with .context/ core definitions...' },
+        { at: 95, msg: 'Appending audit record to .context/decisions.md...' },
+        { at: 100, msg: 'Ingestion complete!' }
+      ];
+
+      const interval = setInterval(() => {
+        currentPercent += 5;
+        if (currentPercent > 100) {
+          clearInterval(interval);
+          completeIngestion();
+        } else {
+          progressBar.style.width = currentPercent + '%';
+          progressPercent.innerText = currentPercent + '%';
+
+          const currentStage = stages.find(s => s.at >= currentPercent);
+          if (currentStage) {
+            progressText.innerText = currentStage.msg;
+          }
+        }
+      }, 90);
+    }
+
+    // Ingestion completed callback
+    function completeIngestion() {
+      const historyContainer = document.getElementById('history-items-container');
+      const count = queuedFiles.length;
+
+      // Add uploaded files to history table top
+      queuedFiles.forEach(file => {
+        const newRow = document.createElement('div');
+        newRow.className = 'p-3.5 hover:bg-[#1b1b1f]/60 transition-colors history-row animate-fade-in';
+        newRow.setAttribute('data-domain', file.domain);
+        newRow.setAttribute('data-name', file.name.toLowerCase());
+        newRow.innerHTML = `
+          <div class="flex items-start justify-between gap-2">
+            <div class="flex items-start space-x-2.5 min-w-0">
+              <div class="w-8 h-8 rounded bg-amber-950/50 border border-amber-800/40 text-amber-400 flex items-center justify-center shrink-0 text-xs font-bold font-mono">
+                ${file.ext}
+              </div>
+              <div class="min-w-0">
+                <p class="text-xs font-semibold text-white truncate">${file.name}</p>
+                <div class="flex items-center space-x-2 mt-1 text-[11px] text-zinc-400">
+                  <span class="text-amber-300 bg-amber-950/40 px-1.5 py-0.5 rounded border border-amber-800/30">${file.domain}.md</span>
+                  <span>•</span>
+                  <span>${file.size}</span>
+                  <span>•</span>
+                  <span>Just now</span>
+                </div>
+              </div>
+            </div>
+            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-emerald-950/60 text-emerald-400 border border-emerald-800/30 shrink-0">
+              Indexed
+            </span>
+          </div>
+          <div class="mt-2.5 pt-2 border-t border-[#292a2d]/40 flex items-center justify-between text-[11px]">
+            <span class="text-zinc-500">By: Paula (Lead PM)</span>
+            <button onclick="viewChunksModal('${file.name}', '${file.domain}.md', 4)" class="text-[#ffb77d] hover:underline flex items-center space-x-1">
+              <span>Inspect 4 Chunks</span>
+              <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+        `;
+        historyContainer.prepend(newRow);
+      });
+
+      // Reset queue
+      queuedFiles = [];
+      renderQueue();
+
+      // Reset progress
+      setTimeout(() => {
+        document.getElementById('ingestion-progress-card').classList.add('hidden');
+        document.getElementById('progress-bar-fill').style.width = '0%';
+        document.getElementById('btn-submit-upload').disabled = true;
+      }, 1000);
+
+      // Trigger Toast
+      showToast(`${count} document${count > 1 ? 's' : ''} indexed successfully into .context/`);
+    }
+
+    // Filter table by domain tab
+    function setDomainFilter(domain) {
+      currentFilter = domain;
+      document.querySelectorAll('.domain-tab').forEach(tab => {
+        tab.classList.remove('bg-[#292a2d]', 'text-white', 'font-medium');
+        tab.classList.add('bg-[#1b1b1f]', 'text-zinc-400');
+      });
+      event.target.classList.add('bg-[#292a2d]', 'text-white', 'font-medium');
+      event.target.classList.remove('bg-[#1b1b1f]', 'text-zinc-400');
+      filterHistoryTable();
+    }
+
+    // Filter table by search text and domain
+    function filterHistoryTable() {
+      const query = document.getElementById('search-input').value.toLowerCase();
+      const rows = document.querySelectorAll('.history-row');
+
+      rows.forEach(row => {
+        const domain = row.getAttribute('data-domain');
+        const name = row.getAttribute('data-name');
+        
+        const matchesDomain = (currentFilter === 'all') || (domain === currentFilter);
+        const matchesQuery = !query || name.includes(query) || domain.includes(query);
+
+        if (matchesDomain && matchesQuery) {
+          row.classList.remove('hidden');
+        } else {
+          row.classList.add('hidden');
+        }
+      });
+    }
+
+    // Modal Handlers
+    function viewChunksModal(fileName, targetFile, chunksCount) {
+      document.getElementById('modal-doc-title').innerText = fileName;
+      document.getElementById('modal-doc-target').innerText = `Target: .context/${targetFile} (${chunksCount} semantic chunks)`;
+      document.getElementById('chunks-modal').classList.remove('hidden');
+    }
+
+    function closeChunksModal() {
+      document.getElementById('chunks-modal').classList.add('hidden');
+    }
+
+    function openKnowledgeModal() {
+      document.getElementById('routing-modal').classList.remove('hidden');
+    }
+
+    function closeKnowledgeModal() {
+      document.getElementById('routing-modal').classList.add('hidden');
+    }
+
+    // Toast functions
+    function showToast(message) {
+      const toast = document.getElementById('success-toast');
+      document.getElementById('toast-message').innerText = message;
+      toast.classList.remove('translate-y-24', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+
+      setTimeout(hideToast, 4500);
+    }
+
+    function hideToast() {
+      const toast = document.getElementById('success-toast');
+      toast.classList.remove('translate-y-0', 'opacity-100');
+      toast.classList.add('translate-y-24', 'opacity-0');
+    }
+
+    // Tag adder prompt
+    function promptNewTag() {
+      const tag = prompt('Enter new tag name (e.g. user-testing, pricing):');
+      if (tag && tag.trim()) {
+        const cleanTag = tag.trim().replace(/^#/, '');
+        const container = document.getElementById('tags-container');
+        const newTag = document.createElement('span');
+        newTag.className = 'inline-flex items-center px-2.5 py-1 rounded-md text-xs bg-[#1f1f23] border border-[#292a2d] text-zinc-300 font-mono';
+        newTag.innerHTML = `#${cleanTag} <button onclick="this.parentElement.remove()" class="ml-1.5 text-zinc-400 hover:text-white">&times;</button>`;
+        container.insertBefore(newTag, container.lastElementChild);
+      }
+    }
+
+    // Keyboard support: Escape closes modals
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeChunksModal();
+        closeKnowledgeModal();
+      }
+    });
+  </script>
+</body>
+</html>
