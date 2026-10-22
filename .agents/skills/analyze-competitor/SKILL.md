@@ -3,6 +3,13 @@ name: analyze-competitor
 description: >-
   Takes competitor URLs, release notes, or positioning dumps, compares them against .context/ product specs,
   and outputs a feature parity matrix, differentiation gaps, and a 1-page Sales/PM battlecard.
+paths:
+  - ".context/strategy-and-constraints.md"
+  - "frameworks/**/*.md"
+requires:
+  context_files:
+    - ".context/product.md"
+    - ".context/strategy-and-constraints.md"
 ---
 
 # ⚔️ Competitive Analysis & Battlecard Skill

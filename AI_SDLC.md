@@ -190,11 +190,9 @@ Prioritize your candidate backlog using mathematical or qualitative models:
 
 #### 7. Multi-System Production Sync
 Publish with zero manual copy-pasting:
-- `/sync-jira`: Create Epics and user stories with Gherkin acceptance criteria in Jira.
-- `/sync-confluence`: Publish the PRD to the team Confluence space.
-- `/sync-notion`: Sync research notes and PRDs to your company Notion database.
-- `/sync-figma`: Push design briefs and WCAG specs directly to Figma design nodes.
-- `/sync-miro`: Export brainstorm stickies and OST diagrams to Miro whiteboards.
+- `/sync-backlog`: Create Epics and user stories with Gherkin acceptance criteria in **Jira** or **GitHub Issues**.
+- `/sync-docs-design`: Publish PRDs and specs to **Confluence** or **Notion**, push design briefs and WCAG specs to **Figma**, and export brainstorm stickies and OST diagrams to **Miro**.
+- `/sync-linear`: Bi-directionally sync cycles, projects, and issues with **Linear**.
 
 ---
 
@@ -209,7 +207,7 @@ flowchart LR
     ARCH --> PRD["/create-prd<br/>Feasibility Grounded"]
     PRD --> TEST["Edge-Case & DB Feasibility Check"]
     TEST --> STORIES["/create-user-stories<br/>Schema-Aligned BDD"]
-    STORIES --> GH["/sync-github-issues<br/>Push Issues & Milestones"]
+    STORIES --> GH["/sync-backlog<br/>Push Jira / GitHub Issues"]
 ```
 
 ### Step-by-Step Walkthrough
@@ -234,9 +232,9 @@ When breaking down features with `/create-user-stories`:
 - Acceptance criteria cite real database fields and API status codes (`Given authenticated user with org_role: admin... When POST /api/v1/workspaces... Then returns 201 Created`).
 - Definition of Done incorporates real test suites (e.g., `pytest`, `npm test`, `playwright`, database migrations).
 
-#### 4. Native GitHub Engineering Handoff (`/sync-github-issues`)
-Push sprint deliverables directly to your GitHub repository:
-- Run `/sync-github-issues` to export refined user stories as GitHub Issues with milestone assignments, difficulty labels (`tier:lean`, `points:5`), and task checklists.
+#### 4. Native GitHub & Jira Engineering Handoff (`/sync-backlog`)
+Push sprint deliverables directly to your issue tracker:
+- Run `/sync-backlog` to export refined user stories as GitHub Issues or Jira tickets with milestone/epic assignments, difficulty labels (`tier:lean`, `points:5`), and task checklists.
 - Bi-directionally pull open issues back into `BACKLOG.md` to run `/apply-framework` prioritization during sprint grooming.
 
 ---
@@ -364,12 +362,10 @@ Large Language Models degrade significantly when bombarded with stale documentat
 | `/refine-user-stories`| Specification | User stories, backlog | SPIDR-Split Stories (`docs/`) | Grooming Score in `docs/` |
 | `/create-documentation`| Specification| PRD, tech stack, architecture | OpenAPI & User Manual (`docs/`) | Updates to `.context/architecture.md` |
 | `/connect-mcp` | Sync | API tokens in `.env` | Active MCP Server Connections | `mcp.json`, `.agents/`, `.cursor/`, `.claude/` |
-| `/sync-jira` | Sync | Stories in `docs/` or `BACKLOG.md` | Jira Epics & Issues | Synced Issue Keys in `BACKLOG.md` |
-| `/sync-confluence` | Sync | PRD in `docs/` | Confluence Space Pages | Page URL in PRD metadata |
-| `/sync-github-issues`| Sync | Stories, `BACKLOG.md` | GitHub Issues & Milestones | Issue # links in `BACKLOG.md` |
-| `/sync-figma` | Sync | Design brief in `docs/` | Figma Comments & Inspect Specs | Node IDs in Design Brief |
-| `/sync-miro` | Sync | Brainstorm notes, OST | Miro Board & Sticky Notes | Miro Board URL in `docs/` |
-| `/sync-notion` | Sync | PRD, notes, database | Notion Pages & Databases | Notion Page URL in `docs/` |
+| `/compact-context` | Knowledge | `.context/.inbox/*.md`, `.context/*.md` | Compacted `.context/` files | `.context/product.md`, `strategy-and-constraints.md`, `decisions.md` |
+| `/sync-backlog` | Sync | Stories in `docs/` or `BACKLOG.md` | Jira Epics/Issues & GitHub Issues/Milestones | Synced Issue Keys / # links in `BACKLOG.md` |
+| `/sync-docs-design` | Sync | PRD, Design Brief, or OST in `docs/` | Confluence, Notion, Figma, & Miro | Page/Board/Node URLs in `docs/` |
+| `/sync-linear` | Sync | Stories, `BACKLOG.md`, Linear triage | Linear Issues, Cycles, & Projects | Linear Issue IDs in `BACKLOG.md` |
 
 ---
 

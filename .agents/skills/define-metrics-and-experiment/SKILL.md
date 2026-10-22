@@ -3,6 +3,16 @@ name: define-metrics-and-experiment
 description: >-
   Defines feature success metrics (North Star, Primary, Guardrail), event tracking taxonomy
   (events + properties), and A/B test or rollout hypotheses before engineering begins building.
+paths:
+  - ".context/*.md"
+  - "templates/prd/*.md"
+  - "templates/user-stories/*.md"
+  - "templates/design/*.md"
+requires:
+  context_files:
+    - ".context/product.md"
+    - ".context/discovery.md"
+    - ".context/strategy-and-constraints.md"
 ---
 
 # 📈 Define Metrics & Experiment Plan Skill

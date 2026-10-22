@@ -1,13 +1,23 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "version": "v0.1.0",
-  "generated_at": "2026-10-20T13:11:57.654339",
+  "generated_at": "2026-10-22T09:41:58.026359",
   "skills": [
     {
       "id": "analyze-competitor",
       "name": "Competitor Analysis & Battlecard",
       "category": "strategy",
       "description": "Takes competitor URLs, release notes, or positioning dumps, compares them against .context/ product specs, and outputs a feature parity matrix, differentiation gaps, and a 1-page Sales/PM battlecard.",
+      "paths": [
+        ".context/strategy-and-constraints.md",
+        "frameworks/**/*.md"
+      ],
+      "requires": {
+        "context_files": [
+          ".context/product.md",
+          ".context/strategy-and-constraints.md"
+        ]
+      },
       "required_context_files": [
         ".context/product.md",
         ".context/strategy-and-constraints.md"
@@ -21,9 +31,18 @@
       "name": "Modular Framework Runner",
       "category": "knowledge",
       "description": "Executes modular strategic, discovery, or prioritization frameworks from frameworks/ over an idea, backlog, or PRD, and synchronizes results back to .context/.",
+      "paths": [
+        ".context/strategy-and-constraints.md",
+        "frameworks/**/*.md"
+      ],
+      "requires": {
+        "context_files": [
+          ".context/product.md",
+          ".context/strategy-and-constraints.md"
+        ]
+      },
       "required_context_files": [
-        ".context/harness-config.yaml",
-        ".context/discovery.md",
+        ".context/product.md",
         ".context/strategy-and-constraints.md"
       ],
       "command_trigger": "/apply-framework",
@@ -35,11 +54,23 @@
       "name": "Spec Auditor & Pre-Mortem Critique",
       "category": "specification",
       "description": "Audits draft PRDs and User Stories against .context/ single source of truth, flagging scope creep, missing edge cases, unvalidated assumptions, and architectural conflicts.",
+      "paths": [
+        ".context/*.md",
+        "templates/prd/*.md",
+        "templates/user-stories/*.md",
+        "templates/design/*.md"
+      ],
+      "requires": {
+        "context_files": [
+          ".context/product.md",
+          ".context/discovery.md",
+          ".context/strategy-and-constraints.md"
+        ]
+      },
       "required_context_files": [
         ".context/product.md",
-        ".context/architecture.md",
-        ".context/strategy-and-constraints.md",
-        ".context/conventions.md"
+        ".context/discovery.md",
+        ".context/strategy-and-constraints.md"
       ],
       "command_trigger": "/audit-spec",
       "icon": "fact_check",
@@ -50,19 +81,59 @@
       "name": "Opportunity Brainstorm",
       "category": "ideation",
       "description": "Facilitates structured product & feature brainstorming using SCAMPER, How Might We (HMW), 6 Thinking Hats, and Value vs. Effort matrix.",
-      "required_context_files": [
+      "paths": [
         ".context/product.md",
-        ".context/discovery.md"
+        ".context/discovery.md",
+        "templates/validation/*.md"
+      ],
+      "requires": {
+        "context_files": [
+          ".context/product.md"
+        ]
+      },
+      "required_context_files": [
+        ".context/product.md"
       ],
       "command_trigger": "/brainstorm",
       "icon": "psychology_alt",
       "color": "text-amber-500"
     },
     {
+      "id": "compact-context",
+      "name": "Compact Context & Memory Inbox",
+      "category": "knowledge",
+      "description": "Merges staged .context/.inbox/ patches after human review and compacts bloated .context/*.md files using Anchored Incremental Summarization without losing foundational decisions.",
+      "paths": [
+        ".context/*.md",
+        ".context/.inbox/*.md"
+      ],
+      "requires": {
+        "context_files": [
+          ".context/harness-config.yaml"
+        ]
+      },
+      "required_context_files": [
+        ".context/harness-config.yaml"
+      ],
+      "command_trigger": "/compact-context",
+      "icon": "compress",
+      "color": "text-emerald-400"
+    },
+    {
       "id": "connect-mcp",
       "name": "MCP Integration Manager",
       "category": "sync",
       "description": "Establishes, tests, and manages Model Context Protocol (MCP) integrations for external PM tools: Atlassian (Jira & Confluence), GitHub Issues, Figma, Miro, Notion, and Google Stitch across AGY, Claude Code, and Cursor IDEs.",
+      "paths": [
+        ".context/*.md",
+        ".context/harness-config.yaml",
+        "mcp.json"
+      ],
+      "requires": {
+        "context_files": [
+          ".context/harness-config.yaml"
+        ]
+      },
       "required_context_files": [
         ".context/harness-config.yaml"
       ],
@@ -75,9 +146,23 @@
       "name": "UI/UX Design Brief",
       "category": "specification",
       "description": "Creates comprehensive UI/UX Design Briefs including design objectives, user context, step-by-step user flows, component specs, WCAG 2.1 AA accessibility guidelines, and Figma handoff criteria.",
+      "paths": [
+        ".context/*.md",
+        "templates/prd/*.md",
+        "templates/user-stories/*.md",
+        "templates/design/*.md"
+      ],
+      "requires": {
+        "context_files": [
+          ".context/product.md",
+          ".context/discovery.md",
+          ".context/strategy-and-constraints.md"
+        ]
+      },
       "required_context_files": [
         ".context/product.md",
-        ".context/conventions.md"
+        ".context/discovery.md",
+        ".context/strategy-and-constraints.md"
       ],
       "command_trigger": "/create-design-brief",
       "icon": "palette",
@@ -88,9 +173,23 @@
       "name": "Technical & User Docs",
       "category": "specification",
       "description": "Generates dual-purpose technical and end-user documentation. Produces API schemas (OpenAPI format), Mermaid sequence diagrams, architecture specs, and step-by-step end-user manuals.",
+      "paths": [
+        ".context/*.md",
+        "templates/prd/*.md",
+        "templates/user-stories/*.md",
+        "templates/design/*.md"
+      ],
+      "requires": {
+        "context_files": [
+          ".context/product.md",
+          ".context/discovery.md",
+          ".context/strategy-and-constraints.md"
+        ]
+      },
       "required_context_files": [
         ".context/product.md",
-        ".context/architecture.md"
+        ".context/discovery.md",
+        ".context/strategy-and-constraints.md"
       ],
       "command_trigger": "/create-documentation",
       "icon": "menu_book",
@@ -101,9 +200,23 @@
       "name": "HTML Wireframe & Prototype",
       "category": "specification",
       "description": "Generates clickable, interactive UI mockups and prototypes as self-contained HTML files styled with Tailwind CSS, supporting interactive tabs, modals, forms, and responsive device views.",
+      "paths": [
+        ".context/*.md",
+        "templates/prd/*.md",
+        "templates/user-stories/*.md",
+        "templates/design/*.md"
+      ],
+      "requires": {
+        "context_files": [
+          ".context/product.md",
+          ".context/discovery.md",
+          ".context/strategy-and-constraints.md"
+        ]
+      },
       "required_context_files": [
         ".context/product.md",
-        ".context/conventions.md"
+        ".context/discovery.md",
+        ".context/strategy-and-constraints.md"
       ],
       "command_trigger": "/create-mockup",
       "icon": "web",
@@ -114,11 +227,23 @@
       "name": "PRD Generator",
       "category": "specification",
       "description": "Generates comprehensive Product Requirements Documents (PRDs) across 3 modes: Lean (Startup/MVP), Standard Agile (Growth/Mid-size), and Enterprise (Compliance/Scale).",
+      "paths": [
+        ".context/*.md",
+        "templates/prd/*.md",
+        "templates/user-stories/*.md",
+        "templates/design/*.md"
+      ],
+      "requires": {
+        "context_files": [
+          ".context/product.md",
+          ".context/discovery.md",
+          ".context/strategy-and-constraints.md"
+        ]
+      },
       "required_context_files": [
         ".context/product.md",
         ".context/discovery.md",
-        ".context/strategy-and-constraints.md",
-        ".context/conventions.md"
+        ".context/strategy-and-constraints.md"
       ],
       "command_trigger": "/create-prd",
       "icon": "description",
@@ -129,9 +254,18 @@
       "name": "Outcome Roadmap Generator",
       "category": "strategy",
       "description": "Transforms BACKLOG.md, .context/discovery.md, and prioritization scores into a stakeholder-ready Now / Next / Later or Quarterly OKR Outcome Roadmap.",
+      "paths": [
+        ".context/strategy-and-constraints.md",
+        "frameworks/**/*.md"
+      ],
+      "requires": {
+        "context_files": [
+          ".context/product.md",
+          ".context/strategy-and-constraints.md"
+        ]
+      },
       "required_context_files": [
         ".context/product.md",
-        ".context/discovery.md",
         ".context/strategy-and-constraints.md"
       ],
       "command_trigger": "/create-roadmap",
@@ -143,6 +277,16 @@
       "name": "Stakeholder Update & Release Notes",
       "category": "communication",
       "description": "Synthesizes recent changes in BACKLOG.md, .context/decisions.md, and docs/ into tailored communications: Executive Weekly Digest, Engineering/Cross-Functional Update, or Customer-Facing Release Notes.",
+      "paths": [
+        ".context/*.md",
+        "BACKLOG.md"
+      ],
+      "requires": {
+        "context_files": [
+          ".context/product.md",
+          ".context/decisions.md"
+        ]
+      },
       "required_context_files": [
         ".context/product.md",
         ".context/decisions.md"
@@ -156,10 +300,23 @@
       "name": "INVEST User Stories",
       "category": "specification",
       "description": "Generates user stories adhering to INVEST criteria, Concur format (As a/I want/So that), Gherkin Given-When-Then Acceptance Criteria, Fibonacci story points, and Definition of Done across Lean, Standard Agile, and Enterprise modes.",
+      "paths": [
+        ".context/*.md",
+        "templates/prd/*.md",
+        "templates/user-stories/*.md",
+        "templates/design/*.md"
+      ],
+      "requires": {
+        "context_files": [
+          ".context/product.md",
+          ".context/discovery.md",
+          ".context/strategy-and-constraints.md"
+        ]
+      },
       "required_context_files": [
         ".context/product.md",
-        ".context/conventions.md",
-        ".context/architecture.md"
+        ".context/discovery.md",
+        ".context/strategy-and-constraints.md"
       ],
       "command_trigger": "/create-user-stories",
       "icon": "splitscreen",
@@ -170,10 +327,23 @@
       "name": "Metrics & Experiment Plan",
       "category": "specification",
       "description": "Defines feature success metrics (North Star, Primary, Guardrail), event tracking taxonomy (events + properties), and A/B test or rollout hypotheses before engineering begins building.",
+      "paths": [
+        ".context/*.md",
+        "templates/prd/*.md",
+        "templates/user-stories/*.md",
+        "templates/design/*.md"
+      ],
+      "requires": {
+        "context_files": [
+          ".context/product.md",
+          ".context/discovery.md",
+          ".context/strategy-and-constraints.md"
+        ]
+      },
       "required_context_files": [
         ".context/product.md",
-        ".context/strategy-and-constraints.md",
-        ".context/architecture.md"
+        ".context/discovery.md",
+        ".context/strategy-and-constraints.md"
       ],
       "command_trigger": "/define-metrics-and-experiment",
       "icon": "query_stats",
@@ -184,6 +354,16 @@
       "name": "Post-Launch Retrospective",
       "category": "operations",
       "description": "Evaluates post-launch performance data against the PRD's original success metrics, logs whether the bet succeeded/failed/iterated, and writes lessons learned back to .context/decisions.md.",
+      "paths": [
+        ".context/*.md",
+        "docs/**/*.md"
+      ],
+      "requires": {
+        "context_files": [
+          ".context/product.md",
+          ".context/decisions.md"
+        ]
+      },
       "required_context_files": [
         ".context/product.md",
         ".context/decisions.md"
@@ -197,6 +377,16 @@
       "name": "PM Command Center GUI",
       "category": "gui",
       "description": "Launches the PM Command Center visual web application (GUI) locally on port 3000 and automatically opens it in your default web browser.",
+      "paths": [
+        ".context/*.md",
+        ".context/harness-config.yaml",
+        "mcp.json"
+      ],
+      "requires": {
+        "context_files": [
+          ".context/harness-config.yaml"
+        ]
+      },
       "required_context_files": [
         ".context/harness-config.yaml"
       ],
@@ -209,12 +399,18 @@
       "name": "Context Ingestion Router",
       "category": "knowledge",
       "description": "Ingests raw unstructured inputs (meeting notes, customer interview transcripts, Slack dumps, existing PRDs, codebase READMEs, or MCP pages) and routes structured updates into .context/ product knowledge files.",
+      "paths": [
+        ".context/*.md",
+        ".context/harness-config.yaml",
+        "mcp.json"
+      ],
+      "requires": {
+        "context_files": [
+          ".context/harness-config.yaml"
+        ]
+      },
       "required_context_files": [
-        ".context/product.md",
-        ".context/discovery.md",
-        ".context/strategy-and-constraints.md",
-        ".context/architecture.md",
-        ".context/decisions.md"
+        ".context/harness-config.yaml"
       ],
       "command_trigger": "/ingest-context",
       "icon": "input",
@@ -225,6 +421,16 @@
       "name": "GTM Launch Plan",
       "category": "operations",
       "description": "Generates a tiered launch plan (Tier 1 Major, Tier 2 Standard, Tier 3 Silent) from a PRD, including positioning messaging, internal enablement FAQs, rollout checklists, and rollback triggers.",
+      "paths": [
+        ".context/*.md",
+        "docs/**/*.md"
+      ],
+      "requires": {
+        "context_files": [
+          ".context/product.md",
+          ".context/strategy-and-constraints.md"
+        ]
+      },
       "required_context_files": [
         ".context/product.md",
         ".context/strategy-and-constraints.md"
@@ -238,6 +444,17 @@
       "name": "Meeting Prep & Defense Brief",
       "category": "communication",
       "description": "Prepares a 1-page briefing doc before a tough stakeholder review, board meeting, or customer call, pulling past decisions, anticipated objections, trade-off options, and talking points.",
+      "paths": [
+        ".context/*.md",
+        "docs/**/*.md"
+      ],
+      "requires": {
+        "context_files": [
+          ".context/product.md",
+          ".context/decisions.md",
+          ".context/strategy-and-constraints.md"
+        ]
+      },
       "required_context_files": [
         ".context/product.md",
         ".context/decisions.md",
@@ -252,9 +469,18 @@
       "name": "User Interview Script & Guide",
       "category": "discovery",
       "description": "Generates non-leading Mom Test interview guides, screener questions, and assumption probes tailored to a specific target persona and hypothesis before user discovery sessions.",
-      "required_context_files": [
+      "paths": [
         ".context/product.md",
-        ".context/discovery.md"
+        ".context/discovery.md",
+        "templates/validation/*.md"
+      ],
+      "requires": {
+        "context_files": [
+          ".context/product.md"
+        ]
+      },
+      "required_context_files": [
+        ".context/product.md"
       ],
       "command_trigger": "/prepare-user-interview",
       "icon": "record_voice_over",
@@ -265,9 +491,19 @@
       "name": "Framework Dispatcher",
       "category": "knowledge",
       "description": "Diagnoses PM bottlenecks, uncertainty, or prioritization challenges, recommends the optimal framework & skill with a lightweight alternative and anti-pattern warning, and guides execution.",
+      "paths": [
+        ".context/strategy-and-constraints.md",
+        "frameworks/**/*.md"
+      ],
+      "requires": {
+        "context_files": [
+          ".context/product.md",
+          ".context/strategy-and-constraints.md"
+        ]
+      },
       "required_context_files": [
-        ".context/harness-config.yaml",
-        ".context/product.md"
+        ".context/product.md",
+        ".context/strategy-and-constraints.md"
       ],
       "command_trigger": "/recommend-framework",
       "icon": "auto_awesome",
@@ -278,75 +514,90 @@
       "name": "Story Refinement & SPIDR",
       "category": "specification",
       "description": "Grooms and refines existing user stories. Detects ambiguity, splits large stories using the SPIDR framework, adds missing Gherkin edge cases, and calculates a Grooming Readiness Score (0-100%).",
+      "paths": [
+        ".context/*.md",
+        "templates/prd/*.md",
+        "templates/user-stories/*.md",
+        "templates/design/*.md"
+      ],
+      "requires": {
+        "context_files": [
+          ".context/product.md",
+          ".context/discovery.md",
+          ".context/strategy-and-constraints.md"
+        ]
+      },
       "required_context_files": [
-        ".context/conventions.md",
-        ".context/architecture.md"
+        ".context/product.md",
+        ".context/discovery.md",
+        ".context/strategy-and-constraints.md"
       ],
       "command_trigger": "/refine-user-stories",
       "icon": "tune",
       "color": "text-blue-400"
     },
     {
-      "id": "sync-confluence",
-      "name": "Confluence Wiki Sync",
+      "id": "sync-backlog",
+      "name": "Sync Delivery Backlog (Jira & GitHub)",
       "category": "sync",
-      "description": "Bi-directionally syncs Confluence product wikis and specs. Pulls company knowledge into .context/ and BACKLOG.md, or publishes PRDs, design briefs, and technical specs to Confluence via Atlassian MCP.",
+      "description": "Pushes and pulls epics, user stories, acceptance criteria, and sprint status between local PM artifacts and issue trackers (Jira or GitHub Issues) via MCP.",
+      "paths": [
+        ".context/conventions.md",
+        "templates/user-stories/*.md",
+        "templates/mcp/atlassian-config.json",
+        "templates/mcp/github-config.json"
+      ],
+      "requires": {
+        "context_files": [
+          ".context/product.md",
+          ".context/conventions.md"
+        ]
+      },
       "required_context_files": [
         ".context/product.md",
-        ".context/conventions.md",
-        ".context/harness-config.yaml"
+        ".context/conventions.md"
       ],
-      "command_trigger": "/sync-confluence",
-      "icon": "library_books",
-      "color": "text-blue-400"
-    },
-    {
-      "id": "sync-figma",
-      "name": "Figma Specs Sync",
-      "category": "sync",
-      "description": "Bi-directionally syncs Figma design tokens, components, and brief annotations. Pulls design context into .context/ and BACKLOG.md, or posts UX specs to Figma nodes via Figma MCP.",
-      "required_context_files": [
-        ".context/product.md",
-        ".context/conventions.md",
-        ".context/harness-config.yaml"
-      ],
-      "command_trigger": "/sync-figma",
-      "icon": "design_services",
-      "color": "text-violet-400"
-    },
-    {
-      "id": "sync-github-issues",
-      "name": "GitHub Issues Sync",
-      "category": "sync",
-      "description": "Bi-directionally syncs GitHub Issues, labels, and milestones. Pulls issues into BACKLOG.md and .context/discovery.md, or exports refined user stories as structured GitHub Issues.",
-      "required_context_files": [
-        ".context/product.md",
-        ".context/conventions.md",
-        ".context/harness-config.yaml"
-      ],
-      "command_trigger": "/sync-github-issues",
-      "icon": "code",
-      "color": "text-zinc-200"
-    },
-    {
-      "id": "sync-jira",
-      "name": "Jira Epics & Stories Sync",
-      "category": "sync",
-      "description": "Bi-directionally syncs Jira epics, stories, and sprint issues. Pulls issues into BACKLOG.md and .context/discovery.md, or exports INVEST user stories from docs/ to Jira via Atlassian MCP.",
-      "required_context_files": [
-        ".context/product.md",
-        ".context/conventions.md",
-        ".context/harness-config.yaml"
-      ],
-      "command_trigger": "/sync-jira",
+      "command_trigger": "/sync-backlog",
       "icon": "task_alt",
       "color": "text-blue-500"
+    },
+    {
+      "id": "sync-docs-design",
+      "name": "Sync Docs & Design (Confluence, Notion, Figma, Miro)",
+      "category": "sync",
+      "description": "Synchronizes PRDs, documentation, discovery maps, and design briefs with knowledge bases (Confluence, Notion) and visual collaboration tools (Figma, Miro) via MCP.",
+      "paths": [
+        ".context/product.md",
+        ".context/architecture.md",
+        "templates/prd/*.md",
+        "templates/design/*.md",
+        "templates/mcp/*.json"
+      ],
+      "requires": {
+        "context_files": [
+          ".context/product.md"
+        ]
+      },
+      "required_context_files": [
+        ".context/product.md"
+      ],
+      "command_trigger": "/sync-docs-design",
+      "icon": "library_books",
+      "color": "text-violet-400"
     },
     {
       "id": "sync-linear",
       "name": "Linear Issues & Cycles Sync",
       "category": "sync",
       "description": "Bi-directionally syncs Linear issues, cycles, projects, and triage queues via Model Context Protocol (MCP). Imports Linear issues into BACKLOG.md and .context/discovery.md, or exports INVEST user stories to Linear.",
+      "paths": [],
+      "requires": {
+        "context_files": [
+          ".context/product.md",
+          ".context/conventions.md",
+          ".context/harness-config.yaml"
+        ]
+      },
       "required_context_files": [
         ".context/product.md",
         ".context/conventions.md",
@@ -357,41 +608,22 @@
       "color": "text-violet-400"
     },
     {
-      "id": "sync-miro",
-      "name": "Miro Whiteboards Sync",
-      "category": "sync",
-      "description": "Bi-directionally syncs Miro whiteboards, brainstorm sticky notes, and roadmaps. Pulls visual ideation into .context/ and BACKLOG.md, or exports brainstorms/roadmaps to Miro via Miro MCP.",
-      "required_context_files": [
-        ".context/product.md",
-        ".context/conventions.md",
-        ".context/harness-config.yaml"
-      ],
-      "command_trigger": "/sync-miro",
-      "icon": "dashboard_customize",
-      "color": "text-yellow-400"
-    },
-    {
-      "id": "sync-notion",
-      "name": "Notion Databases Sync",
-      "category": "sync",
-      "description": "Bi-directionally syncs Notion product wikis, databases, and pages. Pulls research into .context/, or publishes PRDs, design briefs, and decision logs to Notion.",
-      "required_context_files": [
-        ".context/product.md",
-        ".context/conventions.md",
-        ".context/harness-config.yaml"
-      ],
-      "command_trigger": "/sync-notion",
-      "icon": "sticky_note_2",
-      "color": "text-orange-400"
-    },
-    {
       "id": "triage-feedback",
       "name": "Customer Feedback Triage",
       "category": "discovery",
       "description": "Batch-processes raw customer feedback, support tickets, NPS verbatims, or sales call notes, clustering them by frequency and severity, and mapping them to opportunities in .context/discovery.md.",
-      "required_context_files": [
+      "paths": [
         ".context/product.md",
-        ".context/discovery.md"
+        ".context/discovery.md",
+        "templates/validation/*.md"
+      ],
+      "requires": {
+        "context_files": [
+          ".context/product.md"
+        ]
+      },
+      "required_context_files": [
+        ".context/product.md"
       ],
       "command_trigger": "/triage-feedback",
       "icon": "mark_email_unread",
@@ -402,10 +634,18 @@
       "name": "Idea & Hypothesis Validator",
       "category": "ideation",
       "description": "Validates product ideas, feature concepts, and business hypotheses using Strategyzer 4-Risk Analysis, The Mom Test customer interview framework, TAM/SAM/SOM market sizing, and Pre-mortem risk identification.",
-      "required_context_files": [
+      "paths": [
         ".context/product.md",
         ".context/discovery.md",
-        ".context/strategy-and-constraints.md"
+        "templates/validation/*.md"
+      ],
+      "requires": {
+        "context_files": [
+          ".context/product.md"
+        ]
+      },
+      "required_context_files": [
+        ".context/product.md"
       ],
       "command_trigger": "/validate-idea",
       "icon": "fact_check",
@@ -1105,6 +1345,35 @@
       "filename": "strategy-and-constraints.md",
       "title": "Strategy, Bottlenecks & Constraints",
       "description": "Wardley mapping value chains, Theory of Constraints system bottleneck, and business/technical constraints."
+    }
+  ],
+  "agents": [
+    {
+      "name": "discovery-synthesizer",
+      "description": "Isolated sub-agent that ingests raw, noisy user interview transcripts, support tickets, or competitor notes and distills structured JTBD/OST insights into .context/.inbox/ without bloating the main conversation window.",
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob",
+        "Write"
+      ],
+      "disallowedTools": [
+        "Bash"
+      ]
+    },
+    {
+      "name": "pm-critic",
+      "description": "Isolated, read-only adversarial PM reviewer. Audits PRDs, user stories, and strategy docs against .context/ constraints, hunting for unvalidated assumptions, feature-factory output, and scope creep.",
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob"
+      ],
+      "disallowedTools": [
+        "Write",
+        "Edit",
+        "Bash"
+      ]
     }
   ]
 }

@@ -2,6 +2,13 @@
 name: ingest-context
 description: >-
   Ingests raw unstructured inputs (meeting notes, customer interview transcripts, Slack dumps, existing PRDs, codebase READMEs, or MCP pages) and routes structured updates into .context/ product knowledge files.
+paths:
+  - ".context/*.md"
+  - ".context/harness-config.yaml"
+  - "mcp.json"
+requires:
+  context_files:
+    - ".context/harness-config.yaml"
 ---
 
 # 📥 Ingest Context Skill
@@ -44,6 +51,7 @@ The skill parses and categorizes extracted insights, automatically routing them 
 
 ### 1. Ingestion & Pre-Processing
 - Accept raw text input, a file path (e.g. `docs/legacy_spec.md`), or an MCP source URL.
+- **Sub-Agent Delegation for Large Transcripts (> 2,000 words):** When the user provides raw interview transcripts, survey dumps, or support logs exceeding 2,000 words, delegate extraction to the isolated `discovery-synthesizer` sub-agent (`agents/discovery-synthesizer.md`) so noisy raw text does not bloat the primary conversation context window. The sub-agent writes its full structured synthesis to `.context/.inbox/YYYYMMDD-HHMM-discovery-synthesis.md` and returns only a concise summary.
 - Strip irrelevant formatting noise while preserving verbatim quotes, specific quantitative metrics, dates, and names.
 
 ### 2. Entity & Insight Extraction (Mom Test Filtering)
@@ -66,8 +74,13 @@ The skill parses and categorizes extracted insights, automatically routing them 
   > *"Review the proposed updates above. Would you like me to apply these updates to your `.context/` Knowledge Core?"*
 
 ### 5. Safe Persistence & Verification
-- On user approval, update the corresponding `.context/` files cleanly (merging sections and preserving existing comments).
+- On user approval, update the corresponding `.context/` files cleanly (merging sections and preserving existing comments) according to the Context Write-Back Governance rules below.
 - Report confirmation with the updated file paths.
+
+## Context Write-Back Governance
+
+- **Additive Discovery Logs:** Append new interview notes or hypothesis test results directly to `.context/discovery.md`.
+- **Protected Strategy & Decision Files:** Do NOT overwrite `.context/product.md`, `.context/strategy-and-constraints.md`, or `.context/decisions.md` directly. Write proposed updates as a timestamped patch file to `.context/.inbox/YYYYMMDD-HHMM-<skill-name>.md` with frontmatter `target: .context/<filename>.md` and instruct the user to review via `/compact-context` or the UI Command Center.
 
 ---
 

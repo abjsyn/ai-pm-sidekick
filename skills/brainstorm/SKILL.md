@@ -3,6 +3,13 @@ name: brainstorm
 description: >-
   Facilitates structured product & feature brainstorming using SCAMPER,
   How Might We (HMW), 6 Thinking Hats, and Value vs. Effort matrix.
+paths:
+  - ".context/product.md"
+  - ".context/discovery.md"
+  - "templates/validation/*.md"
+requires:
+  context_files:
+    - ".context/product.md"
 ---
 
 # 💡 Product & Feature Brainstorming Skill

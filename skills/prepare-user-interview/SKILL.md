@@ -3,6 +3,13 @@ name: prepare-user-interview
 description: >-
   Generates non-leading Mom Test interview guides, screener questions, and assumption probes tailored
   to a specific target persona and hypothesis before user discovery sessions.
+paths:
+  - ".context/product.md"
+  - ".context/discovery.md"
+  - "templates/validation/*.md"
+requires:
+  context_files:
+    - ".context/product.md"
 ---
 
 # 🎙️ User Interview Script & Research Guide Skill

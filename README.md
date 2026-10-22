@@ -11,23 +11,24 @@
 
 ---
 
-## 🌟 Core Capabilities & 30 Canonical Skills
+## 🌟 Core Capabilities & 27 Canonical Skills (+ 2 Isolated Sub-Agents)
 
 | Skill / Integration | Slash Command | Category | Description | Primary Output Target | Next Skill Suggestion |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **PM Command Center** | `/gui-run` | `gui` | SaaS web studio, Product Brain manager, Artifact library, & REST server on `localhost:3000` | Local Web Browser | `create-prd`, `connect-mcp` |
-| **Context Ingestion** | `/ingest-context` | `knowledge` | Distills raw notes, calls, & Slack dumps into `.context/` | `.context/*.md`, `decisions.md` | `apply-framework`, `create-prd` |
+| **Context Ingestion** | `/ingest-context` | `knowledge` | Distills raw notes, calls, & Slack dumps into `.context/` & `.context/.inbox/` | `.context/discovery.md`, `.context/.inbox/` | `apply-framework`, `create-prd` |
+| **Compact Context** | `/compact-context` | `knowledge` | Merges reviewed `.context/.inbox/` patches & compacts bloated `.context/*.md` files | `.context/*.md` | `create-prd`, `apply-framework` |
 | **Apply Framework** | `/apply-framework` | `knowledge` | Runs strategic, discovery, prioritization, & operational models | `.context/`, `BACKLOG.md`, `docs/` | `create-prd`, `create-user-stories` |
 | **Recommend Framework** | `/recommend-framework` | `knowledge` | Diagnoses bottlenecks & uncertainty, recommends the optimal framework & skill with anti-pattern warnings | Diagnostic recommendation in chat | `apply-framework`, `create-prd` |
 | **Idea Validation** | `/validate-idea` | `ideation` | Evaluates raw concepts & hypotheses (4-Risk, Mom Test, Pre-mortem) | 4-Risk Brief in `docs/` | `brainstorm`, `create-prd` |
-| **Brainstorming** | `/brainstorm` | `ideation` | Generates innovative solution angles (SCAMPER, HMW, 6 Hats) | Opportunity doc in `docs/` | `sync-miro`, `create-prd` |
+| **Brainstorming** | `/brainstorm` | `ideation` | Generates innovative solution angles (SCAMPER, HMW, 6 Hats) | Opportunity doc in `docs/` | `sync-docs-design`, `create-prd` |
 | **PRD Generation** | `/create-prd` | `specification` | Generates structured PRDs across Lean, Standard, and Enterprise tiers | PRD in `docs/` | `create-mockup`, `create-user-stories` |
 | **Clickable Mockups** | `/create-mockup` | `specification` | Generates self-contained, interactive Tailwind HTML wireframes | HTML prototype in `mockups/` | `create-design-brief`, `create-user-stories` |
-| **Design Briefs** | `/create-design-brief` | `specification` | Bridges PM and UI/UX design specs with WCAG 2.1 AA accessibility | UI/UX Brief in `docs/` | `sync-figma`, `create-mockup` |
-| **User Stories** | `/create-user-stories` | `specification` | Breaks down features into INVEST stories + Gherkin BDD AC | User Stories in `docs/` | `refine-user-stories`, `sync-jira` |
-| **Story Grooming** | `/refine-user-stories` | `specification` | Refines & splits stories using SPIDR with Readiness Score | Refined Stories in `docs/` | `sync-jira`, `sync-github-issues` |
-| **Documentation** | `/create-documentation` | `specification` | Dual tech spec & user guide generator (OpenAPI 3.0, Mermaid) | Tech Docs & Manuals in `docs/` | `sync-confluence`, `sync-notion` |
-| **Stakeholder Update** | `/create-stakeholder-update` | `communication` | Synthesizes git & backlog into Executive digests, team updates, or release notes | Status update in `docs/updates/` | `sync-confluence`, `refine-user-stories` |
+| **Design Briefs** | `/create-design-brief` | `specification` | Bridges PM and UI/UX design specs with WCAG 2.1 AA accessibility | UI/UX Brief in `docs/` | `sync-docs-design`, `create-mockup` |
+| **User Stories** | `/create-user-stories` | `specification` | Breaks down features into INVEST stories + Gherkin BDD AC | User Stories in `docs/` | `refine-user-stories`, `sync-backlog` |
+| **Story Grooming** | `/refine-user-stories` | `specification` | Refines & splits stories using SPIDR with Readiness Score | Refined Stories in `docs/` | `sync-backlog`, `sync-linear` |
+| **Documentation** | `/create-documentation` | `specification` | Dual tech spec & user guide generator (OpenAPI 3.0, Mermaid) | Tech Docs & Manuals in `docs/` | `sync-docs-design` |
+| **Stakeholder Update** | `/create-stakeholder-update` | `communication` | Synthesizes git & backlog into Executive digests, team updates, or release notes | Status update in `docs/updates/` | `sync-docs-design`, `refine-user-stories` |
 | **User Interview Guide**| `/prepare-user-interview` | `discovery` | Non-leading Mom Test guides, screener questions, & assumption probes | Interview guide in `docs/research/` | `ingest-context`, `apply-framework` |
 | **Metrics & Experiments**| `/define-metrics-and-experiment` | `specification` | Defines North Star hierarchies, event telemetry schemas, & A/B rollout gates | Metrics spec in `docs/specs/` | `create-prd`, `create-user-stories` |
 | **Spec Auditor** | `/audit-spec` | `specification` | VP Product + Staff Eng review auditing scope creep, edge cases, & architecture | Audit report in `docs/reviews/` | `refine-user-stories`, `plan-launch` |
@@ -38,13 +39,13 @@
 | **Linear Sync** | `/sync-linear` | `sync` | Bi-directional Linear cycles, projects, issues, and triage inbox sync via MCP | Linear Issues & Projects | `refine-user-stories`, `triage-feedback` |
 | **Feedback Triage** | `/triage-feedback` | `discovery` | Clusters raw support/NPS/transcript feedback by frequency & severity | Triage ledger in `docs/discovery/`| `create-prd`, `prepare-user-interview` |
 | **Launch Retrospective**| `/evaluate-launch` | `operations` | Evaluates telemetry against PRD targets and logs lessons to decisions.md | Retro doc in `docs/retrospectives/` | `create-stakeholder-update`, `refine-user-stories` |
-| **MCP Manager** | `/connect-mcp` | `sync` | Connects & verifies external PM tools across IDEs | `mcp.json` & `.env` | `sync-jira`, `sync-linear` |
-| **Jira Backlog Sync** | `/sync-jira` | `sync` | Exports stories/epics directly to Jira via Atlassian MCP | Jira Issues & Epics | `sync-confluence`, `refine-user-stories` |
-| **Confluence Doc Sync**| `/sync-confluence` | `sync` | Publishes PRDs/specs straight to Confluence spaces | Confluence Wiki Pages | `sync-jira`, `create-documentation` |
-| **GitHub Issues Sync** | `/sync-github-issues` | `sync` | Bi-directional GitHub Issues, milestones, and label sync | GitHub Issues & Milestones | `refine-user-stories`, `sync-jira` |
-| **Figma Design Sync** | `/sync-figma` | `sync` | Inspects components & posts design feedback to Figma nodes | Figma Comments & Specs | `create-mockup`, `create-design-brief` |
-| **Miro Whiteboard Sync**| `/sync-miro` | `sync` | Exports brainstorm stickies, OSTs, and roadmaps to Miro | Miro Visual Boards | `validate-idea`, `apply-framework` |
-| **Notion Wiki Sync** | `/sync-notion` | `sync` | Bi-directional Notion research databases and PRD wiki sync | Notion Pages & Databases | `create-prd`, `ingest-context` |
+| **MCP Manager** | `/connect-mcp` | `sync` | Connects & verifies external PM tools across IDEs | `mcp.json` & `.env` | `sync-backlog`, `sync-docs-design` |
+| **Delivery Backlog Sync** | `/sync-backlog` | `sync` | Bi-directional Epic & INVEST User Story sync with **Jira** and **GitHub Issues** via MCP | Jira & GitHub Issues | `sync-docs-design`, `refine-user-stories` |
+| **Docs & Design Sync** | `/sync-docs-design` | `sync` | Synchronizes PRDs, design briefs, & OST maps with **Confluence, Notion, Figma, & Miro** via MCP | Confluence, Notion, Figma, Miro | `sync-backlog`, `create-mockup` |
+
+### 🤖 Isolated Sub-Agents (`agents/`)
+- **`pm-critic`** ([`agents/pm-critic.md`](agents/pm-critic.md)): Isolated, read-only adversarial PM reviewer that audits PRDs, user stories, and strategy docs against `.context/` constraints, hunting for unvalidated assumptions, feature-factory output, and scope creep without polluting the main drafting window.
+- **`discovery-synthesizer`** ([`agents/discovery-synthesizer.md`](agents/discovery-synthesizer.md)): Forked-context transcript miner that ingests raw user interview transcripts (> 2,000 words), support tickets, or competitor notes and distills Mom Test / JTBD insights into `.context/.inbox/` while returning only a summary (< 250 words) to the parent session.
 
 ---
 
@@ -97,6 +98,12 @@ At the center of AI PM Sidekick is a persistent, version-controlled **single sou
 - [`.context/architecture.md`](.context/architecture.md): Live tech stack, entity data models, API boundaries, security constraints, and codebase directory layout.
 - [`.context/conventions.md`](.context/conventions.md): Team Definition of Ready (DoR), Given/When/Then Gherkin acceptance criteria standards, and tier rules.
 - [`.context/decisions.md`](.context/decisions.md): Append-only immutable Product Decision Log (PDR/ADR) tracking historical trade-offs, rationale, and rejected alternatives.
+- [`.context/.inbox/`](.context/.inbox/README.md): Human-gated staging inbox for proposed updates to protected files (`product.md`, `strategy-and-constraints.md`, `decisions.md`). Merge and compact via `/compact-context`.
+
+### 🛡️ Mechanical Context Gate (`scripts/verify-context-gate.py`)
+Definition skills (`create-prd`, `create-user-stories`, `create-design-brief`) enforce a deterministic two-phase mechanical gate:
+- **Pre-Flight Check (`--mode pre-skill`)**: Verifies required `.context/` files exist, are populated past template placeholders, and stay within the 300-line soft ceiling.
+- **Verify-on-Stop Guard (`--mode verify-stop`)**: Blocks artifact completion if unresolved `[TBD]` or `TODO:` markers remain or required structural sections are missing.
 
 ### 🚫 Strict Asset Separation (Zero Context Contamination)
 To eliminate AI hallucinations:
@@ -190,11 +197,12 @@ python3 scripts/setup-mcp.py --check
 python3 scripts/export-skills.py
 ```
 This generates native configurations for:
-- **AGY / Gemini**: `.agents/skills/` and `.agents/skills/project-harness/SKILL.md`
+- **AGY / Gemini**: `.agents/skills/`, `.agents/agents/`, `.gemini/agents/`, and `AGENTS.md`
 - **Cursor IDE**: `.cursor/rules/*.mdc` and `.cursorrules`
-- **Claude Code**: `.claude/commands/*.md` and `CLAUDE.md`
-- **ChatGPT / Custom GPTs**: `dist/pm_sidekick_system_prompt.md`
-- **Web GUI Sidepanel**: `dist/harness-manifest.json` (30 skills, 23 frameworks, 7 context files)
+- **Claude Code**: `.claude/commands/*.md`, `.claude/agents/`, `.claude/settings.json`, and `CLAUDE.md`
+- **Mistral Vibe**: `.vibe/hooks.toml`
+- **ChatGPT / Custom GPTs**: `dist/pm_sidekick_system_prompt.md` (with `<!-- SYSTEM_PROMPT_DYNAMIC_BOUNDARY -->` cache tiering)
+- **Web GUI Sidepanel**: `dist/harness-manifest.json` (27 skills, 23 frameworks, 7 context files, 2 isolated sub-agents)
 
 ---
 

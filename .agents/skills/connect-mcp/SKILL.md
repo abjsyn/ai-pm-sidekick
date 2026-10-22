@@ -3,6 +3,13 @@ name: connect-mcp
 description: >-
   Establishes, tests, and manages Model Context Protocol (MCP) integrations for external PM tools:
   Atlassian (Jira & Confluence), GitHub Issues, Figma, Miro, Notion, and Google Stitch across AGY, Claude Code, and Cursor IDEs.
+paths:
+  - ".context/*.md"
+  - ".context/harness-config.yaml"
+  - "mcp.json"
+requires:
+  context_files:
+    - ".context/harness-config.yaml"
 ---
 
 # 🔌 MCP External Tool Connection Skill

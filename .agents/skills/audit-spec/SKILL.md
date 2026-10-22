@@ -3,6 +3,16 @@ name: audit-spec
 description: >-
   Audits draft PRDs and User Stories against .context/ single source of truth, flagging scope creep,
   missing edge cases, unvalidated assumptions, and architectural conflicts.
+paths:
+  - ".context/*.md"
+  - "templates/prd/*.md"
+  - "templates/user-stories/*.md"
+  - "templates/design/*.md"
+requires:
+  context_files:
+    - ".context/product.md"
+    - ".context/discovery.md"
+    - ".context/strategy-and-constraints.md"
 ---
 
 # 🧐 Audit Spec & Pre-Mortem Critique Skill

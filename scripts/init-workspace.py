@@ -431,10 +431,28 @@ active_frameworks:
 mcp_enabled:
   - atlassian  # Jira & Confluence
   - github     # GitHub Issues, PRs, & Milestones
+  - linear     # Linear Issues, Cycles, Projects & Triage
   - figma      # UI design files & comments
   - miro       # Visual whiteboards & sticky notes
   - notion     # Product wikis & database sync
   - stitch     # Google Stitch Atelier UI
+
+# Memory Governance & Context Compaction:
+memory_governance:
+  mode: "inbox" # Options: "inbox" (human-gated staging) | "direct" (auto-overwrite)
+  inbox_dir: ".context/.inbox"
+  protected_files:
+    - ".context/product.md"
+    - ".context/strategy-and-constraints.md"
+    - ".context/decisions.md"
+  direct_append_files:
+    - ".context/discovery.md"
+    - ".context/architecture.md"
+    - ".context/conventions.md"
+  compaction:
+    max_tokens_per_file: 4000
+    chars_per_token_estimate: 4
+    preserve_recent_entries: 5
 """
 
 # ==============================================================================
@@ -443,6 +461,7 @@ mcp_enabled:
 
 def initialize_workspace(target_dir: Path, mode: str = "standalone", tier: str = "standard", operating_model: str = "scrum", force: bool = False, dry_run: bool = False) -> dict:
     context_dir = target_dir / ".context"
+    inbox_dir = context_dir / ".inbox"
     docs_dir = target_dir / "docs"
     mockups_dir = target_dir / "mockups"
     
@@ -460,8 +479,26 @@ def initialize_workspace(target_dir: Path, mode: str = "standalone", tier: str =
 
     if not dry_run:
         context_dir.mkdir(parents=True, exist_ok=True)
+        inbox_dir.mkdir(parents=True, exist_ok=True)
         docs_dir.mkdir(parents=True, exist_ok=True)
         mockups_dir.mkdir(parents=True, exist_ok=True)
+
+    # 0. Ensure .context/.inbox/ has .gitkeep and README.md
+    inbox_keep = inbox_dir / ".gitkeep"
+    inbox_readme = inbox_dir / "README.md"
+    if not inbox_keep.exists() and not dry_run:
+        inbox_keep.write_text("", encoding="utf-8")
+        actions_taken.append(f"Created {inbox_keep.relative_to(target_dir)}")
+    if not inbox_readme.exists() and not dry_run:
+        inbox_readme_text = (
+            "# Context Memory Inbox (`.context/.inbox/`)\n\n"
+            "Proposed changes to protected context files (`product.md`, `strategy-and-constraints.md`, `decisions.md`) are staged here as Markdown patch files (`YYYYMMDD-HHMMSS-<skill-name>.md`).\n\n"
+            "## How to Review\n\n"
+            "1. **Via UI:** Open `pm-command-center.html` and click **Approve & Merge** or **Discard** in the Context Inbox panel.\n\n"
+            "2. **Via CLI / Agent:** Run `/compact-context --apply-inbox` or manually move approved sections into the target `.context/*.md` file and delete the staged `.inbox/` file.\n"
+        )
+        inbox_readme.write_text(inbox_readme_text, encoding="utf-8")
+        actions_taken.append(f"Created {inbox_readme.relative_to(target_dir)}")
 
     # 1. Ensure clean docs/ and mockups/ with .gitkeep & README.md
     for fldr, label in [(docs_dir, "Product Deliverables & Specifications (`docs/`)"), (mockups_dir, "Product UI Mockups & Prototypes (`mockups/`)")]:
@@ -683,8 +720,8 @@ Examples:
         print("\n🔍 Dry run complete. No files written.")
         return
 
-    # In standalone mode, launch the GUI unless --no-gui is specified
-    if mode == "standalone" and not args.no_gui:
+    # In standalone mode, launch the GUI when --open is specified (unless --no-gui is set)
+    if mode == "standalone" and args.open and not args.no_gui:
         if LAUNCHER_SCRIPT.exists():
             print(f"\n🚀 Launching PM Command Center GUI on port {args.port}...")
             cmd = [sys.executable, str(LAUNCHER_SCRIPT), "--port", str(args.port)]

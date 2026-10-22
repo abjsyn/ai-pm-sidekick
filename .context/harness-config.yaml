@@ -77,3 +77,21 @@ mcp_enabled:
   - miro  # Visual whiteboards & sticky notes
   - notion  # Product wikis & database sync
   - stitch  # Google Stitch Atelier UI
+
+# Memory Governance & Context Compaction:
+memory_governance:
+  mode: "inbox" # Options: "inbox" (human-gated staging) | "direct" (auto-overwrite)
+  inbox_dir: ".context/.inbox"
+  protected_files:
+    - ".context/product.md"
+    - ".context/strategy-and-constraints.md"
+    - ".context/decisions.md"
+  direct_append_files:
+    - ".context/discovery.md"
+    - ".context/architecture.md"
+    - ".context/conventions.md"
+  compaction:
+    max_tokens_per_file: 4000
+    chars_per_token_estimate: 4
+    preserve_recent_entries: 5
+

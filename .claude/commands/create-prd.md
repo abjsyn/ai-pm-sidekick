@@ -36,6 +36,12 @@ When initiating this skill, detect the mode from `.context/harness-config.yaml` 
 
 ## 🛠️ Standardized 4-Stage Execution Protocol
 
+### Step 0: Mechanical Context Pre-Flight Gate (Mandatory)
+
+Before asking questions or drafting, run:
+`python3 scripts/verify-context-gate.py --mode pre-skill --skill create-prd --context-dir .context`
+If the script outputs `"decision": "block"`, **STOP immediately**, surface the `violations` list to the user, and offer to run `/ingest-context` or `/validate-idea`.
+
 ### Stage 1: Context Hydration
 Before drafting the specification, ground the agent in the workspace knowledge base:
 1. **Read Core Context**:
@@ -69,14 +75,27 @@ Conclude the authoring process by updating the Product Knowledge Core:
 1. **Propose Write-Back Updates**:
    - Summarize newly established product truths, target metric baselines, or strategic scope decisions.
 2. **Prompt for Permission**:
-   - *"Would you like me to update `.context/product.md` with these newly defined metrics and append a Product Decision Record (PDR) to `.context/decisions.md`?"*
-3. **Persist on Approval**: Update the designated `.context/` files upon user confirmation.
+   - *"Would you like me to stage updates for `.context/product.md` and `.context/decisions.md` in `.context/.inbox/`?"*
+3. **Persist on Approval**: Update the designated `.context/` files upon user confirmation following the Context Write-Back Governance below.
+
+## Context Write-Back Governance
+
+- **Additive Discovery Logs:** Append new interview notes or hypothesis test results directly to `.context/discovery.md`.
+- **Protected Strategy & Decision Files:** Do NOT overwrite `.context/product.md`, `.context/strategy-and-constraints.md`, or `.context/decisions.md` directly. Write proposed updates as a timestamped patch file to `.context/.inbox/YYYYMMDD-HHMM-<skill-name>.md` with frontmatter `target: .context/<filename>.md` and instruct the user to review via `/compact-context` or the UI Command Center.
+
+### Final Step: Verify-on-Stop Guard & Optional `pm-critic` Review
+
+After writing the output Markdown artifact to disk, run:
+`python3 scripts/verify-context-gate.py --mode verify-stop --artifact <path-to-generated-file.md>`
+If `"decision": "block"` is returned, fix all flagged `[TBD]` or `TODO:` placeholders before presenting the final response to the user.
+
+- **Optional Adversarial Review (`pm-critic` sub-agent):** Before finalizing high-stakes PRDs, offer to invoke the isolated read-only `pm-critic` sub-agent (`agents/pm-critic.md`) against the drafted PRD path to audit for unvalidated assumptions, strategy/non-goal violations, and feature-factory fluff without polluting the drafting session.
 
 ---
 
 ## 🔄 Flow Handling & Suggested Next Skills
 At the end of generating the PRD, ALWAYS recommend the logical next steps:
-- **Next Step 1 (Publish to Confluence via MCP)**: "Would you like to publish this PRD to Confluence using `sync-confluence`?"
-- **Next Step 2 (Backlog & Jira Sync)**: "Would you like me to break down these requirements into INVEST User Stories using `create-user-stories` or push to Jira via `sync-jira`?"
-- **Next Step 3 (Design Specification & Figma)**: "Would you like to draft a UI/UX Design Brief using `create-design-brief` or inspect Figma nodes via `sync-figma`?"
+- **Next Step 1 (Publish to Docs via MCP)**: "Would you like to publish this PRD to Confluence or Notion using `sync-docs-design`?"
+- **Next Step 2 (Backlog & Jira Sync)**: "Would you like me to break down these requirements into INVEST User Stories using `create-user-stories` or push to Jira/GitHub via `sync-backlog`?"
+- **Next Step 3 (Design Specification & Figma)**: "Would you like to draft a UI/UX Design Brief using `create-design-brief` or inspect Figma nodes via `sync-docs-design`?"
 - **Next Step 4 (Interactive Prototype)**: "Would you like to build an interactive HTML wireframe mockup using `create-mockup`?"
