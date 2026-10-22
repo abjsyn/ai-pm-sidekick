@@ -3,6 +3,13 @@ name: create-roadmap
 description: >-
   Transforms BACKLOG.md, .context/discovery.md, and prioritization scores into a stakeholder-ready
   Now / Next / Later or Quarterly OKR Outcome Roadmap.
+paths:
+  - ".context/strategy-and-constraints.md"
+  - "frameworks/**/*.md"
+requires:
+  context_files:
+    - ".context/product.md"
+    - ".context/strategy-and-constraints.md"
 ---
 
 # 🗺️ Generate Outcome Roadmap Skill

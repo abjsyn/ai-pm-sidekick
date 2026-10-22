@@ -2,6 +2,16 @@
 name: refine-user-stories
 description: >-
   Grooms and refines existing user stories. Detects ambiguity, splits large stories using the SPIDR framework, adds missing Gherkin edge cases, and calculates a Grooming Readiness Score (0-100%).
+paths:
+  - ".context/*.md"
+  - "templates/prd/*.md"
+  - "templates/user-stories/*.md"
+  - "templates/design/*.md"
+requires:
+  context_files:
+    - ".context/product.md"
+    - ".context/discovery.md"
+    - ".context/strategy-and-constraints.md"
 ---
 
 # 🔍 User Story Grooming & Refinement Skill

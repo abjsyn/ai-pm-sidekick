@@ -72,8 +72,14 @@ Conclude the session by synthesizing newly derived truths to keep workspace memo
 1. **Propose Write-Back Updates**:
    - Present a concise summary of newly validated/killed assumptions, interview insights, or pivot vectors.
 2. **Prompt for Permission**:
-   - *"Would you like me to record these insights in `.context/discovery.md` (Mom Test & OST) and log a Go/Pivot decision in `.context/decisions.md`?"*
-3. **Persist on Approval**: Update the targeted `.context/` files upon user confirmation.
+   - *"Would you like me to record these insights in `.context/discovery.md` (Mom Test & OST) and stage a Go/Pivot decision patch in `.context/.inbox/` for `.context/decisions.md`?"*
+3. **Persist on Approval**: Update the targeted `.context/` files upon user confirmation following the Context Write-Back Governance below.
+
+## Context Write-Back Governance
+
+- **Additive Discovery Logs:** Append new interview notes or hypothesis test results directly to `.context/discovery.md`.
+- **Protected Strategy & Decision Files:** Do NOT overwrite `.context/product.md`, `.context/strategy-and-constraints.md`, or `.context/decisions.md` directly. Write proposed updates as a timestamped patch file to `.context/.inbox/YYYYMMDD-HHMM-<skill-name>.md` with frontmatter `target: .context/<filename>.md` and instruct the user to review via `/compact-context` or the UI Command Center.
+- **Optional Pre-Completion Adversarial Review (`pm-critic`):** Before finalizing the validation report, you may delegate an isolated review to the read-only `pm-critic` sub-agent (`agents/pm-critic.md`) to audit the hypothesis and evidence against `.context/strategy-and-constraints.md` and `.context/discovery.md`.
 
 ---
 

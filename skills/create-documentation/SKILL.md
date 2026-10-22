@@ -2,6 +2,16 @@
 name: create-documentation
 description: >-
   Generates dual-purpose technical and end-user documentation. Produces API schemas (OpenAPI format), Mermaid sequence diagrams, architecture specs, and step-by-step end-user manuals.
+paths:
+  - ".context/*.md"
+  - "templates/prd/*.md"
+  - "templates/user-stories/*.md"
+  - "templates/design/*.md"
+requires:
+  context_files:
+    - ".context/product.md"
+    - ".context/discovery.md"
+    - ".context/strategy-and-constraints.md"
 ---
 
 # 📚 Technical & User Documentation Skill

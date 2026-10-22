@@ -3,6 +3,13 @@ name: triage-feedback
 description: >-
   Batch-processes raw customer feedback, support tickets, NPS verbatims, or sales call notes,
   clustering them by frequency and severity, and mapping them to opportunities in .context/discovery.md.
+paths:
+  - ".context/product.md"
+  - ".context/discovery.md"
+  - "templates/validation/*.md"
+requires:
+  context_files:
+    - ".context/product.md"
 ---
 
 # 📥 Synthesize Feedback & Triage Requests Skill

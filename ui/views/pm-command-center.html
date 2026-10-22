@@ -603,6 +603,32 @@
                   <span>Hydrating .context/ overview...</span>
                 </div>
               </div>
+
+              <!-- Context Inbox & Memory Health Card -->
+              <div class="mt-4 p-4 rounded-xl bg-[#1f2025] border border-[#2a2b30] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0">
+                    <span class="material-symbols-outlined text-[18px]">inbox</span>
+                  </div>
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <h3 class="font-headline text-sm text-zinc-100 font-semibold">Context Inbox &amp; Memory Health</h3>
+                      <span id="context-inbox-count" class="px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 font-mono text-[10px] border border-amber-500/20">0 pending patches</span>
+                    </div>
+                    <p class="text-xs text-zinc-400 mt-0.5">Human-gated staging in <code class="font-mono text-amber-400">.context/.inbox/</code> and anchored incremental compaction (&le; 4,000 tokens/file).</p>
+                  </div>
+                </div>
+                <div class="flex flex-wrap items-center gap-2">
+                  <button onclick="copyPromptToClipboard('/compact-context --apply-inbox')" class="px-3 py-1.5 rounded-lg bg-[#26272e] hover:bg-[#31323a] text-zinc-200 text-xs font-medium flex items-center gap-1.5 transition-colors border border-[#3b3d45]" title="Copy /compact-context --apply-inbox to clipboard">
+                    <span class="material-symbols-outlined text-[15px] text-amber-400">fact_check</span>
+                    <span>Review Inbox (<code class="font-mono text-amber-400">/compact-context --apply-inbox</code>)</span>
+                  </button>
+                  <button onclick="copyPromptToClipboard('/compact-context --compact')" class="px-3 py-1.5 rounded-lg bg-[#26272e] hover:bg-[#31323a] text-zinc-200 text-xs font-medium flex items-center gap-1.5 transition-colors border border-[#3b3d45]" title="Copy /compact-context --compact to clipboard">
+                    <span class="material-symbols-outlined text-[15px] text-emerald-400">compress</span>
+                    <span>Compact Context (<code class="font-mono text-emerald-400">/compact-context --compact</code>)</span>
+                  </button>
+                </div>
+              </div>
             </section>
 
             <!-- ================= WHAT SHOULD I USE? (FRAMEWORK DISPATCHER) ================= -->
@@ -1803,14 +1829,11 @@
       'brainstorm': { name: 'Opportunity Brainstorm', icon: 'psychology_alt', color: 'text-amber-500', category: 'ideation', description: 'Structured brainstorming with SCAMPER, HMW, and 6 Hats.' },
       'validate-idea': { name: 'Idea & Hypothesis Validator', icon: 'fact_check', color: 'text-red-400', category: 'ideation', description: 'Validates product ideas with Strategyzer 4-Risk and Mom Test.' },
       'ingest-context': { name: 'Context Ingestion Router', icon: 'input', color: 'text-purple-400', category: 'knowledge', description: 'Ingests raw notes and routes structured facts to .context/.' },
+      'compact-context': { name: 'Context Inbox & Compaction (/compact-context)', icon: 'compress', color: 'text-emerald-400', category: 'knowledge', description: 'Merges staged .context/.inbox/ patches and compacts bloated context files.' },
       'apply-framework': { name: 'Modular Framework Runner', icon: 'hub', color: 'text-indigo-400', category: 'knowledge', description: 'Runs strategic, discovery, and prioritization frameworks.' },
       'connect-mcp': { name: 'MCP Integration Manager', icon: 'cable', color: 'text-emerald-400', category: 'sync', description: 'Manages MCP connections across PM tools.' },
-      'sync-jira': { name: 'Jira Epics & Stories Sync', icon: 'task_alt', color: 'text-blue-500', category: 'sync', description: 'Syncs epics and user stories directly to Jira.' },
-      'sync-confluence': { name: 'Confluence Wiki Sync', icon: 'library_books', color: 'text-blue-400', category: 'sync', description: 'Publishes PRDs and specs directly to Confluence.' },
-      'sync-github-issues': { name: 'GitHub Issues Sync', icon: 'code', color: 'text-zinc-200', category: 'sync', description: 'Bi-directionally syncs GitHub Issues and milestones.' },
-      'sync-figma': { name: 'Figma Specs Sync', icon: 'design_services', color: 'text-violet-400', category: 'sync', description: 'Pushes specs and comments to Figma canvases.' },
-      'sync-miro': { name: 'Miro Whiteboards Sync', icon: 'dashboard_customize', color: 'text-yellow-400', category: 'sync', description: 'Exports brainstorms and roadmaps to Miro boards.' },
-      'sync-notion': { name: 'Notion Databases Sync', icon: 'sticky_note_2', color: 'text-orange-400', category: 'sync', description: 'Syncs product wikis, research databases, and PRDs.' },
+      'sync-backlog': { name: 'Sync Backlog (/sync-backlog — Jira & GitHub Issues)', icon: 'task_alt', color: 'text-blue-500', category: 'sync', description: 'Pushes and pulls epics, user stories, and sprint status with Jira or GitHub Issues.' },
+      'sync-docs-design': { name: 'Sync Docs & Design (/sync-docs-design — Confluence, Notion, Figma & Miro)', icon: 'library_books', color: 'text-violet-400', category: 'sync', description: 'Synchronizes PRDs, docs, and design briefs with Confluence, Notion, Figma, and Miro.' },
       'recommend-framework': { name: 'Framework Dispatcher', icon: 'auto_awesome', color: 'text-emerald-400', category: 'knowledge', description: 'Diagnoses product challenges and prescribes optimal frameworks.' },
       'gui-run': { name: 'PM Command Center GUI', icon: 'open_in_browser', color: 'text-amber-500', category: 'gui', description: 'Launches the local PM Command Center web GUI.' }
     };
@@ -2482,13 +2505,10 @@
       'validate-idea': 'Describe the product hypothesis, customer segment, or business model risk to de-risk with Strategyzer & Mom Test...',
       'recommend-framework': 'Describe your current product dilemma, prioritization hurdle, or team delivery bottleneck...',
       'ingest-context': 'Paste raw meeting transcripts, customer interview notes, Slack dump, or product wikis to compound knowledge...',
+      'compact-context': 'Review pending .context/.inbox/ patches (--apply-inbox) or compact bloated context files (--compact)...',
       'apply-framework': 'Describe the product problem or backlog to evaluate through a structured product management framework...',
-      'sync-jira': 'Specify Jira project key, issue keys, or sprint scope to pull context or export refined stories...',
-      'sync-confluence': 'Specify Confluence space and page title to publish PRD or pull existing company documentation...',
-      'sync-github-issues': 'Specify repository and issue labels or milestones to synchronize with BACKLOG.md...',
-      'sync-figma': 'Specify Figma file key or node URL to extract design tokens or post UX specifications...',
-      'sync-miro': 'Specify Miro whiteboard URL to pull brainstorm stickies or export roadmap frames...',
-      'sync-notion': 'Specify Notion database or page URL to pull user research or publish product specifications...'
+      'sync-backlog': 'Specify Jira project key or GitHub owner/repo to pull issues or push refined user stories...',
+      'sync-docs-design': 'Specify Confluence/Notion page or Figma/Miro URL to synchronize documentation, specs, or discovery boards...'
     };
 
     const SKILL_DEST_MAP = {

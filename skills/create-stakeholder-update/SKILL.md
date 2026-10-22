@@ -3,6 +3,13 @@ name: create-stakeholder-update
 description: >-
   Synthesizes recent changes in BACKLOG.md, .context/decisions.md, and docs/ into tailored communications:
   Executive Weekly Digest, Engineering/Cross-Functional Update, or Customer-Facing Release Notes.
+paths:
+  - ".context/*.md"
+  - "BACKLOG.md"
+requires:
+  context_files:
+    - ".context/product.md"
+    - ".context/decisions.md"
 ---
 
 # 📢 Stakeholder Update & Release Notes Skill

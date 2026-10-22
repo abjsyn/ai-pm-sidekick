@@ -3,6 +3,13 @@ name: plan-launch
 description: >-
   Generates a tiered launch plan (Tier 1 Major, Tier 2 Standard, Tier 3 Silent) from a PRD,
   including positioning messaging, internal enablement FAQs, rollout checklists, and rollback triggers.
+paths:
+  - ".context/*.md"
+  - "docs/**/*.md"
+requires:
+  context_files:
+    - ".context/product.md"
+    - ".context/strategy-and-constraints.md"
 ---
 
 # 🚀 Plan Go-To-Market (GTM) Launch Skill

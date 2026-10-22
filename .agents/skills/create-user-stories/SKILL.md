@@ -3,6 +3,16 @@ name: create-user-stories
 description: >-
   Generates user stories adhering to INVEST criteria, Concur format (As a/I want/So that),
   Gherkin Given-When-Then Acceptance Criteria, Fibonacci story points, and Definition of Done across Lean, Standard Agile, and Enterprise modes.
+paths:
+  - ".context/*.md"
+  - "templates/prd/*.md"
+  - "templates/user-stories/*.md"
+  - "templates/design/*.md"
+requires:
+  context_files:
+    - ".context/product.md"
+    - ".context/discovery.md"
+    - ".context/strategy-and-constraints.md"
 ---
 
 # 📖 User Story Generation Skill
@@ -38,6 +48,12 @@ Select or inherit the operational mode from `.context/harness-config.yaml`:
 ---
 
 ## 🛠️ Standardized 4-Stage Execution Protocol
+
+### Step 0: Mechanical Context Pre-Flight Gate (Mandatory)
+
+Before asking questions or drafting, run:
+`python3 scripts/verify-context-gate.py --mode pre-skill --skill create-user-stories --context-dir .context`
+If the script outputs `"decision": "block"`, **STOP immediately**, surface the `violations` list to the user, and offer to run `/ingest-context` or `/validate-idea`.
 
 ### Stage 1: Context Hydration
 Before breaking down epics, ground the agent in system and process conventions:
@@ -76,6 +92,12 @@ Capture newly established technical and operational conventions back into `.cont
 2. **Prompt for Permission**:
    - *"Would you like me to update `.context/architecture.md` with these newly defined API endpoints/data models and log a record in `.context/decisions.md`?"*
 3. **Persist on Approval**: Update the targeted `.context/` files upon user confirmation.
+
+### Final Step: Verify-on-Stop Guard
+
+After writing the output Markdown artifact to disk, run:
+`python3 scripts/verify-context-gate.py --mode verify-stop --artifact <path-to-generated-file.md>`
+If `"decision": "block"` is returned, fix all flagged `[TBD]` or `TODO:` placeholders before presenting the final response to the user.
 
 ---
 

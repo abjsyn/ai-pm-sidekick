@@ -3,6 +3,14 @@ name: prep-meeting
 description: >-
   Prepares a 1-page briefing doc before a tough stakeholder review, board meeting, or customer call,
   pulling past decisions, anticipated objections, trade-off options, and talking points.
+paths:
+  - ".context/*.md"
+  - "docs/**/*.md"
+requires:
+  context_files:
+    - ".context/product.md"
+    - ".context/decisions.md"
+    - ".context/strategy-and-constraints.md"
 ---
 
 # 🛡️ Meeting Prep & Stakeholder Defense Brief Skill

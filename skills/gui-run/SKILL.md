@@ -2,6 +2,13 @@
 name: gui-run
 description: >-
   Launches the PM Command Center visual web application (GUI) locally on port 3000 and automatically opens it in your default web browser.
+paths:
+  - ".context/*.md"
+  - ".context/harness-config.yaml"
+  - "mcp.json"
+requires:
+  context_files:
+    - ".context/harness-config.yaml"
 ---
 
 # 🚀 Launch PM Command Center Web GUI

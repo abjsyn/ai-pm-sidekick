@@ -3,6 +3,13 @@ name: evaluate-launch
 description: >-
   Evaluates post-launch performance data against the PRD's original success metrics,
   logs whether the bet succeeded/failed/iterated, and writes lessons learned back to .context/decisions.md.
+paths:
+  - ".context/*.md"
+  - "docs/**/*.md"
+requires:
+  context_files:
+    - ".context/product.md"
+    - ".context/decisions.md"
 ---
 
 # 📊 Post-Launch Impact Retrospective Skill

@@ -82,8 +82,13 @@ Run this skill over any of the following targets:
 ### 5. Knowledge Compounding Write-Back
 - Propose syncing newly derived insights back into the designated `.context/` write-back target.
 - Ask for explicit user permission:
-  > *"Would you like me to update `.context/<target_file>.md` with these strategic findings?"*
-- Apply changes upon confirmation.
+  > *"Would you like me to update `.context/<target_file>.md` (or stage in `.context/.inbox/` if protected) with these strategic findings?"*
+- Apply changes upon confirmation following the Context Write-Back Governance below.
+
+## Context Write-Back Governance
+
+- **Additive Discovery Logs:** Append new interview notes or hypothesis test results directly to `.context/discovery.md`.
+- **Protected Strategy & Decision Files:** Do NOT overwrite `.context/product.md`, `.context/strategy-and-constraints.md`, or `.context/decisions.md` directly. Write proposed updates as a timestamped patch file to `.context/.inbox/YYYYMMDD-HHMM-<skill-name>.md` with frontmatter `target: .context/<filename>.md` and instruct the user to review via `/compact-context` or the UI Command Center.
 
 ---
 

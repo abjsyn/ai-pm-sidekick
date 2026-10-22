@@ -2,6 +2,13 @@
 name: recommend-framework
 description: >-
   Diagnoses PM bottlenecks, uncertainty, or prioritization challenges, recommends the optimal framework & skill with a lightweight alternative and anti-pattern warning, and guides execution.
+paths:
+  - ".context/strategy-and-constraints.md"
+  - "frameworks/**/*.md"
+requires:
+  context_files:
+    - ".context/product.md"
+    - ".context/strategy-and-constraints.md"
 ---
 
 # 🧭 Framework Dispatcher & Recommendation Skill
