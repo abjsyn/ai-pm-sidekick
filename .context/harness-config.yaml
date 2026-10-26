@@ -30,7 +30,7 @@ favorite_skills:
   - recommend-framework
   - sync-jira
 
-# Active Product Strategy, Discovery, Prioritization, and Operations Frameworks (23 Modular Frameworks):
+# Active Product Strategy, Discovery, Prioritization, and Operations Frameworks (24 Modular Frameworks):
 #   Strategy:
 #     - wardley: Wardley Value Chain Evolution Mapping
 #     - toc: Theory of Constraints (Goldratt bottleneck identification)
@@ -43,6 +43,7 @@ favorite_skills:
 #     - ost: Opportunity Solution Tree (Teresa Torres continuous discovery)
 #     - jtbd-and-mom-test: Jobs-to-be-Done & The Mom Test customer interviews
 #     - assumption-mapping: 4 Lenses (Desirability, Feasibility, Viability, Usability) & RAT
+#     - experiment-selector: Osterwalder 44-Experiment Selector & Sequencing Engine
 #     - aarrr-and-growth-loops: Pirate metrics funnel diagnostics & compounding growth loops
 #   Prioritization:
 #     - rice: Reach, Impact, Confidence, Effort scoring

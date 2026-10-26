@@ -36,9 +36,9 @@ The dispatcher matches problem signatures against the four framework categories:
        │                  │                             │                  │
   [North Star]         [AARRR]                       [ICE]           [Story Mapping]
   Metric Tree        Growth Loops                 Speed Heuristic    Walking Skeleton
-       │                                                │                  │
- [Positioning]                                      [Opp Score]      [Pre-Mortem]
- April Dunford                                    ODI Satisfaction   Tigers & Elephants
+       │                  │                             │                  │
+ [Positioning]      [Exp Selector]                  [Opp Score]      [Pre-Mortem]
+ April Dunford      44 Experiments               ODI Satisfaction   Tigers & Elephants
        │                                                │                  │
   [7 Powers]                                         [MoSCoW]           [Kanban]
  Moat Defense                                      Scope Budget      Flow WIP & SLE

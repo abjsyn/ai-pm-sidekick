@@ -47,6 +47,9 @@ flowchart TD
 3. **OPP-3: AI context contamination & hallucinated architecture**
    - *Customer Need*: AI agents often mix up internal UI components with user product artifacts, or hallucinate database schemas.
    - *Target Solution*: Strict file boundaries (`ui/` vs `docs/`/`mockups/`) and machine-readable `.context/architecture.md`.
+4. **OPP-4: Manual lookup friction & method-to-risk mismatch when selecting validation experiments**
+   - *Customer Need*: PMs manually flip through Bland & Osterwalder's *Testing Business Ideas* (44 experiments) or run opinion-based tests ("What people say") for Viability risks that require behavioral skin-in-the-game ("What people do").
+   - *Target Solution*: Modular `frameworks/discovery/experiment-selector.md` integrated into `/validate-idea` and `/recommend-framework`, filtering all 44 experiments by Risk Type (`D/V/F/U`), Market (`B2B/B2C`), Cost/Time, and Evidence Strength.
 
 ---
 

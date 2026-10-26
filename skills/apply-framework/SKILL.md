@@ -35,6 +35,7 @@ The skill dynamically orchestrates any methodology from [`frameworks/`](file:///
 - **`opportunity-solution-tree`**: Teresa Torres OST decoupling Desired Outcomes from candidate Solutions via verified Customer Opportunities and assumption tests.
 - **`jtbd-and-mom-test`**: Maps Functional, Emotional, and Social jobs across the Four Forces of Progress ($\text{Push} + \text{Pull} > \text{Anxiety} + \text{Habit}$) and filters out false praise using The Mom Test.
 - **`assumption-mapping`**: Categorizes assumptions across Desirability, Feasibility, Viability, and Usability; plots on Importance vs Evidence 2x2 to design Riskiest Assumption Tests (RATs).
+- **`experiment-selector`**: Matches Zone 1 risky assumptions and business ideas against Bland & Osterwalder's 44 experiments (*Testing Business Ideas*) by Risk Type, B2B/B2C Market Fit, Cost/Time, and Evidence Strength (`Say` vs `Do`), outputting a Discovery-to-Validation sequence.
 - **`aarrr-and-growth-loops`**: Diagnoses funnel drop-offs across Acquisition, Activation, Retention, Referral, and Revenue; models self-reinforcing viral, content, and paid growth loops.
 
 ### 3. Prioritization Frameworks ([`frameworks/prioritization/`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/frameworks/prioritization/))
@@ -70,7 +71,7 @@ Run this skill over any of the following targets:
 - **No Specific Framework Named? Delegate to Dispatcher**:
   If the user describes a problem, bottleneck, or goal without specifying an exact framework name, **immediately invoke [`skills/recommend-framework/SKILL.md`](file:///home/marcin/Documents/Projects/ai-pm-sidekick/skills/recommend-framework/SKILL.md)** to generate a 4-part Diagnostic Prescription.
 - If a framework is specified, prompt user to confirm or select:
-  > *"Running framework: `<framework-id>`. Available frameworks: `rice`, `wsjf-cost-of-delay`, `kano-model`, `ice-and-value-effort`, `opportunity-scoring`, `moscow-scope-negotiation`, `opportunity-solution-tree`, `jtbd-and-mom-test`, `assumption-mapping`, `aarrr-and-growth-loops`, `wardley-mapping`, `theory-of-constraints`, `working-backwards-prfaq`, `north-star-metric-tree`, `product-positioning`, `seven-powers-moats`, `pricing-and-packaging`, `shape-up`, `scrum-sprint-delivery`, `gist-planning`, `user-story-mapping`, `pre-mortem-tigers`, `kanban-continuous-flow`."*
+  > *"Running framework: `<framework-id>`. Available frameworks: `rice`, `wsjf-cost-of-delay`, `kano-model`, `ice-and-value-effort`, `opportunity-scoring`, `moscow-scope-negotiation`, `opportunity-solution-tree`, `jtbd-and-mom-test`, `assumption-mapping`, `experiment-selector`, `aarrr-and-growth-loops`, `wardley-mapping`, `theory-of-constraints`, `working-backwards-prfaq`, `north-star-metric-tree`, `product-positioning`, `seven-powers-moats`, `pricing-and-packaging`, `shape-up`, `scrum-sprint-delivery`, `gist-planning`, `user-story-mapping`, `pre-mortem-tigers`, `kanban-continuous-flow`."*
 - Ingest the target content: raw text, a file in `docs/`, `BACKLOG.md`, or user prompt.
 
 ### 2. Context Hydration
