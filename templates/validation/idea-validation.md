@@ -43,11 +43,14 @@ Brief 2-3 sentence overview of the idea and the problem it attempts to solve.
 
 ---
 
-## 6. Recommended Validation Experiments & Next Steps
-| Priority | Experiment Type | Target Metric / Success Signal | Cost & Duration |
-| :--- | :--- | :--- | :--- |
-| **Exp 1** | Smoke Test Landing Page | > 8% Email Signup conversion | $200 / 5 Days |
-| **Exp 2** | Concierge / Wizard of Oz MVP | 10 active weekly manual users | $0 / 2 Weeks |
+## 6. Recommended Validation Experiments (Osterwalder 44-Experiment Selector)
+*Matched via `frameworks/discovery/experiment-selector.md` based on Risk Lens, B2B/B2C Market Fit, Cost/Time, and Evidence Strength:*
+
+| Step / Priority | Experiment (#/44) | Risk & Market Fit | Evidence (1–5) | Cost & Duration | Target Metric / Kill Threshold | Paired Skill |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **Step 1 (Discovery)** | #19 Datasheet / #21 Smoke Landing Page | Desirability (B2B/B2C) | 3/5 (Commit/CTA) | $0–$200 / 3 Days | > 8% CTA signup or >= 5/8 pilot requests; Kill if < 2% | `/create-mockup` |
+| **Step 2 (Validation)** | #35 Concierge / #34 Wizard of Oz MVP | Desirability & Usability | 4/5 (What People Do) | $0 / 1–2 Weeks | >= 5 active weekly manual users completing core loop | `/validate-idea` |
+| **Step 3 (Viability)** | #43 Letter of Intent (LOI) / #40 Mock Sale | Viability (Willingness to Pay) | 5/5 (Skin in the Game) | $0 / 5 Days | >= 2 signed B2B LOIs or > 3% checkout click rate | `/define-metrics-and-experiment` |
 
 ---
 

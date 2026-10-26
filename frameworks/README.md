@@ -21,6 +21,7 @@ frameworks/
 │   ├── opportunity-solution-tree.md # Outcome -> Opportunity -> Solution -> Test hierarchy
 │   ├── jtbd-and-mom-test.md       # Jobs to Be Done & non-leading interview synthesis
 │   ├── assumption-mapping.md      # 4 lenses (Desirability, Feasibility, Viability, Usability) + RAT
+│   ├── experiment-selector.md     # Osterwalder 44-Experiment Selector & Discovery-to-Validation sequencing
 │   └── aarrr-and-growth-loops.md  # Pirate metrics funnel diagnostics & compounding growth loops
 ├── prioritization/                # Quantitative & qualitative trade-off scoring
 │   ├── rice.md                    # Reach, Impact, Confidence (anti-gaming), Effort

@@ -1,11 +1,11 @@
 # Command: /validate-idea
 
-Validates product ideas, feature concepts, and business hypotheses using Strategyzer 4-Risk Analysis, The Mom Test customer interview framework, TAM/SAM/SOM market sizing, and Pre-mortem risk identification.
+Validates product ideas, feature concepts, and business hypotheses using Strategyzer 4-Risk Analysis, Osterwalder's 44-Experiment Selector, The Mom Test customer interview framework, TAM/SAM/SOM market sizing, and Pre-mortem risk identification.
 
 # 🧪 Idea & Hypothesis Validation Skill
 
 ## Overview
-The `validate-idea` skill evaluates raw product ideas, market opportunities, or feature requests. It guides the Product Manager through structured hypothesis testing, identifies high-risk assumptions, calculates market opportunity, and outputs an actionable Go/Pivot/No-Go validation report grounded in `.context/`.
+The `validate-idea` skill evaluates raw product ideas, market opportunities, or feature requests. It guides the Product Manager through structured hypothesis testing, identifies high-risk assumptions, matches them to optimal experiments from Bland & Osterwalder's 44-experiment catalog, calculates market opportunity, and outputs an actionable Go/Pivot/No-Go validation report grounded in `.context/`.
 
 ---
 
@@ -13,23 +13,27 @@ The `validate-idea` skill evaluates raw product ideas, market opportunities, or 
 Use this skill when:
 - Evaluating a new product concept, startup idea, or unvetted feature request.
 - Deciding whether to invest engineering effort into a proposed opportunity from `.context/discovery.md`.
+- Selecting the fastest, highest-evidence validation experiment from Osterwalder's 44-experiment taxonomy (`frameworks/discovery/experiment-selector.md`).
 - Preparing for executive pitch meetings or investment committee reviews.
 - Identifying critical assumptions that require fast, empirical customer validation.
 
 ---
 
 ## 📋 Best Practices & Frameworks Applied
-1. **Strategyzer 4-Risk Framework**:
+1. **Strategyzer 4-Risk Framework & Assumption Mapping (`frameworks/discovery/assumption-mapping.md`)**:
    - **Desirability Risk**: Do customers actually want this? Will they change habits?
    - **Feasibility Risk**: Can we build and scale this within our architecture?
    - **Viability Risk**: Is the unit economics / financial model sustainable?
    - **Usability Risk**: Can users intuitively navigate and adopt the solution?
-2. **The Mom Test (Rob Fitzpatrick)**:
+2. **Osterwalder 44-Experiment Selector (`frameworks/discovery/experiment-selector.md`)**:
+   - Matching Zone 1 risky assumptions to the optimal Discovery and Validation experiments across Risk Type (`D/V/F/U`), Market Fit (`B2B` vs. `B2C`), Cost/Time, and Evidence Strength (`Say` vs. `Do/Pay`).
+   - Prescribing a 2-to-3 step Experiment Sequencing Chain (Discovery ➔ Behavioral Validation ➔ Viability Proof).
+3. **The Mom Test (Rob Fitzpatrick)**:
    - Formulating non-leading questions focused on past behaviors rather than hypothetical opinions.
    - Filtering out compliments and false positives using `frameworks/discovery/jtbd-and-mom-test.md`.
-3. **Pre-Mortem Analysis**:
+4. **Pre-Mortem Analysis**:
    - Projecting 12 months into the future assuming project failure, identifying failure modes early.
-4. **TAM / SAM / SOM Market Estimation**:
+5. **TAM / SAM / SOM Market Estimation**:
    - Structuring top-down and bottom-up market sizing.
 
 ---
@@ -60,8 +64,9 @@ Produce the comprehensive validation report using the tier specified in `.contex
 1. **Apply Framework Lenses**:
    - Ingest and execute `frameworks/discovery/jtbd-and-mom-test.md` to evaluate customer struggle vs compliments.
    - Score risks across Desirability, Feasibility, Viability, and Usability (1–5 scale). Flag scores $\ge 15$ as "Dealbreaker Assumptions".
-2. **Formulate Experiment Blueprints**:
-   - Design 2–3 fast, low-cost assumption tests (smoke test page, concierge MVP, customer interview batch).
+2. **Formulate Experiment Blueprints via Osterwalder 44-Experiment Selector**:
+   - Ingest and execute `frameworks/discovery/experiment-selector.md` to match the highest-risk assumptions against the 44-experiment catalog based on **Risk Type (`D/V/F/U`)**, **Market Fit (`B2B` vs. `B2C`)**, **Resource Budget (`Cost/Time`)**, and **Evidence Strength (`Say` vs. `Do/Pay`)**.
+   - Select the **Top 2–3 Matched Experiments** and construct a **2-to-3 step Experiment Sequencing Chain** (Discovery ➔ Validation) with explicit target metrics, kill thresholds, and paired Sidekick skills. Never dump all 44 experiments into the report.
 3. **Issue Strategic Signal**:
    - Conclude with a decisive **GO**, **PIVOT**, or **NO-GO** recommendation backed by evidence.
 4. **Persist Artifact**:

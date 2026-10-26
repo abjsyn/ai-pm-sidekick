@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "version": "v0.1.0",
-  "generated_at": "2026-10-22T09:41:58.026359",
+  "generated_at": "2026-10-26T17:23:37.201215",
   "skills": [
     {
       "id": "analyze-competitor",
@@ -633,10 +633,12 @@
       "id": "validate-idea",
       "name": "Idea & Hypothesis Validator",
       "category": "ideation",
-      "description": "Validates product ideas, feature concepts, and business hypotheses using Strategyzer 4-Risk Analysis, The Mom Test customer interview framework, TAM/SAM/SOM market sizing, and Pre-mortem risk identification.",
+      "description": "Validates product ideas, feature concepts, and business hypotheses using Strategyzer 4-Risk Analysis, Osterwalder's 44-Experiment Selector, The Mom Test customer interview framework, TAM/SAM/SOM market sizing, and Pre-mortem risk identification.",
       "paths": [
         ".context/product.md",
         ".context/discovery.md",
+        "frameworks/discovery/experiment-selector.md",
+        "frameworks/discovery/assumption-mapping.md",
         "templates/validation/*.md"
       ],
       "requires": {
@@ -706,6 +708,36 @@
       ],
       "write_back_target": ".context/discovery.md",
       "path": "frameworks/discovery/assumption-mapping.md"
+    },
+    {
+      "id": "experiment-selector",
+      "name": "Osterwalder 44-Experiment Selector & Sequencing Engine",
+      "category": "discovery",
+      "description": "To deterministically match any product idea or Zone 1 risky assumption against Osterwalder & Bland's 44 experiments by **Risk Type (`D/V/F/U`)**, **Market (`B2B/B2C`)**, **Cost/Time**, and **Evidence Strength**, outputting the **Top 2\u20133 Matched Experiments** and a **2-Step Sequence** without context bloat.",
+      "problem_signatures": [
+        "Team has identified a risky assumption (RAT) but defaults to generic customer interviews or building a full MVP instead of matching the optimal experiment",
+        "PM manually flips through 'Testing Business Ideas' (Bland & Osterwalder) trying to cross-reference 44 experiments by risk type, B2B/B2C context, cost, time, and evidence strength",
+        "Testing Viability (willingness to pay) with opinion surveys ('What people say') instead of behavioral skin-in-the-game ('What people do')"
+      ],
+      "best_for_stage": [
+        "0-to-1",
+        "growth",
+        "scale"
+      ],
+      "data_maturity_required": "low",
+      "when_not_to_use": [
+        "Zero-uncertainty bug fixes, regulatory compliance mandates, or internal infrastructural refactoring",
+        "When the team has not yet articulated the underlying risky assumption (run assumption-mapping first)"
+      ],
+      "paired_skills": [
+        "validate-idea",
+        "recommend-framework",
+        "define-metrics-and-experiment",
+        "prepare-user-interview",
+        "create-mockup"
+      ],
+      "write_back_target": ".context/discovery.md",
+      "path": "frameworks/discovery/experiment-selector.md"
     },
     {
       "id": "jtbd-and-mom-test",
