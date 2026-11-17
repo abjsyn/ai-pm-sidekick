@@ -716,7 +716,7 @@ def export_lifecycle_hooks(repo_root: Path):
             "hooks": [
                 {
                     "type": "command",
-                    "command": "python3 scripts/verify-context-gate.py --mode pre-skill --skill create-prd --context-dir .context || true"
+                    "command": "python3 scripts/verify-context-gate.py --mode hook --context-dir .context"
                 }
             ]
         }
